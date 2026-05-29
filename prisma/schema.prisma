@@ -1,23 +1,47 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+// ============================
+// ENUMS
+// ============================
 
 enum UserRole {
   STUDENT
   TEACHER
   ADMIN
-  SECRETARIAT
+  SCHOOL_ADMIN
+  SUPER_ADMIN
+}
+
+enum MUNRole {
+  SECRETARY_GENERAL
+  DIRECTOR_GENERAL
   CHAIR
   DELEGATE
-  SCHOOL_ADMIN
+  DELEGATE_ADVANCED
+  SDG_AMBASSADOR
+  RAPPORTEUR
+}
+
+enum SubscriptionTier {
+  FREE
+  STUDENT_PRO
+  TEACHER_PRO
+  SCHOOL_ENTERPRISE
+}
+
+enum SubscriptionStatus {
+  TRIAL
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  EXPIRED
 }
 
 enum ConferenceStatus {
@@ -37,6 +61,9 @@ enum CommitteeType {
   CRISIS_COMMITTEE
   HISTORICAL_COMMITTEE
   INTERNATIONAL_COURT
+  HUMAN_RIGHTS_COUNCIL
+  DISARMAMENT_COMMITTEE
+  WORLD_HEALTH_ASSEMBLY
 }
 
 enum AssessmentType {
@@ -44,6 +71,7 @@ enum AssessmentType {
   SKILL_EVALUATION
   ROLE_PLACEMENT
   PROGRESS_CHECK
+  PRE_CONFERENCE
 }
 
 enum BadgeCategory {
@@ -53,6 +81,8 @@ enum BadgeCategory {
   SKILL_MASTERY
   MILESTONE
   SPECIAL
+  DIPLOMACY
+  ORATORY
 }
 
 enum XPLevel {
@@ -60,21 +90,69 @@ enum XPLevel {
   DELEGATE
   AMBASSADOR
   DIPLOMAT
+  ENVOY
   SECRETARY_GENERAL
 }
 
+enum CourseDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+  EXPERT
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+enum AuditAction {
+  CREATE
+  READ
+  UPDATE
+  DELETE
+  LOGIN
+  LOGOUT
+  EXPORT
+  PERMISSION_CHANGE
+}
+
+// ============================
+// MODELS
+// ============================
+
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  name      String
-  avatar    String?
-  role      UserRole @default(DELEGATE)
-  bio       String?
-  schoolId  String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String            @id @default(cuid())
+  email              String            @unique
+  name               String
+  password           String
+  avatar             String?
+  role               UserRole          @default(STUDENT)
+  munRole            MUNRole?
+  bio                String?
+  phone              String?
+  country            String            @default("UAE")
+  city               String?
+  language           String            @default("en")
+  schoolId           String?
+  isActive           Boolean           @default(true)
+  emailVerified      Boolean           @default(false)
+  lastLoginAt        DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
 
   school                  School?                 @relation(fields: [schoolId], references: [id])
+  subscription            Subscription?
   delegateProfile         DelegateProfile?
   conferenceRegistrations ConferenceRegistration[]
   assessments             Assessment[]
@@ -82,26 +160,85 @@ model User {
   courseEnrollments       CourseEnrollment[]
   messages                Message[]
   activities              Activity[]
+  auditLogs               AuditLog[]
+  researchTasks           ResearchTask[]
+  researchAssignments     ResearchTask[]          @relation("AssignedTasks")
   chairedCommittees       Committee[]
+  sentNotifications       Notification[]          @relation("SentTo")
+  paymentRecords          Payment[]
+  invoices                Invoice[]
 
   @@index([schoolId])
   @@index([role])
+  @@index([email])
+  @@index([isActive])
 }
 
 model School {
   id          String   @id @default(cuid())
   name        String
   location    String?
+  city        String?
+  country     String   @default("UAE")
   website     String?
   logo        String?
   description String?
+  contactEmail String?
+  contactPhone String?
+  studentCount Int     @default(0)
+  isActive    Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  users  User[]
+  users       User[]
   conferences Conference[]
+  schoolSubscriptions SchoolSubscription[]
 
   @@index([name])
+  @@index([country])
+}
+
+model Subscription {
+  id                String            @id @default(cuid())
+  userId            String            @unique
+  tier              SubscriptionTier  @default(FREE)
+  status            SubscriptionStatus @default(TRIAL)
+  stripeCustomerId  String?
+  stripePriceId     String?
+  stripeSubscriptionId String?
+  trialStartsAt     DateTime?
+  trialEndsAt       DateTime?
+  currentPeriodStart DateTime?
+  currentPeriodEnd  DateTime?
+  cancelAtPeriodEnd Boolean           @default(false)
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([tier])
+  @@index([status])
+  @@index([stripeCustomerId])
+}
+
+model SchoolSubscription {
+  id                String            @id @default(cuid())
+  schoolId          String
+  tier              SubscriptionTier  @default(SCHOOL_ENTERPRISE)
+  status            SubscriptionStatus @default(TRIAL)
+  maxStudents       Int               @default(50)
+  maxTeachers       Int               @default(5)
+  stripeCustomerId  String?
+  stripeSubscriptionId String?
+  trialEndsAt       DateTime?
+  currentPeriodEnd  DateTime?
+  createdAt         DateTime          @default(now())
+  updatedAt         DateTime          @updatedAt
+
+  school School @relation(fields: [schoolId], references: [id])
+
+  @@index([schoolId])
+  @@index([status])
 }
 
 model Conference {
@@ -114,7 +251,9 @@ model Conference {
   status      ConferenceStatus @default(DRAFT)
   logo        String?
   website     String?
+  theme       String?
   schoolId    String?
+  createdBy   String?
   createdAt   DateTime         @default(now())
   updatedAt   DateTime         @updatedAt
 
@@ -125,6 +264,7 @@ model Conference {
 
   @@index([status])
   @@index([startDate])
+  @@index([schoolId])
 }
 
 model Committee {
@@ -133,6 +273,7 @@ model Committee {
   description  String?
   type         CommitteeType @default(GENERAL_ASSEMBLY)
   topic        String?
+  topicDescription String?
   countryLimit Int           @default(30)
   conferenceId String
   chairId      String?
@@ -148,54 +289,67 @@ model Committee {
 }
 
 model Assessment {
-  id          String         @id @default(cuid())
-  title       String
-  type        AssessmentType @default(DIAGNOSTIC)
-  score       Float?
-  maxScore    Float          @default(100)
-  skills      String?
-  completedAt DateTime?
-  userId      String
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id               String         @id @default(cuid())
+  userId           String
+  type             AssessmentType @default(DIAGNOSTIC)
+  knowledgeScore   Int            @default(0)
+  confidenceScore  Int            @default(0)
+  researchScore    Int            @default(0)
+  speakingScore    Int            @default(0)
+  diplomacyScore   Int            @default(0)
+  procedureScore   Int            @default(0)
+  totalScore       Int            @default(0)
+  recommendedRole  String?
+  answers          String?
+  completedAt      DateTime       @default(now())
+  createdAt        DateTime       @default(now())
 
   user User @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([type])
+  @@index([completedAt])
 }
 
 model Course {
-  id          String   @id @default(cuid())
+  id          String           @id @default(cuid())
   title       String
   description String?
   category    String
   thumbnail   String?
   duration    Int?
-  difficulty  String   @default("beginner")
-  xpReward    Int      @default(50)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  difficulty  CourseDifficulty @default(BEGINNER)
+  xpReward    Int              @default(50)
+  targetRole  String?
+  order       Int              @default(0)
+  isPublished Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   enrollments CourseEnrollment[]
   lessons     Lesson[]
 
   @@index([category])
+  @@index([targetRole])
+  @@index([isPublished])
 }
 
 model Lesson {
   id          String   @id @default(cuid())
   title       String
   content     String?
-  order       Int
+  type        String   @default("reading")
   duration    Int?
+  order       Int
   courseId    String
+  isPublished Boolean  @default(true)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  course      Course @relation(fields: [courseId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
 
   @@index([courseId])
+  @@index([order])
 }
 
 model Badge {
@@ -203,8 +357,11 @@ model Badge {
   name        String
   description String?
   icon        String?
+  image       String?
   category    BadgeCategory @default(ACHIEVEMENT)
   xpReward    Int           @default(0)
+  requirement String?
+  isHidden    Boolean       @default(false)
   createdAt   DateTime      @default(now())
 
   userBadges UserBadge[]
@@ -223,25 +380,32 @@ model UserBadge {
 
   @@unique([userId, badgeId])
   @@index([userId])
+  @@index([earnedAt])
 }
 
 model DelegateProfile {
-  id              String  @id @default(cuid())
-  userId          String  @unique
-  xp              Int     @default(0)
-  level           XPLevel @default(OBSERVER)
-  conferencesAttended Int  @default(0)
-  committeesServed Int    @default(0)
-  awardsReceived  Int     @default(0)
-  country         String?
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  xp                  Int      @default(0)
+  level               XPLevel  @default(OBSERVER)
+  streak              Int      @default(0)
+  longestStreak       Int      @default(0)
+  lastActivityDate    DateTime?
+  conferencesAttended Int      @default(0)
+  committeesServed    Int      @default(0)
+  awardsReceived      Int      @default(0)
+  resolutionsWritten  Int      @default(0)
+  speechesDelivered   Int      @default(0)
+  country             String?
   preferredCommitteeType CommitteeType?
-  bio             String?
-  updatedAt       DateTime @updatedAt
+  bio                 String?
+  updatedAt           DateTime @updatedAt
 
   user User @relation(fields: [userId], references: [id])
 
   @@index([xp])
   @@index([level])
+  @@index([streak])
 }
 
 model ConferenceRegistration {
@@ -262,17 +426,18 @@ model ConferenceRegistration {
   @@unique([userId, conferenceId])
   @@index([userId])
   @@index([conferenceId])
+  @@index([status])
 }
 
 model CourseEnrollment {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
   courseId    String
-  progress    Float    @default(0)
-  completed   Boolean  @default(false)
-  enrolledAt  DateTime @default(now())
+  progress    Float     @default(0)
+  completed   Boolean   @default(false)
+  enrolledAt  DateTime  @default(now())
   completedAt DateTime?
-  updatedAt   DateTime @updatedAt
+  updatedAt   DateTime  @updatedAt
 
   user   User   @relation(fields: [userId], references: [id])
   course Course @relation(fields: [courseId], references: [id])
@@ -280,6 +445,7 @@ model CourseEnrollment {
   @@unique([userId, courseId])
   @@index([userId])
   @@index([courseId])
+  @@index([completed])
 }
 
 model Channel {
@@ -288,11 +454,13 @@ model Channel {
   description String?
   type        String   @default("general")
   committeeId String?
+  schoolId    String?
   createdAt   DateTime @default(now())
 
   messages Message[]
 
   @@index([type])
+  @@index([schoolId])
 }
 
 model Message {
@@ -307,20 +475,157 @@ model Message {
 
   @@index([channelId])
   @@index([userId])
+  @@index([createdAt])
+}
+
+model ResearchTask {
+  id          String   @id @default(cuid())
+  schoolId    String
+  title       String
+  description String
+  assignedTo  String?
+  dueDate     DateTime?
+  status      String   @default("PENDING")
+  priority    String   @default("MEDIUM")
+  category    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  assignee User?  @relation("AssignedTasks", fields: [assignedTo], references: [id])
+  creator  User   @relation(fields: [schoolId], references: [id])
+
+  @@index([assignedTo])
+  @@index([status])
+  @@index([dueDate])
 }
 
 model Activity {
-  id          String   @id @default(cuid())
-  type        String
-  description String
-  userId      String?
+  id           String   @id @default(cuid())
+  type         String
+  description  String
+  userId       String?
   conferenceId String?
-  metadata    String?
-  createdAt   DateTime @default(now())
+  metadata     String?
+  xpEarned     Int      @default(0)
+  createdAt    DateTime @default(now())
 
   user       User?       @relation(fields: [userId], references: [id])
   conference Conference? @relation(fields: [conferenceId], references: [id])
 
   @@index([userId])
   @@index([createdAt])
+  @@index([type])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  message     String
+  type        String   @default("info")
+  isRead      Boolean  @default(false)
+  link        String?
+  createdAt   DateTime @default(now())
+
+  user User @relation("SentTo", fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([createdAt])
+}
+
+model Payment {
+  id                String        @id @default(cuid())
+  userId            String
+  amount            Float
+  currency          String        @default("AED")
+  status            PaymentStatus @default(PENDING)
+  stripePaymentId   String?
+  stripeInvoiceId   String?
+  description       String?
+  metadata          String?
+  createdAt         DateTime      @default(now())
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Invoice {
+  id            String        @id @default(cuid())
+  userId        String
+  amount        Float
+  currency      String        @default("AED")
+  status        InvoiceStatus @default(DRAFT)
+  invoiceNumber String        @unique
+  description   String?
+  dueDate       DateTime?
+  paidAt        DateTime?
+  stripeInvoiceId String?
+  pdfUrl        String?
+  metadata      String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+model AuditLog {
+  id        String      @id @default(cuid())
+  userId    String?
+  action    AuditAction
+  resource  String
+  resourceId String?
+  details   String?
+  ipAddress String?
+  userAgent String?
+  createdAt DateTime    @default(now())
+
+  user User? @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([createdAt])
+}
+
+model Coupon {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  discount    Float
+  type        String   @default("percentage")
+  maxUses     Int?
+  usedCount   Int      @default(0)
+  validFrom   DateTime @default(now())
+  validUntil  DateTime?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  @@index([code])
+  @@index([isActive])
+}
+
+model PricingPlan {
+  id          String   @id @default(cuid())
+  name        String
+  tier        SubscriptionTier
+  priceMonthly Float
+  priceYearly  Float?
+  currency    String   @default("AED")
+  features    String
+  maxStudents Int?
+  maxTeachers Int?
+  isPopular   Boolean  @default(false)
+  isActive    Boolean  @default(true)
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([tier])
+  @@index([isActive])
 }
