@@ -1,0 +1,326 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  STUDENT
+  TEACHER
+  ADMIN
+  SECRETARIAT
+  CHAIR
+  DELEGATE
+  SCHOOL_ADMIN
+}
+
+enum ConferenceStatus {
+  DRAFT
+  REGISTRATION_OPEN
+  REGISTRATION_CLOSED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+enum CommitteeType {
+  GENERAL_ASSEMBLY
+  SECURITY_COUNCIL
+  ECOSOC
+  SPECIALIZED_AGENCY
+  CRISIS_COMMITTEE
+  HISTORICAL_COMMITTEE
+  INTERNATIONAL_COURT
+}
+
+enum AssessmentType {
+  DIAGNOSTIC
+  SKILL_EVALUATION
+  ROLE_PLACEMENT
+  PROGRESS_CHECK
+}
+
+enum BadgeCategory {
+  PARTICIPATION
+  ACHIEVEMENT
+  LEADERSHIP
+  SKILL_MASTERY
+  MILESTONE
+  SPECIAL
+}
+
+enum XPLevel {
+  OBSERVER
+  DELEGATE
+  AMBASSADOR
+  DIPLOMAT
+  SECRETARY_GENERAL
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  avatar    String?
+  role      UserRole @default(DELEGATE)
+  bio       String?
+  schoolId  String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  school                  School?                 @relation(fields: [schoolId], references: [id])
+  delegateProfile         DelegateProfile?
+  conferenceRegistrations ConferenceRegistration[]
+  assessments             Assessment[]
+  badges                  UserBadge[]
+  courseEnrollments       CourseEnrollment[]
+  messages                Message[]
+  activities              Activity[]
+  chairedCommittees       Committee[]
+
+  @@index([schoolId])
+  @@index([role])
+}
+
+model School {
+  id          String   @id @default(cuid())
+  name        String
+  location    String?
+  website     String?
+  logo        String?
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  users  User[]
+  conferences Conference[]
+
+  @@index([name])
+}
+
+model Conference {
+  id          String           @id @default(cuid())
+  name        String
+  description String?
+  startDate   DateTime
+  endDate     DateTime
+  location    String?
+  status      ConferenceStatus @default(DRAFT)
+  logo        String?
+  website     String?
+  schoolId    String?
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+
+  school        School?                 @relation(fields: [schoolId], references: [id])
+  committees    Committee[]
+  registrations ConferenceRegistration[]
+  activities    Activity[]
+
+  @@index([status])
+  @@index([startDate])
+}
+
+model Committee {
+  id           String        @id @default(cuid())
+  name         String
+  description  String?
+  type         CommitteeType @default(GENERAL_ASSEMBLY)
+  topic        String?
+  countryLimit Int           @default(30)
+  conferenceId String
+  chairId      String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  conference    Conference             @relation(fields: [conferenceId], references: [id])
+  chair         User?                  @relation(fields: [chairId], references: [id])
+  registrations ConferenceRegistration[]
+
+  @@index([conferenceId])
+  @@index([type])
+}
+
+model Assessment {
+  id          String         @id @default(cuid())
+  title       String
+  type        AssessmentType @default(DIAGNOSTIC)
+  score       Float?
+  maxScore    Float          @default(100)
+  skills      String?
+  completedAt DateTime?
+  userId      String
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([type])
+}
+
+model Course {
+  id          String   @id @default(cuid())
+  title       String
+  description String?
+  category    String
+  thumbnail   String?
+  duration    Int?
+  difficulty  String   @default("beginner")
+  xpReward    Int      @default(50)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  enrollments CourseEnrollment[]
+  lessons     Lesson[]
+
+  @@index([category])
+}
+
+model Lesson {
+  id          String   @id @default(cuid())
+  title       String
+  content     String?
+  order       Int
+  duration    Int?
+  courseId    String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  course      Course @relation(fields: [courseId], references: [id])
+
+  @@index([courseId])
+}
+
+model Badge {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  icon        String?
+  category    BadgeCategory @default(ACHIEVEMENT)
+  xpReward    Int           @default(0)
+  createdAt   DateTime      @default(now())
+
+  userBadges UserBadge[]
+
+  @@index([category])
+}
+
+model UserBadge {
+  id        String   @id @default(cuid())
+  userId    String
+  badgeId   String
+  earnedAt  DateTime @default(now())
+
+  user User  @relation(fields: [userId], references: [id])
+  badge Badge @relation(fields: [badgeId], references: [id])
+
+  @@unique([userId, badgeId])
+  @@index([userId])
+}
+
+model DelegateProfile {
+  id              String  @id @default(cuid())
+  userId          String  @unique
+  xp              Int     @default(0)
+  level           XPLevel @default(OBSERVER)
+  conferencesAttended Int  @default(0)
+  committeesServed Int    @default(0)
+  awardsReceived  Int     @default(0)
+  country         String?
+  preferredCommitteeType CommitteeType?
+  bio             String?
+  updatedAt       DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([xp])
+  @@index([level])
+}
+
+model ConferenceRegistration {
+  id           String   @id @default(cuid())
+  userId       String
+  conferenceId String
+  committeeId  String?
+  country      String?
+  role         String?
+  status       String   @default("pending")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  user       User      @relation(fields: [userId], references: [id])
+  conference Conference @relation(fields: [conferenceId], references: [id])
+  committee  Committee? @relation(fields: [committeeId], references: [id])
+
+  @@unique([userId, conferenceId])
+  @@index([userId])
+  @@index([conferenceId])
+}
+
+model CourseEnrollment {
+  id          String   @id @default(cuid())
+  userId      String
+  courseId    String
+  progress    Float    @default(0)
+  completed   Boolean  @default(false)
+  enrolledAt  DateTime @default(now())
+  completedAt DateTime?
+  updatedAt   DateTime @updatedAt
+
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  @@unique([userId, courseId])
+  @@index([userId])
+  @@index([courseId])
+}
+
+model Channel {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  type        String   @default("general")
+  committeeId String?
+  createdAt   DateTime @default(now())
+
+  messages Message[]
+
+  @@index([type])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  content   String
+  channelId String
+  userId    String
+  createdAt DateTime @default(now())
+
+  channel Channel @relation(fields: [channelId], references: [id])
+  user    User    @relation(fields: [userId], references: [id])
+
+  @@index([channelId])
+  @@index([userId])
+}
+
+model Activity {
+  id          String   @id @default(cuid())
+  type        String
+  description String
+  userId      String?
+  conferenceId String?
+  metadata    String?
+  createdAt   DateTime @default(now())
+
+  user       User?       @relation(fields: [userId], references: [id])
+  conference Conference? @relation(fields: [conferenceId], references: [id])
+
+  @@index([userId])
+  @@index([createdAt])
+}
