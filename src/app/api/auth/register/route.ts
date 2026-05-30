@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
             tier: "FREE",
             status: "TRIAL",
             trialStartsAt: new Date(),
-            trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+            trialEndsAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24-hour trial with restricted access (basic courses, limited assessments only)
           },
         },
       },
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
           subscriptionTier: userWithoutPassword.subscription?.tier || "FREE",
           subscriptionStatus: userWithoutPassword.subscription?.status || "TRIAL",
         },
-        message: "Account created successfully. Your 14-day trial has started.",
+        message: "Account created successfully. Your 24-hour trial has started."
       },
       { status: 201 }
     )

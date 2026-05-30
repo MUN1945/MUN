@@ -205,7 +205,7 @@ export default function Demo() {
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
             </a>
-            <p className="mt-3 text-xs text-[#1B3A4B]/50">No credit card required · 14-day free trial</p>
+            <p className="mt-3 text-xs text-[#1B3A4B]/50">No credit card required · 24-hour free trial</p>
           </motion.div>
         </div>
       </div>

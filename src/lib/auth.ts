@@ -122,7 +122,7 @@ export const authOptions: NextAuthOptions = {
                   tier: "FREE",
                   status: "TRIAL",
                   trialStartsAt: new Date(),
-                  trialEndsAt: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000),
+                  trialEndsAt: new Date(Date.now() + 24 * 60 * 60 * 1000), // 24-hour trial
                 },
               },
             },

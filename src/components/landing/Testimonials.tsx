@@ -123,17 +123,8 @@ export default function Testimonials() {
                 Start Free Trial
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <a href="/auth/register">
-                <Button
-                  variant="outline"
-                  size="lg"
-                  className="border-white/20 text-white hover:bg-white/10 font-medium"
-                >
-                  Schedule a Demo
-                </Button>
-              </a>
             </div>
-            <p className="mt-4 text-xs text-white/55">No credit card required · 14-day free trial · Cancel anytime</p>
+            <p className="mt-4 text-xs text-white/55">No credit card required · 24-hour free trial · Cancel anytime</p>
           </div>
         </motion.div>
       </div>

@@ -151,7 +151,7 @@ export async function sendPasswordResetEmail(
 }
 
 /**
- * Send a welcome email after registration, mentioning the 14-day trial.
+ * Send a welcome email after registration, mentioning the 24-hour trial.
  */
 export async function sendWelcomeEmail(
   email: string,
@@ -172,9 +172,9 @@ export async function sendWelcomeEmail(
       <p class="greeting">Welcome, ${name}! 🎉</p>
       <p>Your DiplomatiQ account has been created as a <strong>${roleLabel}</strong>. You're now part of the world's leading platform for Model United Nations training and conferences.</p>
       <div style="text-align: center; margin: 24px 0;">
-        <span class="trial-badge">14-Day Free Trial Activated</span>
+        <span class="trial-badge">24-Hour Free Trial Activated</span>
       </div>
-      <p>Your 14-day trial gives you full access to all DiplomatiQ features, including:</p>
+      <p>Your 24-hour trial gives you restricted access to DiplomatiQ features, including:</p>
       <ul style="color: ${COLORS.darkGray}; padding-left: 20px; line-height: 1.8;">
         <li>AI-powered MUN training &amp; simulations</li>
         <li>Diagnostic skill assessments</li>
@@ -193,7 +193,7 @@ export async function sendWelcomeEmail(
     await resend.emails.send({
       from: FROM_ADDRESS,
       to: email,
-      subject: "Welcome to DiplomatiQ — Your 14-Day Trial Has Started!",
+      subject: "Welcome to DiplomatiQ — Your 24-Hour Trial Has Started!",
       html,
     })
   } catch (error) {
@@ -223,8 +223,8 @@ export async function sendSubscriptionNotification(
   }
 
   const bodies: Record<typeof type, string> = {
-    trial_started: `<p>Your 14-day free trial is now active! Enjoy full access to all DiplomatiQ features.</p>`,
-    trial_ending: `<p>Your 14-day trial is ending soon. Upgrade now to keep access to all features and continue your diplomatic journey.</p>`,
+    trial_started: `<p>Your 24-hour free trial is now active! You have restricted access to basic features during the trial period.</p>`,
+    trial_ending: `<p>Your 24-hour trial is ending soon. Upgrade now to get full access to all features and continue your diplomatic journey.</p>`,
     trial_expired: `<p>Your free trial has expired. Upgrade to a paid plan to regain full access to DiplomatiQ's features and continue your progress.</p>`,
     upgraded: `<p>Great news! Your subscription has been upgraded. You now have access to additional features and resources.</p>`,
     downgraded: `<p>Your subscription plan has changed. Some features may be limited based on your new plan.</p>`,

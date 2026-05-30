@@ -7,7 +7,7 @@ import {
   Star, Trophy, Target, Shield, GraduationCap, Crown,
   Landmark, Gavel, FileSearch, Brain, Building2,
   Heart, ArrowRight, CheckCircle2, Menu, X,
-  CalendarDays, Monitor, Layers, Cpu, LucideIcon, ArrowUpRight,
+  Layers, Cpu, LucideIcon, ArrowUpRight,
   FileText, Mic, BookOpen, Scale, Siren, Handshake, Clock
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
@@ -1001,17 +1001,14 @@ function PlatformSection({ onGetStarted }: { onGetStarted: () => void }) {
             animate={isInView ? { opacity: 1, x: 0 } : {}}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <Badge className="mb-4 bg-[#0A7E8C]/15 text-[#0A7E8C] border-[#0A7E8C]/25 hover:bg-[#0A7E8C]/20">
-              <Monitor className="w-3 h-3 mr-1" /> Live Demo
-            </Badge>
             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
-              See DiplomatiQ in Action
+              Start Your Diplomatic Journey
             </h2>
             <p className="text-white/65 text-lg leading-relaxed mb-8">
               Experience the platform that is transforming how delegates train, teachers assess, and schools compete. No credit card required.
             </p>
 
-            <div className="space-y-4 mb-8">
+            <div className="mb-8">
               <Button
                 size="lg"
                 className="w-full sm:w-auto bg-[#D4A843] text-[#0D1B2A] hover:bg-[#E0BC6A] font-semibold px-8 h-12 shadow-lg shadow-[#D4A843]/20"
@@ -1020,20 +1017,11 @@ function PlatformSection({ onGetStarted }: { onGetStarted: () => void }) {
                 Start Free Trial
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full sm:w-auto border-white/20 text-white/90 hover:bg-white/[0.06] hover:border-[#D4A843]/40 font-medium px-8 h-12"
-                onClick={() => { window.location.href = '/auth/register' }}
-              >
-                Book a Demo
-                <CalendarDays className="w-4 h-4 ml-2" />
-              </Button>
             </div>
 
             <div className="flex flex-wrap items-center gap-4 text-sm text-white/60">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#0A7E8C]" /> No credit card required</span>
-              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#0A7E8C]" /> 14-day free trial</span>
+              <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#0A7E8C]" /> 24-hour free trial</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#0A7E8C]" /> Cancel anytime</span>
             </div>
           </motion.div>

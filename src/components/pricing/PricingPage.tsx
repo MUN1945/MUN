@@ -46,7 +46,7 @@ const STUDENT_PLANS = [
       'Performance analytics',
       'Committee Hub access',
       'Real-time chat',
-      '14-day free trial',
+      '24-hour free trial',
     ],
     borderColor: 'border-[#0D7377]/30',
     accentColor: '#0D7377',
@@ -71,7 +71,7 @@ const TEACHER_PLANS = [
       'Custom assessments',
       'Export & reporting',
       'Priority support',
-      '14-day free trial',
+      '24-hour free trial',
     ],
     borderColor: 'border-[#D4A843]/30',
     accentColor: '#D4A843',
@@ -218,7 +218,7 @@ const COMPARISON_FEATURES: PlanFeature[] = [
 const FAQ_ITEMS = [
   {
     question: 'Is there a free trial available?',
-    answer: 'Yes! Both Delegate Pro and Director Pro plans come with a 14-day free trial. No credit card required. You can explore all premium features before committing.',
+    answer: 'Yes! Both Delegate Pro and Director Pro plans come with a 24-hour free trial. No credit card required. You get restricted access to basic features during the trial period.',
   },
   {
     question: 'Can I switch plans at any time?',
@@ -226,7 +226,7 @@ const FAQ_ITEMS = [
   },
   {
     question: 'What happens when my free trial ends?',
-    answer: 'When your trial ends, you\'ll be automatically moved to the free Observer plan. No charges will be made unless you explicitly choose to subscribe. We\'ll send you a reminder before your trial expires.',
+    answer: 'When your 24-hour trial ends, you\'ll be automatically moved to the free Observer plan with limited access. No charges will be made unless you explicitly choose to subscribe. We\'ll send you a reminder before your trial expires.',
   },
   {
     question: 'Do you offer discounts for annual billing?',
