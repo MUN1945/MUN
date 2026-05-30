@@ -18,6 +18,7 @@ declare module "next-auth" {
   interface User {
     role: string
     munRole?: string
+    avatar?: string
     schoolId?: string
     subscriptionTier: string
     subscriptionStatus: string

@@ -136,9 +136,10 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
     onMobileClose?.()
   }
 
-  const handleLogout = () => {
-    logout()
+  const handleLogout = async () => {
+    await logout()
     navigate('landing')
+    window.location.href = '/'
   }
 
   return (

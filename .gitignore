@@ -57,3 +57,9 @@ download/
 
 # upload
 upload/
+
+# agent context
+agent-ctx/
+
+# skills
+skills/

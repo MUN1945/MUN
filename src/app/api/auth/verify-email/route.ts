@@ -1,9 +1,68 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
+import { randomUUID } from "crypto"
+import { sendVerificationEmail } from "@/lib/email"
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
+
+    // Handle "resend" action — create a new verification token and send email
+    if (body.action === "resend" && body.email) {
+      const email = (body.email as string).toLowerCase().trim()
+
+      if (!email) {
+        return NextResponse.json(
+          { error: "Email is required for resend." },
+          { status: 400 }
+        )
+      }
+
+      const user = await db.user.findUnique({ where: { email } })
+
+      if (!user) {
+        // Always return success to prevent email enumeration
+        return NextResponse.json({
+          message: "If an account exists with this email, a verification link has been sent.",
+        })
+      }
+
+      if (user.emailVerified) {
+        return NextResponse.json({
+          message: "Email is already verified.",
+        })
+      }
+
+      // Invalidate any existing verification tokens for this email
+      await db.emailVerificationToken.updateMany({
+        where: { email, used: false },
+        data: { used: true },
+      })
+
+      // Generate new verification token
+      const token = randomUUID()
+      const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours
+
+      await db.emailVerificationToken.create({
+        data: { email, token, expiresAt },
+      })
+
+      const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"}/auth/verify-email?token=${token}`
+
+      try {
+        await sendVerificationEmail(email, user.name, verificationUrl)
+      } catch (emailError) {
+        console.error("[VERIFY EMAIL] Failed to send verification email:", emailError)
+      }
+
+      console.log(`[VERIFY EMAIL] Verification link for ${email}: ${verificationUrl}`)
+
+      return NextResponse.json({
+        message: "If an account exists with this email, a verification link has been sent.",
+      })
+    }
+
+    // Handle token verification
     const { token } = body
 
     if (!token || typeof token !== 'string') {

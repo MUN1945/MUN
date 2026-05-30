@@ -33,47 +33,98 @@ async function main() {
   await prisma.school.deleteMany()
 
   // ============================
-  // SEED SCHOOLS
+  // SEED SCHOOLS (50+ UAE schools across all 7 emirates)
   // ============================
   console.log("📦 Seeding schools...")
-  const school1 = await prisma.school.create({
-    data: {
-      name: "American School of Dubai",
-      location: "Al Barsha, Dubai",
-      city: "Dubai",
-      country: "UAE",
-      website: "https://asdubai.org",
-      contactEmail: "info@asdubai.org",
-      studentCount: 120,
-      isActive: true,
-    },
-  })
 
-  const school2 = await prisma.school.create({
-    data: {
-      name: "GEMS Wellington International School",
-      location: "Al Sufouh, Dubai",
-      city: "Dubai",
-      country: "UAE",
-      website: "https://gemswellington.com",
-      contactEmail: "info@gemswellington.com",
-      studentCount: 85,
-      isActive: true,
-    },
-  })
+  const schoolsData = [
+    // ---- Abu Dhabi (10 schools) ----
+    { name: "American Community School Abu Dhabi", officialName: "American Community School Abu Dhabi", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: "https://acs.sch.ae", schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 150, isVerified: true, munProgramActive: true, munProgramSize: 35 },
+    { name: "British School Al Khubairat", officialName: "The British School Al Khubairat", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: "https://bsak.org", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 180, isVerified: true, munProgramActive: true, munProgramSize: 40 },
+    { name: "Abu Dhabi International School", officialName: "Abu Dhabi International School", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: "https://adis.sch.ae", schoolType: "PRIVATE", curriculum: "AMERICAN", studentCount: 95, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+    { name: "Al Ain English Speaking School", officialName: "Al Ain English Speaking School", city: "Al Ain", emirate: "Abu Dhabi", country: "UAE", website: "https://aaess.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 110, isVerified: true, munProgramActive: true, munProgramSize: 25 },
+    { name: "GEMS American Academy Abu Dhabi", officialName: "GEMS American Academy Abu Dhabi", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: "https://gemsaa.com", schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 200, isVerified: true, munProgramActive: true, munProgramSize: 45 },
+    { name: "Khalifa City School", officialName: "Khalifa City School", city: "Khalifa City", emirate: "Abu Dhabi", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "BRITISH", studentCount: 80, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+    { name: "Al Bateen Scientific Private School", officialName: "Al Bateen Scientific Private School", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "NATIONAL", studentCount: 70, isVerified: false, munProgramActive: true, munProgramSize: 20 },
+    { name: "Al Mawaheb School", officialName: "Al Mawaheb School", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: null, schoolType: "PUBLIC", curriculum: "NATIONAL", studentCount: 60, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+    { name: "Raha International School", officialName: "Raha International School", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: "https://raha.sch.ae", schoolType: "INTERNATIONAL", curriculum: "IB", studentCount: 160, isVerified: true, munProgramActive: true, munProgramSize: 30 },
+    { name: "Brighton College Abu Dhabi", officialName: "Brighton College Abu Dhabi", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: "https://brightoncollegeabudhabi.ae", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 130, isVerified: true, munProgramActive: false, munProgramSize: 0 },
 
-  const school3 = await prisma.school.create({
-    data: {
-      name: "Abu Dhabi International School",
-      location: "Khalidiya, Abu Dhabi",
-      city: "Abu Dhabi",
-      country: "UAE",
-      website: "https://adis.sch.ae",
-      contactEmail: "info@adis.sch.ae",
-      studentCount: 95,
-      isActive: true,
-    },
-  })
+    // ---- Dubai (14 schools) ----
+    { name: "American School of Dubai", officialName: "American School of Dubai", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://asdubai.org", schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 120, isVerified: true, munProgramActive: true, munProgramSize: 30 },
+    { name: "GEMS Wellington International School", officialName: "GEMS Wellington International School", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://gemswellington.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 85, isVerified: true, munProgramActive: true, munProgramSize: 25 },
+    { name: "Dubai International Academy", officialName: "Dubai International Academy", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://diadubai.com", schoolType: "INTERNATIONAL", curriculum: "IB", studentCount: 170, isVerified: true, munProgramActive: true, munProgramSize: 50 },
+    { name: "Jumeirah College", officialName: "Jumeirah College", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://gemseducation.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 100, isVerified: true, munProgramActive: true, munProgramSize: 30 },
+    { name: "Repton School Dubai", officialName: "Repton School Dubai", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://reptondubai.org", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 140, isVerified: true, munProgramActive: true, munProgramSize: 35 },
+    { name: "Dubai College", officialName: "Dubai College", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://dubaicollege.org", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 90, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+    { name: "GEMS Dubai American Academy", officialName: "GEMS Dubai American Academy", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://gemsdaa.com", schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 160, isVerified: true, munProgramActive: true, munProgramSize: 40 },
+    { name: "Deira International School", officialName: "Deira International School", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://disdubai.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 110, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+    { name: "Nord Anglia International School Dubai", officialName: "Nord Anglia International School Dubai", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://nasdubai.nae.school", schoolType: "INTERNATIONAL", curriculum: "IB", studentCount: 130, isVerified: true, munProgramActive: true, munProgramSize: 30 },
+    { name: "Kings' School Dubai", officialName: "Kings' School Dubai", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://kingsdubai.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 95, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+    { name: "Swiss International Scientific School Dubai", officialName: "Swiss International Scientific School Dubai", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://sisd.ae", schoolType: "INTERNATIONAL", curriculum: "IB", studentCount: 105, isVerified: true, munProgramActive: true, munProgramSize: 25 },
+    { name: "Hartland International School", officialName: "Hartland International School", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://hartlandschool.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 88, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+    { name: "GEMS Modern Academy", officialName: "GEMS Modern Academy", city: "Dubai", emirate: "Dubai", country: "UAE", website: "https://gemsmodern.com", schoolType: "INTERNATIONAL", curriculum: "IB", studentCount: 145, isVerified: true, munProgramActive: true, munProgramSize: 35 },
+    { name: "Cranleigh Abu Dhabi", officialName: "Cranleigh Abu Dhabi", city: "Abu Dhabi", emirate: "Abu Dhabi", country: "UAE", website: "https://cranleigh.ae", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 115, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+
+    // ---- Sharjah (7 schools) ----
+    { name: "Sharjah English School", officialName: "Sharjah English School", city: "Sharjah", emirate: "Sharjah", country: "UAE", website: "https://sharjahenglishschool.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 90, isVerified: true, munProgramActive: true, munProgramSize: 25 },
+    { name: "GEMS Millennium School Sharjah", officialName: "GEMS Millennium School Sharjah", city: "Sharjah", emirate: "Sharjah", country: "UAE", website: "https://gemsms.com", schoolType: "INTERNATIONAL", curriculum: "IB", studentCount: 120, isVerified: true, munProgramActive: true, munProgramSize: 30 },
+    { name: "Victoria International School Sharjah", officialName: "Victoria International School Sharjah", city: "Sharjah", emirate: "Sharjah", country: "UAE", website: "https://viss.ae", schoolType: "INTERNATIONAL", curriculum: "IB", studentCount: 100, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+    { name: "Delta English School Sharjah", officialName: "Delta English School Sharjah", city: "Sharjah", emirate: "Sharjah", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "AMERICAN", studentCount: 65, isVerified: false, munProgramActive: true, munProgramSize: 15 },
+    { name: "Al Maarif International School", officialName: "Al Maarif International School", city: "Sharjah", emirate: "Sharjah", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "NATIONAL", studentCount: 55, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+    { name: "International School of Choueifat Sharjah", officialName: "International School of Choueifat – Sharjah", city: "Sharjah", emirate: "Sharjah", country: "UAE", website: "https://iscsharjah.sabis.net", schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 85, isVerified: true, munProgramActive: true, munProgramSize: 20 },
+    { name: "Sharjah American International School", officialName: "Sharjah American International School", city: "Sharjah", emirate: "Sharjah", country: "UAE", website: null, schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 75, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+
+    // ---- Ajman (3 schools) ----
+    { name: "Al Shola Private School Ajman", officialName: "Al Shola Private School Ajman", city: "Ajman", emirate: "Ajman", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "NATIONAL", studentCount: 50, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+    { name: "City School Ajman", officialName: "City School Ajman", city: "Ajman", emirate: "Ajman", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "BRITISH", studentCount: 60, isVerified: false, munProgramActive: true, munProgramSize: 15 },
+    { name: "Woodlem Park School Ajman", officialName: "Woodlem Park School Ajman", city: "Ajman", emirate: "Ajman", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "AMERICAN", studentCount: 55, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+
+    // ---- Ras Al Khaimah (4 schools) ----
+    { name: "RAK Academy", officialName: "Ras Al Khaimah Academy", city: "Ras Al Khaimah", emirate: "Ras Al Khaimah", country: "UAE", website: "https://rakacademy.com", schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 110, isVerified: true, munProgramActive: true, munProgramSize: 20 },
+    { name: "International School of Choueifat RAK", officialName: "International School of Choueifat – Ras Al Khaimah", city: "Ras Al Khaimah", emirate: "Ras Al Khaimah", country: "UAE", website: "https://iscrak.sabis.net", schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 80, isVerified: true, munProgramActive: false, munProgramSize: 0 },
+    { name: "English Speaking School RAK", officialName: "English Speaking School Ras Al Khaimah", city: "Ras Al Khaimah", emirate: "Ras Al Khaimah", country: "UAE", website: null, schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 70, isVerified: false, munProgramActive: true, munProgramSize: 15 },
+    { name: "RAK English Academy", officialName: "RAK English Academy", city: "Ras Al Khaimah", emirate: "Ras Al Khaimah", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "BRITISH", studentCount: 55, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+
+    // ---- Fujairah (3 schools) ----
+    { name: "Fujairah Private Academy", officialName: "Fujairah Private Academy", city: "Fujairah", emirate: "Fujairah", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "BRITISH", studentCount: 75, isVerified: true, munProgramActive: true, munProgramSize: 15 },
+    { name: "Diyar International Private School Fujairah", officialName: "Diyar International Private School Fujairah", city: "Fujairah", emirate: "Fujairah", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "AMERICAN", studentCount: 65, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+    { name: "Fujairah International Academy", officialName: "Fujairah International Academy", city: "Fujairah", emirate: "Fujairah", country: "UAE", website: null, schoolType: "INTERNATIONAL", curriculum: "BRITISH", studentCount: 50, isVerified: false, munProgramActive: true, munProgramSize: 10 },
+
+    // ---- Umm Al Quwain (3 schools) ----
+    { name: "Umm Al Quwain International School", officialName: "Umm Al Quwain International School", city: "Umm Al Quwain", emirate: "Umm Al Quwain", country: "UAE", website: null, schoolType: "INTERNATIONAL", curriculum: "AMERICAN", studentCount: 60, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+    { name: "Al Shola School UAQ", officialName: "Al Shola School Umm Al Quwain", city: "Umm Al Quwain", emirate: "Umm Al Quwain", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "NATIONAL", studentCount: 45, isVerified: false, munProgramActive: false, munProgramSize: 0 },
+    { name: "UAQ British Academy", officialName: "UAQ British Academy", city: "Umm Al Quwain", emirate: "Umm Al Quwain", country: "UAE", website: null, schoolType: "PRIVATE", curriculum: "BRITISH", studentCount: 55, isVerified: false, munProgramActive: true, munProgramSize: 10 },
+  ]
+
+  const createdSchools = await Promise.all(
+    schoolsData.map((s) =>
+      prisma.school.create({
+        data: {
+          name: s.name,
+          officialName: s.officialName,
+          city: s.city,
+          emirate: s.emirate,
+          country: s.country,
+          website: s.website,
+          schoolType: s.schoolType as never,
+          curriculum: s.curriculum as never,
+          studentCount: s.studentCount,
+          isActive: true,
+          isVerified: s.isVerified,
+          verificationStatus: s.isVerified ? "APPROVED" : "PENDING",
+          munProgramActive: s.munProgramActive,
+          munProgramSize: s.munProgramSize,
+          source: "ADMIN_CREATED",
+        },
+      })
+    )
+  )
+
+  // Keep references to first 3 schools for existing seed data compatibility
+  const school1 = createdSchools[0]  // American Community School Abu Dhabi
+  const school2 = createdSchools[10] // American School of Dubai
+  const school3 = createdSchools[12] // Dubai International Academy
 
   // ============================
   // SEED BADGES (20+ across categories)
@@ -3644,11 +3695,100 @@ Based on feedback and analysis:
     },
   })
 
+  // ============================
+  // SEED FOUNDER ACCOUNT
+  // ============================
+  console.log("👑 Seeding Founder account...")
+  const founderPassword = await hash("DiplomatiQ2026!Founder", 12)
+  const founderUser = await prisma.user.create({
+    data: {
+      email: "modelunitednations45@gmail.com",
+      name: "DiplomatiQ Founder",
+      password: founderPassword,
+      role: "FOUNDER",
+      munRole: "SECRETARY_GENERAL",
+      country: "UAE",
+      city: "Dubai",
+      schoolId: school1.id,
+      isActive: true,
+      emailVerified: true,
+      // Create delegate profile with high XP
+      delegateProfile: {
+        create: {
+          xp: 10000,
+          level: "SECRETARY_GENERAL",
+          streak: 365,
+          longestStreak: 365,
+          conferencesAttended: 50,
+          committeesServed: 30,
+          awardsReceived: 20,
+          resolutionsWritten: 40,
+          speechesDelivered: 100,
+          lastActivityDate: new Date(),
+        },
+      },
+      // Create subscription with SCHOOL_ENTERPRISE tier
+      subscription: {
+        create: {
+          tier: "SCHOOL_ENTERPRISE",
+          status: "ACTIVE",
+          currentPeriodStart: new Date(),
+          currentPeriodEnd: new Date(new Date().setMonth(new Date().getMonth() + 12)),
+        },
+      },
+    },
+  })
+
+  // ============================
+  // SEED SUPER_ADMIN ACCOUNT
+  // ============================
+  console.log("🛡️ Seeding Super Admin account...")
+  const superAdminPassword = await hash("DiplomatiQ2026!SuperAdmin", 12)
+  await prisma.user.create({
+    data: {
+      email: "superadmin@diplomatiq.io",
+      name: "Platform Administrator",
+      password: superAdminPassword,
+      role: "SUPER_ADMIN",
+      country: "UAE",
+      city: "Dubai",
+      isActive: true,
+      emailVerified: true,
+      // Create delegate profile
+      delegateProfile: {
+        create: {
+          xp: 5000,
+          level: "SECRETARY_GENERAL",
+          streak: 100,
+          longestStreak: 200,
+          conferencesAttended: 20,
+          committeesServed: 15,
+          awardsReceived: 10,
+          resolutionsWritten: 20,
+          speechesDelivered: 50,
+          lastActivityDate: new Date(),
+        },
+      },
+      // Create subscription
+      subscription: {
+        create: {
+          tier: "SCHOOL_ENTERPRISE",
+          status: "ACTIVE",
+          currentPeriodStart: new Date(),
+          currentPeriodEnd: new Date(new Date().setMonth(new Date().getMonth() + 12)),
+        },
+      },
+    },
+  })
+
   console.log("✅ Seeding completed successfully!")
   console.log("📋 Sample accounts:")
+  console.log("   Founder: modelunitednations45@gmail.com / DiplomatiQ2026!Founder")
+  console.log("   Super Admin: superadmin@diplomatiq.io / DiplomatiQ2026!SuperAdmin")
   console.log("   Admin: admin@diplomatiq.org / Admin@2026")
   console.log("   Teacher: teacher@school.ae / Teacher@2026")
   console.log("   Student: fatima@school.ae / Student@2026")
+  console.log(`🏫 Schools seeded: ${createdSchools.length} schools across 7 emirates`)
 }
 
 main()

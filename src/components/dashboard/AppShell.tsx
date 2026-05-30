@@ -256,7 +256,7 @@ export default function AppShell() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem
                   className="text-red-500 focus:text-red-500"
-                  onClick={() => { logout(); useNavStore.getState().navigate('landing') }}
+                  onClick={async () => { await logout(); useNavStore.getState().navigate('landing'); window.location.href = '/' }}
                 >
                   Sign Out
                 </DropdownMenuItem>

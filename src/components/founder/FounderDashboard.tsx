@@ -951,7 +951,7 @@ function TeacherManagement({ teachers }: { teachers: TeacherData[] }) {
       t.name.toLowerCase().includes(search.toLowerCase()) ||
       t.school.toLowerCase().includes(search.toLowerCase())
     )
-  }, [search])
+  }, [search, teachers])
 
   return (
     <motion.div variants={sectionVariants} initial="hidden" animate="visible" className="space-y-4">
@@ -1013,7 +1013,7 @@ function StudentManagement({ students }: { students: StudentData[] }) {
       s.name.toLowerCase().includes(search.toLowerCase()) ||
       s.school.toLowerCase().includes(search.toLowerCase())
     )
-  }, [search])
+  }, [search, students])
 
   return (
     <motion.div variants={sectionVariants} initial="hidden" animate="visible" className="space-y-4">

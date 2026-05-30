@@ -7,7 +7,8 @@ import {
   Star, Trophy, Target, Shield, GraduationCap, Crown,
   Landmark, Gavel, FileSearch, Brain, Building2,
   Heart, ArrowRight, CheckCircle2, Menu, X,
-  CalendarDays, Monitor, Layers, Cpu, LucideIcon, ArrowUpRight
+  CalendarDays, Monitor, Layers, Cpu, LucideIcon, ArrowUpRight,
+  FileText, Mic, BookOpen, Scale, Siren, Handshake, Clock
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -157,10 +158,10 @@ function Navbar({ onGetStarted, onSignIn }: { onGetStarted: () => void; onSignIn
 
   const navLinks = [
     { label: 'Features', href: '#features' },
-    { label: 'Assessment', href: '#academy' },
+    { label: 'Assessment', href: '#assessment' },
+    { label: 'Training', href: '#training' },
     { label: 'Pricing', href: '#pricing' },
     { label: 'Schools', href: '#schools' },
-    { label: 'Training', href: '#training' },
   ]
 
   return (
@@ -473,9 +474,7 @@ function AssessmentShowcase({ onGetStarted }: { onGetStarted: () => void }) {
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
   return (
-    <>
-      <div id="training" className="relative" />
-      <section id="academy" className="relative py-24 md:py-32 bg-[#0A1525]" ref={ref}>
+    <section id="assessment" className="relative py-24 md:py-32 bg-[#0A1525]" ref={ref}>
       <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A843]/10 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -586,7 +585,170 @@ function AssessmentShowcase({ onGetStarted }: { onGetStarted: () => void }) {
         </div>
       </div>
     </section>
-    </>
+  )
+}
+
+// ============================================================
+// TRAINING SECTION
+// ============================================================
+
+const TRAINING_COURSES = [
+  {
+    title: 'Parliamentary Procedure & Robert\'s Rules',
+    difficulty: 'Beginner',
+    icon: Gavel,
+    desc: 'Master the rules of order, motions, and debate procedures that govern every MUN committee session.',
+    duration: '4 hours',
+    color: '#0A7E8C',
+  },
+  {
+    title: 'Resolution Writing Workshop',
+    difficulty: 'Intermediate',
+    icon: FileText,
+    desc: 'Learn to draft, format, and amend resolutions that persuade committees and attract sponsors.',
+    duration: '5 hours',
+    color: '#D4A843',
+  },
+  {
+    title: 'Crisis Committee Protocols',
+    difficulty: 'Advanced',
+    icon: Siren,
+    desc: 'Navigate fast-paced crisis scenarios with improvisation, directive writing, and real-time decision-making.',
+    duration: '6 hours',
+    color: '#EF4444',
+  },
+  {
+    title: 'Diplomatic Negotiation Strategies',
+    difficulty: 'Intermediate',
+    icon: Handshake,
+    desc: 'Build coalitions, manage blocs, and negotiate win-win outcomes across diverse delegations.',
+    duration: '4.5 hours',
+    color: '#D4A843',
+  },
+  {
+    title: 'Public Speaking & Oratory Skills',
+    difficulty: 'Intermediate',
+    icon: Mic,
+    desc: 'Develop commanding presence, persuasive rhetoric, and confident delivery for committee speeches.',
+    duration: '3.5 hours',
+    color: '#D4A843',
+  },
+  {
+    title: 'Research & Position Paper Writing',
+    difficulty: 'Beginner',
+    icon: BookOpen,
+    desc: 'Conduct credible research, evaluate sources, and write position papers that demonstrate expertise.',
+    duration: '5 hours',
+    color: '#0A7E8C',
+  },
+  {
+    title: 'Committee Chair Training',
+    difficulty: 'Advanced',
+    icon: Scale,
+    desc: 'Lead committee sessions with authority: manage debate flow, rule on points, and maintain decorum.',
+    duration: '6.5 hours',
+    color: '#EF4444',
+  },
+  {
+    title: 'Secretary-General Leadership Program',
+    difficulty: 'Advanced',
+    icon: Crown,
+    desc: 'Executive leadership: oversee conferences, manage secretariat teams, and set the strategic vision.',
+    duration: '8 hours',
+    color: '#EF4444',
+  },
+]
+
+function TrainingSection({ onGetStarted }: { onGetStarted: () => void }) {
+  const ref = useRef(null)
+  const isInView = useInView(ref, { once: true, margin: '-100px' })
+
+  const difficultyBadge = (difficulty: string) => {
+    const config: Record<string, string> = {
+      Beginner: 'bg-[#0A7E8C]/15 text-[#0A7E8C] border-[#0A7E8C]/25',
+      Intermediate: 'bg-[#D4A843]/15 text-[#D4A843] border-[#D4A843]/25',
+      Advanced: 'bg-red-500/15 text-red-400 border-red-500/25',
+    }
+    return config[difficulty] || config.Beginner
+  }
+
+  return (
+    <section id="training" className="relative py-24 md:py-32 bg-[#0D1B2A]" ref={ref}>
+      <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-[#D4A843]/10 to-transparent" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          className="text-center mb-16"
+          initial={{ opacity: 0, y: 30 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.8 }}
+        >
+          <Badge className="mb-4 bg-[#D4A843]/10 text-[#D4A843] border-[#D4A843]/20 hover:bg-[#D4A843]/15">
+            <GraduationCap className="w-3 h-3 mr-1" /> DiplomatiQ Academy
+          </Badge>
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
+            Train Like a Diplomat
+          </h2>
+          <p className="mt-4 text-white/55 text-lg max-w-2xl mx-auto">
+            8 immersive courses, 40+ lessons covering parliamentary procedure, resolution writing, crisis management, negotiation, public speaking, research methodology, chair training, and secretary-general leadership.
+          </p>
+        </motion.div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+          {TRAINING_COURSES.map((course, i) => {
+            const CourseIcon = course.icon
+            return (
+              <motion.div
+                key={course.title}
+                initial={{ opacity: 0, y: 30 }}
+                animate={isInView ? { opacity: 1, y: 0 } : {}}
+                transition={{ duration: 0.5, delay: i * 0.08 }}
+              >
+                <Card className="bg-white/[0.03] border-white/[0.06] backdrop-blur-sm hover:bg-white/[0.06] hover:border-[#D4A843]/20 transition-all duration-500 group cursor-pointer h-full">
+                  <CardHeader className="pb-2">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                        <CourseIcon className="w-5 h-5 text-[#D4A843]" />
+                      </div>
+                      <Badge className={`text-[10px] px-2 py-0.5 border ${difficultyBadge(course.difficulty)}`}>
+                        {course.difficulty}
+                      </Badge>
+                    </div>
+                    <CardTitle className="text-white text-sm font-bold leading-snug">{course.title}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="pb-3">
+                    <p className="text-white/50 text-xs leading-relaxed">{course.desc}</p>
+                  </CardContent>
+                  <CardFooter className="pt-0">
+                    <div className="flex items-center gap-1.5 text-white/35 text-xs">
+                      <Clock className="w-3 h-3" />
+                      <span>{course.duration}</span>
+                    </div>
+                  </CardFooter>
+                </Card>
+              </motion.div>
+            )
+          })}
+        </div>
+
+        {/* CTA */}
+        <motion.div
+          className="mt-12 text-center"
+          initial={{ opacity: 0, y: 15 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6, delay: 0.8 }}
+        >
+          <Button
+            size="lg"
+            className="bg-[#D4A843] text-[#0D1B2A] hover:bg-[#E0BC6A] font-semibold px-8 h-12 shadow-lg shadow-[#D4A843]/20"
+            onClick={onGetStarted}
+          >
+            Start Learning
+            <ArrowRight className="w-4 h-4 ml-2" />
+          </Button>
+        </motion.div>
+      </div>
+    </section>
   )
 }
 
@@ -889,7 +1051,7 @@ function DemoSection({ onGetStarted }: { onGetStarted: () => void }) {
 function Footer({ onNavigate }: { onNavigate: () => void }) {
   const platformLinks = [
     { label: 'Features', href: '#features' },
-    { label: 'Assessment', href: '#academy' },
+    { label: 'Assessment', href: '#assessment' },
     { label: 'Training', href: '#training' },
     { label: 'Schools', href: '#schools' },
     { label: 'Pricing', href: '#pricing' },
@@ -1023,8 +1185,9 @@ function LandingSection() {
         <HeroSection onGetStarted={() => navigateToAuth('/auth/register')} />
         <FeaturesSection />
         <AssessmentShowcase onGetStarted={() => navigateToAuth('/auth/register')} />
+        <TrainingSection onGetStarted={() => navigateToAuth('/auth/register')} />
         <PricingPreview onGetStarted={(plan) => navigateToAuth(plan ? `/auth/register?plan=${plan}` : '/auth/register')} />
-        <DemoSection onGetStarted={() => navigateToAuth('/auth/register?role=SCHOOL_ADMIN')} />
+        <DemoSection onGetStarted={() => navigateToAuth('/auth/register')} />
         <Footer onNavigate={() => navigateToAuth('/auth/register')} />
       </div>
     </div>

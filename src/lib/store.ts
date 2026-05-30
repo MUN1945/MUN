@@ -224,7 +224,7 @@ interface AuthState {
 interface AuthActions {
   login: (email: string, password: string) => Promise<void>
   register: (data: RegisterData) => Promise<void>
-  logout: () => void
+  logout: () => Promise<void>
   setShowAuthModal: (show: boolean) => void
   clearError: () => void
   checkSession: () => Promise<void>
@@ -359,11 +359,19 @@ export const useAuthStore = create<AuthState & AuthActions>((set) => ({
     }
   },
 
-  logout: () => set({
-    user: null,
-    isAuthenticated: false,
-    error: null,
-  }),
+  logout: async () => {
+    try {
+      // Properly destroy the NextAuth session on the server
+      await fetch('/api/auth/signout', { method: 'POST' })
+    } catch (error) {
+      console.error('[AUTH] Failed to sign out from NextAuth:', error)
+    }
+    set({
+      user: null,
+      isAuthenticated: false,
+      error: null,
+    })
+  },
 
   setShowAuthModal: (show) => set({ showAuthModal: show }),
   clearError: () => set({ error: null }),

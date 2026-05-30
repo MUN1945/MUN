@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import { db } from "@/lib/db"
 import { randomUUID } from "crypto"
+import { sendPasswordResetEmail } from "@/lib/email"
 
 // Simple in-memory rate limiter: 1 request per email per 5 minutes
 const rateLimitMap = new Map<string, { lastRequest: number }>()
@@ -75,9 +76,14 @@ export async function POST(request: NextRequest) {
         },
       })
 
-      // In production, send email. For now, log to console.
+      // Send password reset email
       const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/reset-password?token=${token}`
-      console.log(`[PASSWORD RESET] Reset link for ${normalizedEmail}: ${resetUrl}`)
+      try {
+        await sendPasswordResetEmail(normalizedEmail, user.name, resetUrl)
+      } catch (emailError) {
+        console.error("[PASSWORD RESET] Failed to send email:", emailError)
+      }
+      console.log(`[PASSWORD RESET] Reset link generated for ${normalizedEmail}: ${resetUrl}`)
     }
 
     // Update rate limiter

@@ -5,7 +5,7 @@ import { db } from "@/lib/db"
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { email, password, name, role, schoolId, phone, country, city } = body
+    const { email, password, name, role, schoolId, schoolName, phone, country, city } = body
 
     // Validation
     if (!email || !password || !name) {
@@ -51,6 +51,38 @@ export async function POST(request: NextRequest) {
     const validRoles = ["STUDENT", "TEACHER", "SCHOOL_ADMIN"]
     const userRole = validRoles.includes(role) ? role : "STUDENT"
 
+    // Determine school: if schoolName is provided (custom school), create a new school record
+    let resolvedSchoolId = schoolId || null
+
+    if (!resolvedSchoolId && schoolName && typeof schoolName === "string" && schoolName.trim()) {
+      // Check if school already exists by name (case-insensitive)
+      const existingSchool = await db.school.findFirst({
+        where: {
+          name: { equals: schoolName.trim(), mode: "insensitive" },
+        },
+      })
+
+      if (existingSchool) {
+        // Use the existing school
+        resolvedSchoolId = existingSchool.id
+      } else {
+        // Create a new school record for this custom school name
+        const newSchool = await db.school.create({
+          data: {
+            name: schoolName.trim(),
+            officialName: schoolName.trim(),
+            city: city || "Unknown",
+            country: country || "UAE",
+            source: "SELF_REGISTERED",
+            verificationStatus: "PENDING",
+            isVerified: false,
+            isActive: true,
+          },
+        })
+        resolvedSchoolId = newSchool.id
+      }
+    }
+
     // Create user with delegate profile and trial subscription in a transaction
     const user = await db.user.create({
       data: {
@@ -61,7 +93,7 @@ export async function POST(request: NextRequest) {
         phone: phone || null,
         country: country || "UAE",
         city: city || null,
-        schoolId: schoolId || null,
+        schoolId: resolvedSchoolId,
         isActive: true,
         emailVerified: false,
         // Create delegate profile for all new users
