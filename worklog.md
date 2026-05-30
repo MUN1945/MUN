@@ -794,3 +794,28 @@ Work Log:
 
 Files Modified:
 - /home/z/my-project/src/app/page.tsx
+
+---
+Task ID: deployment-fix
+Agent: Main Agent
+Task: Fix Vercel deployment failure and configure production environment
+
+Work Log:
+- Diagnosed root cause: vercel.json referenced @secret_name syntax for env vars, but no secrets existed in Vercel
+- The error "Environment Variable DATABASE_URL references Secret database_url, which does not exist" was caused by `"DATABASE_URL": "@database_url"` in vercel.json
+- Fixed vercel.json: removed all @secret references, simplified build command
+- Fixed next.config.ts: removed output: "standalone" (not needed for Vercel)
+- Set all 5 production environment variables via Vercel CLI: DATABASE_URL, NEXTAUTH_SECRET, NEXTAUTH_URL, NEXT_PUBLIC_APP_URL, NEXT_PUBLIC_APP_NAME
+- Also set all 5 variables for preview environment
+- Pushed fixes to GitHub which triggered automatic Vercel deployment
+- Verified 3 successful production deployments (all Ready status)
+- Confirmed homepage, auth pages, API endpoints all return HTTP 200
+- Confirmed database connectivity: API returns 3 schools from Neon PostgreSQL
+- Confirmed auth system functional: CSRF tokens generated, login flow operational
+
+Stage Summary:
+- Root cause: Missing Vercel environment variables (referenced as @secrets that didn't exist)
+- Fix: Set all env vars directly via Vercel CLI, simplified vercel.json
+- Production URL: https://mun-diplomatiq.vercel.app
+- All pages functional, database connected, auth working
+- Auto-deploy from GitHub is confirmed working
