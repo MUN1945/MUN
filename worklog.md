@@ -1,91 +1,92 @@
 ---
 Task ID: 1
 Agent: Main Agent
-Task: Full production readiness audit and implementation
+Task: Examine DiplomatiQ codebase state and create setup guide
 
 Work Log:
-- Conducted comprehensive codebase audit examining all 80+ source files
-- Identified 3 critical production blockers: Email, Stripe API keys, Founder account
-- Identified significant gaps: OAuth, school database (only 3 schools), Assessment/Training separation
-- Verified branding is clean - no third-party logos/credits visible to users
-- Confirmed database is connected to real Neon PostgreSQL with real data
+- Explored entire project structure (Next.js 16 + Prisma + NextAuth + Stripe + Resend)
+- Identified 27 Prisma models, 17 enums, comprehensive schema
+- Found Stripe code complete but keys unconfigured
+- Found Resend email code complete but API key placeholder
+- Found OAuth code complete but credentials placeholder
+- Found 44 UAE schools in seed data
+- Found branding issues (MUNified, MUNiQ, demo labels)
+- Created comprehensive 23-page PDF setup guide for absolute beginners
 
 Stage Summary:
-- Codebase is approximately 80% production-ready
-- Architecture is sound, database schema comprehensive (27 models, 17 enums)
-- Core modules (auth, assessments, training, conferences, research, gamification) all connect to real DB
-- Three critical blockers identified and addressed in subsequent tasks
+- Generated /home/z/my-project/download/DiplomatiQ_Production_Setup_Guide.pdf
+- Document covers: Stripe payments, Resend email, Vercel hosting, OAuth, GitHub
+- Includes step-by-step instructions, master checklist, troubleshooting, cost summary
 
 ---
-Task ID: 2-a
+Task ID: 2
 Agent: Subagent (full-stack-developer)
-Task: Implement Email Infrastructure with Resend and OAuth Authentication
+Task: Fix all branding issues across codebase
 
 Work Log:
-- Installed resend npm package
-- Created src/lib/email.ts with 5 email helper functions
-- Updated forgot-password, verify-email, and register API routes to send emails
-- Added GoogleProvider and GitHubProvider to NextAuth config
-- Implemented OAuth user creation with auto-registration and account linking
-- Updated sign-in page with OAuth buttons
-- Fixed logout function to call NextAuth signOut API
-- Added placeholder environment variables for OAuth and Resend
+- Fixed brand name from MUNiQ/MUNified to DiplomatiQ across AuthModal, Navbar, Sidebar, Footer
+- Changed package name from nextjs_tailwind_shadcn_ts to diplomatiq
+- Removed demo/sample/placeholder labels from Testimonials, Research, Leaderboard, Founder Dashboard
+- Replaced fake testimonials with "Join the Community" CTA section
+- Fixed social links from # to actual URLs
+- Added newsletter form handler
+- Updated year references to 2026
 
 Stage Summary:
-- Email infrastructure complete (code-ready, needs Resend API key)
-- OAuth providers configured (needs Google/GitHub OAuth app credentials)
-- Logout now properly destroys NextAuth server session
-
----
-Task ID: 2-b
-Agent: Subagent (full-stack-developer)
-Task: Expand School Database and Create Founder Account
-
-Work Log:
-- Expanded seed.ts from 3 to 44 real UAE schools across all 7 emirates
-- Added Founder account (modelunitednations45@gmail.com) with FOUNDER role
-- Added Super Admin account (superadmin@diplomatiq.io) with SUPER_ADMIN role
-- Added "Other School" option to registration page with custom school name input
-- Added "Request School Addition" dialog for unlisted schools
-- Updated register API route to handle custom school creation
-
-Stage Summary:
-- 44 schools seeded across Abu Dhabi, Dubai, Sharjah, Ajman, RAK, Fujairah, UAQ
-- Founder account confirmed in production DB: FOUNDER role, 10000 XP, SCHOOL_ENTERPRISE subscription
-- Super Admin account confirmed in production DB
-
----
-Task ID: 2-c
-Agent: Subagent (full-stack-developer)
-Task: Fix Landing Page Navigation and Auth Issues
-
-Work Log:
-- Separated Assessment and Training into distinct landing page sections
-- Created new Training section with 8 course cards
-- Fixed navbar links: Assessment → #assessment, Training → #training
-- Fixed CTA buttons to properly navigate to registration
-- Fixed logout to call NextAuth signOut + full page refresh
-- Replaced health check API route with proper database connectivity test
-- Fixed FounderDashboard useMemo dependency warnings
-
-Stage Summary:
-- Assessment and Training are now clearly distinct sections with separate content
-- All CTA buttons navigate correctly
-- Logout properly destroys server-side sessions
+- All branding consistent as "DiplomatiQ" with gold Q
+- Zero demo/sample/placeholder labels on user-facing pages
+- No third-party developer/AI branding
 
 ---
 Task ID: 3
-Agent: Main Agent
-Task: Seed database and push to GitHub
+Agent: Subagent (full-stack-developer)
+Task: Verify Assessment/Training separation and expand school database
 
 Work Log:
-- Ran seed script successfully creating 44 schools, Founder, Super Admin accounts
-- Verified Founder account in production DB with correct role, XP, subscription
-- Committed all changes with detailed commit message
-- Pushed to GitHub (main branch)
-- Repository: https://github.com/MUN1945/MUN.git
+- Confirmed Assessment and Training are separate views (AssessmentQuiz vs TrainingHub)
+- Changed Training icon from GraduationCap to BookOpen for visual distinction
+- Expanded school database from 44 to 55 schools
+- Added CBSE curriculum support to Prisma schema and SchoolDirectory
+- Added "Other School (Not Listed)" option with manual input
+- Added "Request School Addition" form with emirate and curriculum dropdowns
+- Added 6+ new real UAE schools across all emirates
 
 Stage Summary:
-- All code pushed to GitHub
-- Production database fully seeded with real data
-- Vercel auto-deployment triggered from GitHub push
+- Assessment = evaluation/ranking module (ClipboardCheck icon)
+- Training = educational/courses module (BookOpen icon)
+- 55 UAE schools covering all 7 emirates + CBSE curriculum
+- "Other School" option and school addition request system functional
+
+---
+Task ID: 4
+Agent: Subagent (full-stack-developer)
+Task: Fix contrast/visibility and broken links
+
+Work Log:
+- Fixed 40+ contrast issues across landing page, dashboard, sidebar, footer
+- All text now meets WCAG AA contrast ratios
+- Fixed all broken CTA links (now navigate to /auth/register, /auth/signin)
+- Fixed "Discover Your Diplomatic Ceiling" and other non-functional CTAs
+- Fixed all footer links from # to meaningful section anchors
+- Enhanced background image visibility (opacity 0.08 → 0.15)
+- Reduced overlay opacity for better background visibility
+
+Stage Summary:
+- All text readable with proper contrast
+- All CTAs and links functional
+- Background image properly integrated
+
+---
+Task ID: 5
+Agent: Main Agent
+Task: Push code to GitHub
+
+Work Log:
+- Staged all 24 changed files
+- Committed with comprehensive message
+- Pushed to GitHub (MUN1945/MUN repository)
+- Updated remote URL from MUNified.git to MUN.git
+
+Stage Summary:
+- Code successfully pushed to https://github.com/MUN1945/MUN
+- All branding, school DB, UI fixes included in push
