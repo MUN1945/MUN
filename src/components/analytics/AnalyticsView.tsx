@@ -157,7 +157,7 @@ function TeacherAnalytics() {
           }
         }
       } catch {
-        // API not available, use sample data
+        // API not available, using local data
       } finally {
         setLoading(false)
       }

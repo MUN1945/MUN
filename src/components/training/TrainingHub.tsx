@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
+import { useNavStore } from '@/lib/store'
 
 // ============================================================
 // TYPES & DATA
@@ -195,6 +196,23 @@ const COURSES: Course[] = [
       { id: 'sg-5', title: 'Legacy & Succession Planning', description: 'Build a sustainable conference tradition and plan for future leadership.', duration: '40m', completed: false, content: 'Great Secretary-Generals think beyond their own conference.\n\n## Building a Legacy\n\n### Documentation\n- Create comprehensive handover documents\n- Record all procedures and best practices\n- Document lessons learned from challenges\n- Save templates for future conferences\n\n### Institutional Knowledge\n- Create a running guide for future SGs\n- Establish traditions that define your conference\n- Build relationships with school advisors\n- Develop a brand and reputation\n\n## Succession Planning\n1. **Identify potential successors** early in the year\n2. **Mentor actively** — share knowledge and experience\n3. **Give increasing responsibility** over time\n4. **Include them in key decisions**\n5. **Build their network** — introduce them to stakeholders\n\n## Measuring Success\n- Delegate satisfaction surveys\n- Return rate of participating schools\n- Growth in registration numbers\n- Quality of committee outcomes\n- Feedback from advisors and staff\n\nThe true measure of your leadership is how well the conference thrives after you\'re gone.' },
     ],
   },
+  {
+    id: 'country-research',
+    title: 'Country Research Methods',
+    description: 'Master the art of researching your assigned country — from political systems to foreign policy positions.',
+    difficulty: 'Beginner',
+    duration: '3h',
+    xpReward: 150,
+    gradient: 'from-[#0D7377] to-[#1B3A4B]',
+    icon: Target,
+    category: 'Research',
+    lessons: [
+      { id: 'cr-1', title: 'Building a Country Profile', description: 'Learn to create comprehensive country profiles covering politics, economy, and demographics.', duration: '40m', completed: false, content: 'A thorough country profile is the foundation of effective MUN representation.\n\n## Key Profile Elements\n\n### Political System\n- Government type and structure\n- Key leaders and their positions\n- Political parties and their platforms\n- Domestic policy priorities\n\n### Economy\n- GDP, major industries, trade partners\n- Economic challenges and opportunities\n- Membership in economic organizations\n\n### Demographics\n- Population, ethnic composition\n- Education levels, urban/rural split\n- Social challenges\n\n### Foreign Policy\n- Key alliances and partnerships\n- Membership in international organizations\n- Voting patterns in UN bodies\n- Historical foreign policy positions\n\nStart with official government websites and cross-reference with international sources for accuracy.' },
+      { id: 'cr-2', title: 'Understanding UN Voting Records', description: 'Analyze your country\'s voting patterns in the UN General Assembly and Security Council.', duration: '35m', completed: false, content: 'UN voting records reveal your country\'s true diplomatic priorities.\n\n## How to Find Voting Records\n- UN Bibliographic Information System (UNBISnet)\n- UN Digital Library\n- Country-specific voting analytics tools\n\n## What to Look For\n- Consistent voting blocs (regional, political, economic)\n- Key resolutions where your country broke from its bloc\n- Abstentions and their significance\n- Draft resolutions your country sponsored\n\n## Analyzing Patterns\n- Alignment with regional groups (AU, EU, ASEAN, G77)\n- Positions on key issues (human rights, development, security)\n- Changes in voting behavior over time\n- Relationship between votes and foreign policy statements\n\nUnderstanding voting patterns helps you predict allies and opponents in committee.' },
+      { id: 'cr-3', title: 'Researching Committee-Specific Topics', description: 'Deep-dive strategies for researching your specific committee agenda topics.', duration: '45m', completed: false, content: 'Committee-specific research transforms you from prepared to authoritative.\n\n## Research Strategy\n\n### Step 1: Background\n- Read the committee background guide thoroughly\n- Understand the historical context\n- Identify key stakeholders\n\n### Step 2: Your Country\'s Position\n- Official statements on the topic\n- Past votes on related resolutions\n- Relevant treaties and conventions your country has ratified\n\n### Step 3: Current Developments\n- Recent news and updates\n- Ongoing diplomatic initiatives\n- Emerging challenges and opportunities\n\n### Step 4: Policy Options\n- Brainstorm possible solutions\n- Consider feasibility and political will\n- Identify potential allies for each proposal\n\n## Research Hacks\n- Use UN Document Symbol patterns to find related documents\n- Check your country\'s UN Mission website for official statements\n- Review position papers from previous conferences\n- Follow relevant UN agencies on social media for updates' },
+      { id: 'cr-4', title: 'Using Diplomatic Language & Protocols', description: 'Learn the formal language, protocols, and etiquette of diplomatic communication.', duration: '35m', completed: false, content: 'Diplomatic language is a skill that distinguishes amateurs from professionals.\n\n## Key Principles\n\n### Precision\n- Use specific terms rather than vague language\n- Reference documents and resolutions by name and number\n- Avoid colloquialisms and informal language\n\n### Diplomatic Phrasing\n- Instead of "We disagree," use "My delegation has concerns regarding..."\n- Instead of "That\'s wrong," use "My delegation respectfully notes a different perspective..."\n- Instead of "You must," use "We would encourage consideration of..."\n\n### Formal Address\n- Always address other delegates as "Honorable Delegate" or "Distinguished Representative"\n- Refer to your country in third person: "The delegation of France believes..."\n- Use "my delegation" instead of "I" or "we"\n\n### Written Communication\n- Position papers follow strict formatting\n- Notes to crisis staff should be professional\n- Working papers must use proper UN document format\n\nMastering diplomatic language earns you credibility and respect in committee.' },
+    ],
+  },
 ]
 
 const ACHIEVEMENTS: Achievement[] = [
@@ -252,6 +270,7 @@ function XPNotification({ xp, visible }: { xp: number; visible: boolean }) {
 // ============================================================
 
 export default function TrainingHub() {
+  const { navigate } = useNavStore()
   const [view, setView] = useState<'grid' | 'detail'>('grid')
   const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null)
   const [activeLessonId, setActiveLessonId] = useState<string | null>(null)

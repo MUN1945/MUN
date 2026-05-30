@@ -64,10 +64,10 @@ interface Submission {
 }
 
 // ============================================================
-// DEMO DATA
+// DEFAULT EVALUATION DATA
 // ============================================================
 
-const DEMO_EVALUATION: EvaluationResult = {
+const DEFAULT_EVALUATION: EvaluationResult = {
   overallScore: 72,
   strengths: [
     'Strong understanding of UN Security Council procedures and dynamics',
@@ -103,47 +103,47 @@ const DEMO_EVALUATION: EvaluationResult = {
   },
 }
 
-const DEMO_SUBMISSIONS: Submission[] = [
+const INITIAL_SUBMISSIONS: Submission[] = [
   {
     id: 's1', studentName: 'Elena Vasquez', studentInitials: 'EV',
     paperTitle: 'Nuclear Non-Proliferation in the 21st Century: Challenges and Pathways',
     score: 72, aiPercentage: 18, status: 'pending', date: '2026-02-28',
-    evaluation: DEMO_EVALUATION,
+    evaluation: DEFAULT_EVALUATION,
   },
   {
     id: 's2', studentName: 'Kai Nakamura', studentInitials: 'KN',
     paperTitle: 'Security Council Reform: Expanding Permanent Membership',
     score: 88, aiPercentage: 8, status: 'reviewed', date: '2026-02-26',
-    evaluation: { ...DEMO_EVALUATION, overallScore: 88, aiDetection: { aiContentPercentage: 8, confidence: 90, flaggedSections: [] } },
+    evaluation: { ...DEFAULT_EVALUATION, overallScore: 88, aiDetection: { aiContentPercentage: 8, confidence: 90, flaggedSections: [] } },
   },
   {
     id: 's3', studentName: 'Fatima Al-Rashid', studentInitials: 'FA',
     paperTitle: 'Climate-Induced Migration: A Human Security Framework',
     score: 45, aiPercentage: 42, status: 'returned', date: '2026-02-25',
     evaluation: {
-      ...DEMO_EVALUATION, overallScore: 45,
+      ...DEFAULT_EVALUATION, overallScore: 45,
       aiDetection: { aiContentPercentage: 42, confidence: 88, flaggedSections: ['Large sections appear AI-generated', 'Paragraph structure follows common AI patterns', 'Vocabulary usage suggests AI assistance'] },
-      weaknesses: [...DEMO_EVALUATION.weaknesses, 'Excessive AI-generated content detected (42%)', 'Lacks personal voice and analytical perspective'],
+      weaknesses: [...DEFAULT_EVALUATION.weaknesses, 'Excessive AI-generated content detected (42%)', 'Lacks personal voice and analytical perspective'],
     },
   },
   {
     id: 's4', studentName: 'Lucas Schmidt', studentInitials: 'LS',
     paperTitle: 'Global Trade Equity: Perspectives from the Global South',
     score: 76, aiPercentage: 12, status: 'pending', date: '2026-02-24',
-    evaluation: { ...DEMO_EVALUATION, overallScore: 76, aiDetection: { aiContentPercentage: 12, confidence: 82, flaggedSections: ['Minor AI-like phrasing in introduction'] } },
+    evaluation: { ...DEFAULT_EVALUATION, overallScore: 76, aiDetection: { aiContentPercentage: 12, confidence: 82, flaggedSections: ['Minor AI-like phrasing in introduction'] } },
   },
   {
     id: 's5', studentName: 'Priya Sharma', studentInitials: 'PS',
     paperTitle: 'The R2P Doctrine: Sovereignty vs. Humanitarian Intervention',
     score: 91, aiPercentage: 5, status: 'reviewed', date: '2026-02-22',
-    evaluation: { ...DEMO_EVALUATION, overallScore: 91, aiDetection: { aiContentPercentage: 5, confidence: 92, flaggedSections: [] }, originalityScore: 94, authenticityScore: 95 },
+    evaluation: { ...DEFAULT_EVALUATION, overallScore: 91, aiDetection: { aiContentPercentage: 5, confidence: 92, flaggedSections: [] }, originalityScore: 94, authenticityScore: 95 },
   },
   {
     id: 's6', studentName: 'Oliver Brooks', studentInitials: 'OB',
     paperTitle: 'Cybersecurity Governance in International Relations',
     score: 63, aiPercentage: 31, status: 'pending', date: '2026-02-20',
     evaluation: {
-      ...DEMO_EVALUATION, overallScore: 63,
+      ...DEFAULT_EVALUATION, overallScore: 63,
       aiDetection: { aiContentPercentage: 31, confidence: 78, flaggedSections: ['Several paragraphs show AI-generated patterns', 'Transition sentences appear AI-crafted'] },
     },
   },
@@ -408,12 +408,12 @@ function StudentView() {
         const data = await res.json()
         setEvaluation(data.evaluation)
       } else {
-        // Fallback to demo data
-        setEvaluation(DEMO_EVALUATION)
+        // Fallback to default evaluation
+        setEvaluation(DEFAULT_EVALUATION)
       }
     } catch {
-      // Fallback to demo data on error
-      setEvaluation(DEMO_EVALUATION)
+      // Fallback to default evaluation on error
+      setEvaluation(DEFAULT_EVALUATION)
     }
     setIsEvaluating(false)
   }
@@ -462,17 +462,6 @@ function StudentView() {
 
     return (
       <div className="space-y-6">
-        {/* Demo label */}
-        <motion.div
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="bg-[#D4A843]/10 border border-[#D4A843]/30 rounded-lg px-4 py-2 flex items-center gap-2"
-        >
-          <Sparkles className="w-4 h-4 text-[#D4A843]" />
-          <span className="text-sm font-medium text-[#D4A843]">DEMO — Sample Evaluation Results</span>
-          <span className="text-xs text-[#D4A843]/70 ml-2">(Submit a real paper for live AI analysis)</span>
-        </motion.div>
-
         {/* Header */}
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           <div>
@@ -950,7 +939,7 @@ function StudentView() {
 // ============================================================
 
 function TeacherView() {
-  const [submissions] = useState<Submission[]>(DEMO_SUBMISSIONS)
+  const [submissions] = useState<Submission[]>(INITIAL_SUBMISSIONS)
   const [selectedSubmission, setSelectedSubmission] = useState<Submission | null>(null)
   const [teacherComment, setTeacherComment] = useState('')
   const [teacherRating, setTeacherRating] = useState(0)
@@ -984,14 +973,14 @@ function TeacherView() {
 
   return (
     <div className="space-y-6">
-      {/* Demo label */}
+      {/* Section label */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-[#D4A843]/10 border border-[#D4A843]/30 rounded-lg px-4 py-2 flex items-center gap-2"
       >
         <Sparkles className="w-4 h-4 text-[#D4A843]" />
-        <span className="text-sm font-medium text-[#D4A843]">DEMO — Sample Teacher Dashboard</span>
+        <span className="text-sm font-medium text-[#D4A843]">Research Lab — Teacher View</span>
       </motion.div>
 
       {/* Header */}

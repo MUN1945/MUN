@@ -196,14 +196,16 @@ export default function Demo() {
               ))}
             </ul>
 
-            <Button
-              size="lg"
-              className="bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold px-8 shadow-lg shadow-[#0D7377]/20 transition-all duration-300 hover:shadow-xl hover:shadow-[#0D7377]/30"
-            >
-              Try It Free
-              <ArrowRight className="w-4 h-4 ml-2" />
-            </Button>
-            <p className="mt-3 text-xs text-[#1B3A4B]/40">No credit card required · 14-day free trial</p>
+            <a href="/auth/register">
+              <Button
+                size="lg"
+                className="bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold px-8 shadow-lg shadow-[#0D7377]/20 transition-all duration-300 hover:shadow-xl hover:shadow-[#0D7377]/30"
+              >
+                Try It Free
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+            </a>
+            <p className="mt-3 text-xs text-[#1B3A4B]/50">No credit card required · 14-day free trial</p>
           </motion.div>
         </div>
       </div>

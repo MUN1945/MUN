@@ -23,6 +23,7 @@ import {
   RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar,
   ResponsiveContainer
 } from 'recharts'
+import { useNavStore } from '@/lib/store'
 
 // ============================================================
 // TYPES
@@ -1414,7 +1415,8 @@ function QuestionTypeBadge({ type }: { type: QuestionType }) {
 // MAIN COMPONENT
 // ============================================================
 
-export default function AssessmentQuiz({ onBeginTraining }: { onBeginTraining?: () => void }) {
+export default function AssessmentQuiz() {
+  const { navigate } = useNavStore()
   const [phase, setPhase] = useState<QuizPhase>('intro')
   const [state, setState] = useState<AssessmentState>({
     currentTier: 1,
@@ -1588,6 +1590,7 @@ export default function AssessmentQuiz({ onBeginTraining }: { onBeginTraining?: 
           <p className="text-muted-foreground mt-1">Progressive evaluation across 7 tiers of diplomatic mastery</p>
         </motion.div>
 
+        {/* Hero card with pyramid visualization */}
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.1 }}>
           <Card className="bg-gradient-to-br from-[#0D1B2A] to-[#1B3A4B] border-[#D4A843]/20 overflow-hidden relative">
             {/* Decorative background elements */}
@@ -1625,34 +1628,47 @@ export default function AssessmentQuiz({ onBeginTraining }: { onBeginTraining?: 
                     className="bg-[#D4A843] text-[#1B3A4B] hover:bg-[#D4BA6E] font-semibold"
                     onClick={() => setPhase('quiz')}
                   >
-                    <Play className="w-4 h-4 mr-2" /> Begin Assessment
+                    <Play className="w-4 h-4 mr-2" /> Begin Placement Assessment
                   </Button>
                 </div>
 
-                {/* Tier ladder visualization */}
-                <div className="w-full lg:w-[280px] shrink-0">
+                {/* Pyramid visualization */}
+                <div className="w-full lg:w-[320px] shrink-0">
                   <div className="space-y-1.5">
-                    {[...TIERS].reverse().map((tier, i) => (
-                      <motion.div
-                        key={tier.id}
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.3, delay: 0.3 + i * 0.06 }}
-                        className="flex items-center gap-2.5 p-2 rounded-lg bg-white/[0.04] border border-white/[0.06] hover:bg-white/[0.08] transition-colors"
-                      >
-                        <div
-                          className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
-                          style={{ backgroundColor: `${tier.color}20` }}
+                    {[...TIERS].reverse().map((tier, i) => {
+                      const widthPercent = tier.id === 7 ? 40 : tier.id === 6 ? 50 : tier.id === 5 ? 60 : tier.id === 4 ? 70 : tier.id === 3 ? 80 : tier.id === 2 ? 90 : 100
+                      return (
+                        <motion.div
+                          key={tier.id}
+                          initial={{ opacity: 0, x: 20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ duration: 0.3, delay: 0.3 + i * 0.06 }}
+                          className="flex items-center justify-center"
                         >
-                          <tier.icon className="w-3.5 h-3.5" style={{ color: tier.color }} />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <span className="text-xs font-semibold text-white/90 block leading-tight">{tier.name}</span>
-                          <span className="text-[10px] text-white/40">{tier.subtitle}</span>
-                        </div>
-                        <span className="text-[10px] text-white/30">T{tier.id}</span>
-                      </motion.div>
-                    ))}
+                          <div className="relative group" style={{ width: `${widthPercent}%` }}>
+                            <div
+                              className="flex items-center gap-2.5 p-2 rounded-lg border transition-all duration-300 group-hover:scale-[1.02] group-hover:shadow-lg"
+                              style={{
+                                backgroundColor: `${tier.color}12`,
+                                borderColor: `${tier.color}25`,
+                              }}
+                            >
+                              <div
+                                className="w-7 h-7 rounded-lg flex items-center justify-center shrink-0"
+                                style={{ backgroundColor: `${tier.color}20` }}
+                              >
+                                <tier.icon className="w-3.5 h-3.5" style={{ color: tier.color }} />
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <span className="text-xs font-semibold text-white/90 block leading-tight">{tier.name}</span>
+                                <span className="text-[10px] text-white/40">{tier.subtitle} · {tier.passingScore}% to pass</span>
+                              </div>
+                              <span className="text-[10px] font-mono font-bold" style={{ color: tier.color }}>T{tier.id}</span>
+                            </div>
+                          </div>
+                        </motion.div>
+                      )
+                    })}
                   </div>
                 </div>
               </div>
@@ -1664,14 +1680,14 @@ export default function AssessmentQuiz({ onBeginTraining }: { onBeginTraining?: 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
           <Card>
             <CardHeader className="pb-3">
-              <CardTitle className="text-base">How It Works</CardTitle>
+              <CardTitle className="text-base">How Assessment Works</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {[
                   { icon: ListChecks, title: 'Progressive Tiers', desc: 'Start at Tier 1 and earn your way up through demonstrated competence at each level.' },
                   { icon: AlertTriangle, title: '3-Strike System', desc: 'Fail 3 competency checkpoints and the assessment concludes with your placement.' },
-                  { icon: Trophy, title: 'Placement Report', desc: 'Receive a detailed competency breakdown with personalized training recommendations.' },
+                  { icon: Trophy, title: 'Placement Report', desc: 'Receive a detailed competency breakdown with personalized development recommendations.' },
                 ].map((item, i) => (
                   <div key={i} className="flex items-start gap-3 p-3 rounded-lg bg-muted/30">
                     <div className="w-8 h-8 rounded-lg bg-[#0D7377]/10 flex items-center justify-center shrink-0">
@@ -1684,6 +1700,93 @@ export default function AssessmentQuiz({ onBeginTraining }: { onBeginTraining?: 
                   </div>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Assessment History */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.3 }}>
+          <Card>
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-base">Assessment History</CardTitle>
+                <Badge variant="secondary" className="text-[10px]">Previous Attempts</Badge>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {/* Sample history entries - these would come from the database in production */}
+                <div className="flex items-center gap-4 p-3 rounded-lg bg-muted/30 border border-dashed border-muted-foreground/20">
+                  <div className="w-10 h-10 rounded-lg bg-white/50 flex items-center justify-center shrink-0">
+                    <FileText className="w-5 h-5 text-muted-foreground/40" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm font-medium text-muted-foreground/60">No assessments completed yet</div>
+                    <div className="text-xs text-muted-foreground/40">Begin your placement assessment to establish your competency tier</div>
+                  </div>
+                  <Button size="sm" variant="outline" className="text-xs" onClick={() => setPhase('quiz')}>
+                    <Play className="w-3 h-3 mr-1" /> Start
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Tier Details Grid */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.4 }}>
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="text-base font-semibold text-[#1B3A4B]">Tier Requirements</h3>
+            <Badge variant="secondary" className="text-[10px]">71 Questions Total</Badge>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            {TIERS.map((tier, i) => (
+              <motion.div
+                key={tier.id}
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: 0.4 + i * 0.05 }}
+              >
+                <Card className="hover:shadow-md transition-shadow h-full">
+                  <CardContent className="p-4">
+                    <div className="flex items-center gap-3 mb-2">
+                      <div
+                        className="w-9 h-9 rounded-lg flex items-center justify-center shrink-0"
+                        style={{ backgroundColor: `${tier.color}15` }}
+                      >
+                        <tier.icon className="w-4.5 h-4.5" style={{ color: tier.color }} />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="text-sm font-semibold leading-tight">{tier.name}</div>
+                        <div className="text-[10px] text-muted-foreground">Tier {tier.id} · {tier.subtitle}</div>
+                      </div>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed mb-2">{tier.description}</p>
+                    <div className="flex items-center justify-between text-[10px]">
+                      <span className="text-muted-foreground">{tier.questionsPerTier} questions</span>
+                      <span className="font-medium" style={{ color: tier.color }}>{tier.passingScore}% pass</span>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </div>
+        </motion.div>
+
+        {/* Research Paper Evaluation Card */}
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.5 }}>
+          <Card className="border-[#0D7377]/20">
+            <CardContent className="p-4 flex items-center gap-4">
+              <div className="w-12 h-12 rounded-xl bg-[#0D7377]/10 flex items-center justify-center shrink-0">
+                <FileText className="w-6 h-6 text-[#0D7377]" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="text-sm font-semibold">Research Paper Evaluation</div>
+                <div className="text-xs text-muted-foreground">Submit your position papers for AI-powered evaluation with originality detection and citation analysis</div>
+              </div>
+              <Button size="sm" variant="outline" className="shrink-0 text-xs" onClick={() => navigate('research')}>
+                <ArrowRight className="w-3 h-3 mr-1" /> Go to Research Lab
+              </Button>
             </CardContent>
           </Card>
         </motion.div>
@@ -2104,9 +2207,9 @@ export default function AssessmentQuiz({ onBeginTraining }: { onBeginTraining?: 
           >
             <Button
               className="bg-[#0D7377] hover:bg-[#0D7377]/90 text-white font-semibold px-8 h-12"
-              onClick={() => onBeginTraining?.()}
+              onClick={() => navigate('training')}
             >
-              <Zap className="w-4 h-4 mr-2" /> Begin Your Training
+              <GraduationCap className="w-4 h-4 mr-2" /> Continue Your Training
             </Button>
             <Button variant="outline" className="px-6 h-12" onClick={handleRestart}>
               <RotateCcw className="w-4 h-4 mr-2" /> Retake Assessment

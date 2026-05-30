@@ -492,7 +492,7 @@ function TrustBadges() {
       </div>
       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <CreditCard className="w-3.5 h-3.5 text-[#0D7377]" />
-        Powered by Stripe
+        Secure payments
       </div>
       <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
         <BadgeCheck className="w-3.5 h-3.5 text-[#0D7377]" />

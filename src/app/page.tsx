@@ -47,7 +47,7 @@ function HeroBackground() {
           backgroundSize: 'cover',
           backgroundPosition: 'center',
           backgroundAttachment: 'fixed',
-          opacity: 0.08,
+          opacity: 0.15,
         }}
       />
       {/* Dark navy overlay for readability — ensures 4.5:1+ contrast ratio */}
@@ -307,7 +307,7 @@ function HeroSection({ onGetStarted }: { onGetStarted: () => void }) {
 
         {/* Subtitle */}
         <motion.p
-          className="mt-6 text-lg md:text-xl text-white/55 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-lg md:text-xl text-white/70 max-w-2xl mx-auto leading-relaxed"
           variants={{
             hidden: { opacity: 0, y: 30 },
             visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.25, 0.46, 0.45, 0.94] } },
@@ -353,9 +353,9 @@ function HeroSection({ onGetStarted }: { onGetStarted: () => void }) {
         >
           <div className="inline-flex items-center gap-3 px-6 py-3 rounded-full bg-[#D4A843]/[0.08] border border-[#D4A843]/15">
             <Globe className="w-5 h-5 text-[#D4A843]/70" />
-            <span className="text-sm text-white/60">Join schools across the <span className="text-[#D4A843] font-semibold">UAE and GCC</span></span>
+            <span className="text-sm text-white/75">Join schools across the <span className="text-[#D4A843] font-semibold">UAE and GCC</span></span>
           </div>
-          <p className="text-white/40 text-sm mt-4">Growing community of MUN delegates and educators.</p>
+          <p className="text-white/60 text-sm mt-4">Growing community of MUN delegates and educators.</p>
           <a href="#features" className="inline-block mt-3 text-xs text-[#0A7E8C] hover:text-[#0FBACA] transition-colors font-medium">
             Explore the Platform <ArrowRight className="w-3 h-3 inline ml-0.5" />
           </a>
@@ -433,7 +433,7 @@ function FeaturesSection() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
             Everything Your MUN Program Needs
           </h2>
-          <p className="mt-4 text-white/50 text-lg max-w-2xl mx-auto">
+          <p className="mt-4 text-white/65 text-lg max-w-2xl mx-auto">
             Six integrated modules designed for the complete diplomatic education lifecycle.
           </p>
         </motion.div>
@@ -454,7 +454,7 @@ function FeaturesSection() {
                   <CardTitle className="text-white text-lg font-bold">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-white/55 text-sm leading-relaxed">{feature.desc}</p>
+                  <p className="text-white/70 text-sm leading-relaxed">{feature.desc}</p>
                 </CardContent>
               </Card>
             </motion.div>
@@ -490,7 +490,7 @@ function AssessmentShowcase({ onGetStarted }: { onGetStarted: () => void }) {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
             Progressive Assessment System
           </h2>
-          <p className="mt-4 text-white/55 text-lg max-w-2xl mx-auto">
+          <p className="mt-4 text-white/65 text-lg max-w-2xl mx-auto">
             From foundation to pinnacle — each tier unlocks new competencies and challenges. Discover where you stand and where you can grow.
           </p>
         </motion.div>
@@ -557,7 +557,7 @@ function AssessmentShowcase({ onGetStarted }: { onGetStarted: () => void }) {
                             </motion.span>
                           )}
                         </div>
-                        <p className={`text-xs mt-0.5 hidden sm:block ${isTopTier ? 'text-white/60' : 'text-white/50'} sm:truncate`}>{tier.desc}</p>
+                        <p className={`text-xs mt-0.5 hidden sm:block ${isTopTier ? 'text-white/65' : 'text-white/50'} sm:truncate`}>{tier.desc}</p>
                       </div>
                     </div>
                   </div>
@@ -689,7 +689,7 @@ function TrainingSection({ onGetStarted }: { onGetStarted: () => void }) {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
             Train Like a Diplomat
           </h2>
-          <p className="mt-4 text-white/55 text-lg max-w-2xl mx-auto">
+          <p className="mt-4 text-white/65 text-lg max-w-2xl mx-auto">
             8 immersive courses, 40+ lessons covering parliamentary procedure, resolution writing, crisis management, negotiation, public speaking, research methodology, chair training, and secretary-general leadership.
           </p>
         </motion.div>
@@ -717,10 +717,10 @@ function TrainingSection({ onGetStarted }: { onGetStarted: () => void }) {
                     <CardTitle className="text-white text-sm font-bold leading-snug">{course.title}</CardTitle>
                   </CardHeader>
                   <CardContent className="pb-3">
-                    <p className="text-white/50 text-xs leading-relaxed">{course.desc}</p>
+                    <p className="text-white/65 text-xs leading-relaxed">{course.desc}</p>
                   </CardContent>
                   <CardFooter className="pt-0">
-                    <div className="flex items-center gap-1.5 text-white/35 text-xs">
+                    <div className="flex items-center gap-1.5 text-white/55 text-xs">
                       <Clock className="w-3 h-3" />
                       <span>{course.duration}</span>
                     </div>
@@ -814,7 +814,7 @@ function PricingPreview({ onGetStarted }: { onGetStarted: (plan?: string) => voi
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
             Invest in Diplomatic Excellence
           </h2>
-          <p className="mt-4 text-white/50 text-lg max-w-xl mx-auto">
+          <p className="mt-4 text-white/65 text-lg max-w-xl mx-auto">
             Starting from $9/month. Choose the plan that matches your mission.
           </p>
 
@@ -861,12 +861,12 @@ function PricingPreview({ onGetStarted }: { onGetStarted: (plan?: string) => voi
                       <PlanIcon className="w-5 h-5 text-[#D4A843]" />
                     </div>
                     <CardTitle className="text-white text-lg font-bold">{plan.name}</CardTitle>
-                    <CardDescription className="text-white/40 text-xs">{plan.target}</CardDescription>
+                    <CardDescription className="text-white/55 text-xs">{plan.target}</CardDescription>
                   </CardHeader>
                   <CardContent className="pb-4">
                     <div className="flex items-baseline gap-1 mb-6">
                       <span className="text-3xl font-bold text-white">${price}</span>
-                      <span className="text-white/40 text-sm">/month</span>
+                      <span className="text-white/55 text-sm">/month</span>
                     </div>
                     <div className="space-y-2.5">
                       {plan.features.map((feature) => (
@@ -911,10 +911,10 @@ function PricingPreview({ onGetStarted }: { onGetStarted: (plan?: string) => voi
 }
 
 // ============================================================
-// DEMO / SALES CONVERSION
+// PLATFORM OVERVIEW / SALES CONVERSION
 // ============================================================
 
-function DemoSection({ onGetStarted }: { onGetStarted: () => void }) {
+function PlatformSection({ onGetStarted }: { onGetStarted: () => void }) {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: '-100px' })
 
@@ -972,13 +972,13 @@ function DemoSection({ onGetStarted }: { onGetStarted: () => void }) {
                   ].map((s) => (
                     <div key={s.label} className="rounded-lg bg-white/[0.03] p-3 border border-white/[0.05]">
                       <div className={`text-lg font-bold ${s.color.split(' ')[1]}`}>{s.val}</div>
-                          <div className="text-[10px] text-white/40">{s.label}</div>
+                          <div className="text-[10px] text-white/60">{s.label}</div>
                     </div>
                   ))}
                 </div>
                 {/* Mini chart area */}
                 <div className="rounded-lg bg-white/[0.03] p-3 border border-white/[0.05]">
-                  <div className="text-xs text-white/50 mb-2">Assessment Progress</div>
+                  <div className="text-xs text-white/65 mb-2">Assessment Progress</div>
                   <div className="flex items-end gap-1.5 h-12">
                     {[40, 60, 35, 80, 55, 90, 70].map((h, idx) => (
                       <div
@@ -1007,7 +1007,7 @@ function DemoSection({ onGetStarted }: { onGetStarted: () => void }) {
             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight mb-4">
               See DiplomatiQ in Action
             </h2>
-            <p className="text-white/50 text-lg leading-relaxed mb-8">
+            <p className="text-white/65 text-lg leading-relaxed mb-8">
               Experience the platform that is transforming how delegates train, teachers assess, and schools compete. No credit card required.
             </p>
 
@@ -1031,7 +1031,7 @@ function DemoSection({ onGetStarted }: { onGetStarted: () => void }) {
               </Button>
             </div>
 
-            <div className="flex flex-wrap items-center gap-4 text-sm text-white/45">
+            <div className="flex flex-wrap items-center gap-4 text-sm text-white/60">
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#0A7E8C]" /> No credit card required</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#0A7E8C]" /> 14-day free trial</span>
               <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3.5 h-3.5 text-[#0A7E8C]" /> Cancel anytime</span>
@@ -1057,13 +1057,13 @@ function Footer({ onNavigate }: { onNavigate: () => void }) {
     { label: 'Pricing', href: '#pricing' },
   ]
   const companyLinks = [
-    { label: 'About', href: '#top' },
+    { label: 'About', href: '#features' },
     { label: 'Contact', href: 'mailto:modelunitednations45@gmail.com' },
   ]
   const legalLinks = [
-    { label: 'Code of Conduct', href: '#top' },
-    { label: 'Privacy', href: '#top' },
-    { label: 'Terms', href: '#top' },
+    { label: 'Code of Conduct', href: '#features' },
+    { label: 'Privacy', href: '#pricing' },
+    { label: 'Terms', href: '#pricing' },
   ]
 
   const handleLinkClick = (e: React.MouseEvent, item: { label: string; href?: string; action?: () => void }) => {
@@ -1084,7 +1084,7 @@ function Footer({ onNavigate }: { onNavigate: () => void }) {
                 Diplomati<span className="text-[#D4A843]">Q</span>
               </span>
             </div>
-            <p className="text-white/45 text-sm leading-relaxed">
+            <p className="text-white/60 text-sm leading-relaxed">
               Growing community of MUN delegates and educators.
             </p>
           </div>
@@ -1095,7 +1095,7 @@ function Footer({ onNavigate }: { onNavigate: () => void }) {
             <ul className="space-y-2.5">
               {platformLinks.map((item) => (
                 <li key={item.label}>
-                  <a href={item.href} className="text-sm text-white/50 hover:text-[#D4A843] transition-colors">
+                  <a href={item.href} className="text-sm text-white/65 hover:text-[#D4A843] transition-colors">
                     {item.label}
                   </a>
                 </li>
@@ -1112,7 +1112,7 @@ function Footer({ onNavigate }: { onNavigate: () => void }) {
                   <a
                     href={item.href || '#top'}
                     onClick={(e) => handleLinkClick(e, item)}
-                    className="text-sm text-white/50 hover:text-[#D4A843] transition-colors"
+                    className="text-sm text-white/65 hover:text-[#D4A843] transition-colors"
                   >
                     {item.label}
                   </a>
@@ -1130,7 +1130,7 @@ function Footer({ onNavigate }: { onNavigate: () => void }) {
                   <a
                     href={item.href || '#top'}
                     onClick={(e) => handleLinkClick(e, item)}
-                    className="text-sm text-white/50 hover:text-[#D4A843] transition-colors"
+                    className="text-sm text-white/65 hover:text-[#D4A843] transition-colors"
                   >
                     {item.label}
                   </a>
@@ -1142,7 +1142,7 @@ function Footer({ onNavigate }: { onNavigate: () => void }) {
 
         <Separator className="bg-white/[0.06] mb-6" />
 
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/40">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-white/55">
           <span>&copy; 2026 DiplomatiQ. All rights reserved.</span>
           <span className="flex items-center gap-1">
             Made with <Heart className="w-3 h-3 text-[#D4A843]/50" /> for diplomatic education
@@ -1175,7 +1175,7 @@ function LandingSection() {
         }}
       />
       {/* Dark overlay for text readability */}
-      <div className="fixed inset-0 z-[1] bg-[#0D1B2A]/[0.96]" />
+      <div className="fixed inset-0 z-[1] bg-[#0D1B2A]/[0.93]" />
       {/* Content above background */}
       <div className="relative z-[2]">
         <Navbar
@@ -1187,7 +1187,7 @@ function LandingSection() {
         <AssessmentShowcase onGetStarted={() => navigateToAuth('/auth/register')} />
         <TrainingSection onGetStarted={() => navigateToAuth('/auth/register')} />
         <PricingPreview onGetStarted={(plan) => navigateToAuth(plan ? `/auth/register?plan=${plan}` : '/auth/register')} />
-        <DemoSection onGetStarted={() => navigateToAuth('/auth/register')} />
+        <PlatformSection onGetStarted={() => navigateToAuth('/auth/register')} />
         <Footer onNavigate={() => navigateToAuth('/auth/register')} />
       </div>
     </div>

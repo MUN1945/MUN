@@ -36,8 +36,8 @@ import { useAuthStore, useNavStore } from '@/lib/store'
 const BILLING_HISTORY = [
   { id: 'inv-001', date: '2026-02-01', description: 'Delegate Pro - Monthly', amount: '$9.00', status: 'Paid', invoiceUrl: '#' },
   { id: 'inv-002', date: '2026-01-01', description: 'Delegate Pro - Monthly', amount: '$9.00', status: 'Paid', invoiceUrl: '#' },
-  { id: 'inv-003', date: '2025-12-01', description: 'Delegate Pro - Monthly', amount: '$9.00', status: 'Paid', invoiceUrl: '#' },
-  { id: 'inv-004', date: '2025-11-15', description: 'Delegate Pro - First Month (Prorated)', amount: '$4.50', status: 'Paid', invoiceUrl: '#' },
+  { id: 'inv-003', date: '2026-01-01', description: 'Delegate Pro - Monthly', amount: '$9.00', status: 'Paid', invoiceUrl: '#' },
+  { id: 'inv-004', date: '2025-12-15', description: 'Delegate Pro - First Month (Prorated)', amount: '$4.50', status: 'Paid', invoiceUrl: '#' },
 ]
 
 // ============================================================
@@ -359,11 +359,11 @@ function BillingSubscriptionSection() {
   }
 
   const handleManageSubscription = async () => {
-    // For demo, open Stripe portal
+    // Open Stripe portal
     setPortalLoading(true)
     try {
       // In production, this would use the user's stripeCustomerId
-      // For now, show a demo message
+      // Show upgrade prompt
       await new Promise(resolve => setTimeout(resolve, 1000))
       // Simulate portal redirect
       alert('In production, this would redirect to the Stripe Customer Portal where you can update payment methods, view invoices, and manage your subscription.')

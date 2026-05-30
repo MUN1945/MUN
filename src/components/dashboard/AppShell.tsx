@@ -32,7 +32,7 @@ import SchoolDirectory from '@/components/schools/SchoolDirectory'
 import { useNavStore, useAuthStore, useAppStore, type ViewName } from '@/lib/store'
 
 // ============================================================
-// PLACEHOLDER VIEW COMPONENTS
+// PLACEHOLDER VIEW COMPONENTS (for views not yet implemented)
 // ============================================================
 
 function PlaceholderView({ title, description }: { title: string; description: string }) {
@@ -118,7 +118,7 @@ export default function AppShell() {
 
   const unreadCount = notifications.filter(n => !n.isRead).length
 
-  // Session is already managed by auth store — no demo data loading needed
+  // Session is already managed by auth store
 
   if (!user) return null
 

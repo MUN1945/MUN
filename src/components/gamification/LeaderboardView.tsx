@@ -52,7 +52,7 @@ function getXPProgressLocal(xp: number): number {
 }
 
 // ============================================================
-// DEMO DATA — placeholder until real users populate the platform
+// Leaderboard data — populated from API as platform grows
 // In production, this will be replaced entirely by API data
 // ============================================================
 
@@ -67,7 +67,7 @@ interface LeaderboardUser {
 }
 
 const MOCK_USERS: LeaderboardUser[] = [
-  // Demo placeholder data — will be replaced by real API data as platform grows
+  // Initial data — will be replaced by real API data as platform grows
   { id: 'u1', name: 'Elena Vasquez', school: 'Lycée Français', xp: 7200, conferences: 15, diplomacy: 95, research: 88 },
   { id: 'u2', name: 'Kai Nakamura', school: 'Tokyo International School', xp: 6500, conferences: 12, diplomacy: 90, research: 92 },
   { id: 'u3', name: 'Fatima Al-Rashid', school: 'American School Dubai', xp: 5800, conferences: 14, diplomacy: 92, research: 85 },

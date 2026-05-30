@@ -218,13 +218,13 @@ export default function TeacherDashboard() {
               <h2 className="text-2xl font-bold text-white">
                 Welcome back, <span className="text-[#D4A843]">{user.name.split(' ')[0]}</span>
               </h2>
-              <p className="text-white/50 mt-1">
+              <p className="text-white/65 mt-1">
                 {user.schoolName || 'DiplomatiQ Academy'} · {currentLevel.name} Level
               </p>
             </div>
             <div className="flex items-center gap-3">
               <div className="text-right hidden md:block">
-                <div className="text-white/40 text-xs">School</div>
+                <div className="text-white/55 text-xs">School</div>
                 <div className="text-white text-sm font-medium">{user.schoolName || 'Not set'}</div>
               </div>
               <div className="w-14 h-14 rounded-xl bg-[#D4A843]/15 flex items-center justify-center">

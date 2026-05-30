@@ -9,7 +9,7 @@ const navLinks = [
   { label: 'Features', href: '#features' },
   { label: 'How It Works', href: '#how-it-works' },
   { label: 'Pricing', href: '#pricing' },
-  { label: 'Demo', href: '#demo' },
+  { label: 'Platform', href: '#demo' },
 ]
 
 export default function Navbar() {
@@ -42,7 +42,7 @@ export default function Navbar() {
             <Globe className="w-5 h-5 text-white" />
           </div>
           <span className="text-xl font-bold tracking-tight text-white">
-            MUN<span className="text-[#D4A843]">ified</span>
+            Diplomati<span className="text-[#D4A843]">Q</span>
           </span>
         </a>
 
@@ -61,15 +61,19 @@ export default function Navbar() {
 
         {/* Desktop CTA */}
         <div className="hidden md:flex items-center gap-3">
-          <Button
-            variant="ghost"
-            className="text-white/80 hover:text-white hover:bg-white/10 font-medium"
-          >
-            Sign In
-          </Button>
-          <Button className="bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold shadow-md shadow-[#0D7377]/30 transition-all duration-200">
-            Start Free Trial
-          </Button>
+          <a href="/auth/signin">
+            <Button
+              variant="ghost"
+              className="text-white/80 hover:text-white hover:bg-white/10 font-medium"
+            >
+              Sign In
+            </Button>
+          </a>
+          <a href="/auth/register">
+            <Button className="bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold shadow-md shadow-[#0D7377]/30 transition-all duration-200">
+              Start Free Trial
+            </Button>
+          </a>
         </div>
 
         {/* Mobile Menu Button */}
@@ -104,12 +108,16 @@ export default function Navbar() {
                 </a>
               ))}
               <div className="pt-3 border-t border-white/10 flex flex-col gap-2">
-                <Button variant="ghost" className="w-full text-white/80 hover:text-white hover:bg-white/10 justify-center">
-                  Sign In
-                </Button>
-                <Button className="w-full bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold shadow-md shadow-[#0D7377]/30">
-                  Start Free Trial
-                </Button>
+                <a href="/auth/signin" className="w-full">
+                  <Button variant="ghost" className="w-full text-white/80 hover:text-white hover:bg-white/10 justify-center">
+                    Sign In
+                  </Button>
+                </a>
+                <a href="/auth/register" className="w-full">
+                  <Button className="w-full bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold shadow-md shadow-[#0D7377]/30">
+                    Start Free Trial
+                  </Button>
+                </a>
               </div>
             </div>
           </motion.div>

@@ -117,7 +117,7 @@ interface SupportTicket {
 }
 
 // ============================================================
-// SAMPLE DATA — replaced by API when available
+// INITIAL DATA — replaced by API when available
 // ============================================================
 
 const sparkData = (base: number, variance: number) =>
@@ -178,7 +178,7 @@ const REVENUE_BY_PLAN = [
   { plan: 'Add-ons', revenue: 12000 },
 ]
 
-const DEMO_USERS: UserData[] = [
+const INITIAL_USERS: UserData[] = [
   { id: 'u1', name: 'Amara Okafor', email: 'amara@diplomatiq.io', role: 'STUDENT', school: 'Intl School of Geneva', status: 'Active', subscription: 'Student Pro', lastLogin: '2 min ago' },
   { id: 'u2', name: 'Dr. Sarah Chen', email: 'sarah@diplomatiq.io', role: 'TEACHER', school: 'Intl School of Geneva', status: 'Active', subscription: 'Teacher Pro', lastLogin: '15 min ago' },
   { id: 'u3', name: 'Kai Nakamura', email: 'kai@tokyo-intl.jp', role: 'STUDENT', school: 'Tokyo International', status: 'Active', subscription: 'Free', lastLogin: '1 hr ago' },
@@ -191,7 +191,7 @@ const DEMO_USERS: UserData[] = [
   { id: 'u10', name: 'Sofia Costa', email: 'sofia@stpauls.br', role: 'STUDENT', school: "St. Paul's Brazil", status: 'Active', subscription: 'Student Pro', lastLogin: '6 hr ago' },
 ]
 
-const DEMO_SCHOOLS: SchoolData[] = [
+const INITIAL_SCHOOLS: SchoolData[] = [
   { id: 's1', name: 'International School of Geneva', city: 'Geneva', country: 'Switzerland', type: 'International', verified: true, students: 1240, teachers: 87, status: 'Active', featured: true },
   { id: 's2', name: 'Tokyo International School', city: 'Tokyo', country: 'Japan', type: 'International', verified: true, students: 980, teachers: 62, status: 'Active', featured: true },
   { id: 's3', name: 'American School Dubai', city: 'Dubai', country: 'UAE', type: 'International', verified: true, students: 2100, teachers: 134, status: 'Active', featured: false },
@@ -202,7 +202,7 @@ const DEMO_SCHOOLS: SchoolData[] = [
   { id: 's8', name: 'Shanghai United', city: 'Shanghai', country: 'China', type: 'International', verified: false, students: 0, teachers: 0, status: 'Pending', featured: false },
 ]
 
-const DEMO_TEACHERS: TeacherData[] = [
+const INITIAL_TEACHERS: TeacherData[] = [
   { id: 't1', name: 'Dr. Sarah Chen', email: 'sarah@diplomatiq.io', school: 'Intl School of Geneva', students: 87, conferences: 12, activityScore: 94, status: 'Active' },
   { id: 't2', name: 'Marcus Weber', email: 'marcus@berlin-intl.de', school: 'Berlin Intl School', students: 48, conferences: 8, activityScore: 78, status: 'Active' },
   { id: 't3', name: 'Aisha Patel', email: 'aisha@asd.ae', school: 'American School Dubai', students: 134, conferences: 15, activityScore: 91, status: 'Active' },
@@ -211,7 +211,7 @@ const DEMO_TEACHERS: TeacherData[] = [
   { id: 't6', name: 'Robert Osei', email: 'robert@nairobi-ac.ke', school: 'Nairobi Academy', students: 24, conferences: 2, activityScore: 32, status: 'Inactive' },
 ]
 
-const DEMO_STUDENTS: StudentData[] = [
+const INITIAL_STUDENTS: StudentData[] = [
   { id: 'st1', name: 'Amara Okafor', email: 'amara@diplomatiq.io', school: 'Intl School of Geneva', xpLevel: 'Ambassador', tier: 'Student Pro', coursesCompleted: 12, assessmentScore: 84 },
   { id: 'st2', name: 'Kai Nakamura', email: 'kai@tokyo-intl.jp', school: 'Tokyo International', xpLevel: 'Envoy', tier: 'Free', coursesCompleted: 8, assessmentScore: 91 },
   { id: 'st3', name: 'Elena Vasquez', email: 'elena@lycee.fr', school: 'Lycee Francais', xpLevel: 'Envoy', tier: 'Student Pro', coursesCompleted: 15, assessmentScore: 96 },
@@ -222,7 +222,7 @@ const DEMO_STUDENTS: StudentData[] = [
   { id: 'st8', name: 'Chen Wei', email: 'wei@shanghai-intl.cn', school: 'Shanghai United', xpLevel: 'Delegate', tier: 'Free', coursesCompleted: 2, assessmentScore: 55 },
 ]
 
-const DEMO_AUDIT_LOGS: AuditLogEntry[] = [
+const INITIAL_AUDIT_LOGS: AuditLogEntry[] = [
   { id: 'al1', action: 'USER_SUSPENDED', user: 'James Wright', target: 'Priya Sharma', timestamp: '2026-03-01 14:23:10', ip: '192.168.1.45', severity: 'warning' },
   { id: 'al2', action: 'SCHOOL_APPROVED', user: 'James Wright', target: 'Nairobi Academy', timestamp: '2026-03-01 13:45:00', ip: '192.168.1.45', severity: 'info' },
   { id: 'al3', action: 'ROLE_CHANGED', user: 'James Wright', target: 'Fatima Al-Rashid', timestamp: '2026-03-01 11:20:30', ip: '192.168.1.45', severity: 'warning' },
@@ -233,7 +233,7 @@ const DEMO_AUDIT_LOGS: AuditLogEntry[] = [
   { id: 'al8', action: 'SUSPICIOUS_LOGIN', user: 'System', target: 'amara@diplomatiq.io', timestamp: '2026-02-28 03:22:11', ip: '91.108.56.23', severity: 'critical' },
 ]
 
-const DEMO_TICKETS: SupportTicket[] = [
+const INITIAL_TICKETS: SupportTicket[] = [
   { id: 'tk1', type: 'PASSWORD_RESET', subject: 'Cannot access my account', user: 'Oliver Brooks', status: 'Open', priority: 'High', createdAt: '2026-03-01 10:15' },
   { id: 'tk2', type: 'VERIFICATION', subject: 'School verification request', user: 'Nairobi Academy', status: 'Pending', priority: 'Medium', createdAt: '2026-02-28 16:45' },
   { id: 'tk3', type: 'BILLING', subject: 'Double charge on subscription', user: 'Sofia Costa', status: 'Open', priority: 'High', createdAt: '2026-02-28 14:20' },
@@ -1555,7 +1555,7 @@ export default function FounderDashboard() {
 
   return (
     <div className="min-h-screen bg-[#0D1B2A] -m-4 md:-m-6 lg:-m-8 p-4 md:p-6 lg:p-8">
-      {/* Demo Banner */}
+      {/* Admin Banner */}
       <motion.div
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}

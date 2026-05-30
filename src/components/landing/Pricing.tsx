@@ -118,7 +118,7 @@ export default function Pricing() {
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white tracking-tight">
             Invest in Diplomatic Excellence
           </h2>
-          <p className="mt-4 text-lg text-white/50 leading-relaxed">
+          <p className="mt-4 text-lg text-white/65 leading-relaxed">
             Choose the plan that matches your MUN ambitions. Start free, upgrade as you grow.
           </p>
         </motion.div>
@@ -151,10 +151,10 @@ export default function Pricing() {
               >
                 <CardHeader className="pb-4">
                   <CardTitle className="text-white text-lg">{plan.name}</CardTitle>
-                  <CardDescription className="text-white/40 text-sm">{plan.description}</CardDescription>
+                  <CardDescription className="text-white/55 text-sm">{plan.description}</CardDescription>
                   <div className="mt-4">
                     <span className="text-3xl font-bold text-white">{plan.price}</span>
-                    <span className="text-white/40 text-sm ml-1">{plan.priceNote}</span>
+                    <span className="text-white/55 text-sm ml-1">{plan.priceNote}</span>
                   </div>
                 </CardHeader>
                 <CardContent className="flex-1 flex flex-col">
@@ -165,28 +165,30 @@ export default function Pricing() {
                           className="w-4 h-4 mt-0.5 shrink-0"
                           style={{ color: plan.accentColor }}
                         />
-                        <span className="text-white/60">{feature}</span>
+                        <span className="text-white/65">{feature}</span>
                       </li>
                     ))}
                   </ul>
                   <div className="mt-6">
-                    <Button
-                      variant={plan.ctaVariant}
-                      className={`w-full font-semibold transition-all duration-300 ${
-                        plan.popular
-                          ? 'bg-[#0D7377] text-white hover:bg-[#10908F] shadow-md shadow-[#0D7377]/30'
-                          : plan.ctaVariant === 'outline'
-                          ? 'border-white/20 text-white hover:bg-white/10 hover:text-white'
-                          : ''
-                      }`}
-                      style={
-                        !plan.popular && plan.ctaVariant === 'default'
-                          ? { backgroundColor: plan.accentColor }
-                          : undefined
-                      }
-                    >
-                      {plan.cta}
-                    </Button>
+                    <a href="/auth/register">
+                      <Button
+                        variant={plan.ctaVariant}
+                        className={`w-full font-semibold transition-all duration-300 ${
+                          plan.popular
+                            ? 'bg-[#0D7377] text-white hover:bg-[#10908F] shadow-md shadow-[#0D7377]/30'
+                            : plan.ctaVariant === 'outline'
+                            ? 'border-white/20 text-white hover:bg-white/10 hover:text-white'
+                            : ''
+                        }`}
+                        style={
+                          !plan.popular && plan.ctaVariant === 'default'
+                            ? { backgroundColor: plan.accentColor }
+                            : undefined
+                        }
+                      >
+                        {plan.cta}
+                      </Button>
+                    </a>
                   </div>
                 </CardContent>
               </Card>

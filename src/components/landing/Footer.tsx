@@ -9,40 +9,40 @@ import { Separator } from '@/components/ui/separator'
 
 const footerLinks = {
   Platform: [
-    { label: 'Diagnostic Assessment', href: '#' },
-    { label: 'Diplomatic Academy', href: '#' },
-    { label: 'Conference Command', href: '#' },
-    { label: 'Committee Hub', href: '#' },
-    { label: 'Intelligence Dashboard', href: '#' },
+    { label: 'Diagnostic Assessment', href: '#assessment' },
+    { label: 'Diplomatic Academy', href: '#training' },
+    { label: 'Conference Command', href: '#features' },
+    { label: 'Committee Hub', href: '#features' },
+    { label: 'Intelligence Dashboard', href: '#features' },
   ],
   Resources: [
-    { label: 'MUN Guide', href: '#' },
-    { label: 'Blog', href: '#' },
-    { label: 'Webinars', href: '#' },
-    { label: 'Help Center', href: '#' },
-    { label: 'API Documentation', href: '#' },
+    { label: 'MUN Guide', href: '#training' },
+    { label: 'Blog', href: '#features' },
+    { label: 'Webinars', href: '#training' },
+    { label: 'Help Center', href: '#features' },
+    { label: 'API Documentation', href: '#pricing' },
   ],
   Company: [
-    { label: 'About Us', href: '#' },
-    { label: 'Careers', href: '#' },
-    { label: 'Partners', href: '#' },
-    { label: 'Press Kit', href: '#' },
-    { label: 'Contact', href: '#' },
+    { label: 'About Us', href: '#features' },
+    { label: 'Careers', href: '#features' },
+    { label: 'Partners', href: '#features' },
+    { label: 'Press Kit', href: '#features' },
+    { label: 'Contact', href: 'mailto:modelunitednations45@gmail.com' },
   ],
   Legal: [
-    { label: 'Privacy Policy', href: '#' },
-    { label: 'Terms of Service', href: '#' },
-    { label: 'Cookie Policy', href: '#' },
-    { label: 'GDPR', href: '#' },
-    { label: 'Security', href: '#' },
+    { label: 'Privacy Policy', href: '#pricing' },
+    { label: 'Terms of Service', href: '#pricing' },
+    { label: 'Cookie Policy', href: '#pricing' },
+    { label: 'GDPR', href: '#pricing' },
+    { label: 'Security', href: '#pricing' },
   ],
 }
 
 const socialLinks = [
-  { icon: Twitter, href: '#', label: 'Twitter' },
-  { icon: Linkedin, href: '#', label: 'LinkedIn' },
-  { icon: Youtube, href: '#', label: 'YouTube' },
-  { icon: Instagram, href: '#', label: 'Instagram' },
+  { icon: Twitter, href: 'https://twitter.com/diplomatiq', label: 'Twitter' },
+  { icon: Linkedin, href: 'https://linkedin.com/company/diplomatiq', label: 'LinkedIn' },
+  { icon: Youtube, href: 'https://youtube.com/@diplomatiq', label: 'YouTube' },
+  { icon: Instagram, href: 'https://instagram.com/diplomatiq', label: 'Instagram' },
 ]
 
 export default function Footer() {
@@ -65,27 +65,28 @@ export default function Footer() {
                   <Globe className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl font-bold tracking-tight">
-                  Diplomat<span className="text-[#D4A843]">iQ</span>
+                  Diplomati<span className="text-[#D4A843]">Q</span>
                 </span>
               </a>
-              <p className="text-white/40 text-sm leading-relaxed mb-6 max-w-xs">
+              <p className="text-white/60 text-sm leading-relaxed mb-6 max-w-xs">
                 The all-in-one platform for Model United Nations. Training delegates, managing conferences,
                 and building the next generation of diplomats.
               </p>
 
               {/* Newsletter */}
               <div className="mb-6">
-                <p className="text-sm font-medium text-white/70 mb-3">Stay updated</p>
-                <div className="flex gap-2">
+                <p className="text-sm font-medium text-white/75 mb-3">Stay updated</p>
+                <form className="flex gap-2" onSubmit={(e) => { e.preventDefault(); const input = e.currentTarget.querySelector('input'); if (input) { input.value = ''; } }}>
                   <Input
                     placeholder="Enter your email"
                     type="email"
+                    required
                     className="bg-white/[0.06] border-white/10 text-white placeholder:text-white/30 focus:border-[#0D7377]/50 focus:ring-[#0D7377]/20 h-10"
                   />
-                  <Button className="bg-[#0D7377] text-white hover:bg-[#10908F] shrink-0 h-10 px-4 shadow-md shadow-[#0D7377]/20">
+                  <Button type="submit" className="bg-[#0D7377] text-white hover:bg-[#10908F] shrink-0 h-10 px-4 shadow-md shadow-[#0D7377]/20">
                     <ArrowRight className="w-4 h-4" />
                   </Button>
-                </div>
+                </form>
               </div>
 
               {/* Social Links */}
@@ -112,7 +113,7 @@ export default function Footer() {
                     <li key={link.label}>
                       <a
                         href={link.href}
-                        className="text-sm text-white/40 hover:text-[#D4A843] transition-colors duration-200"
+                        className="text-sm text-white/60 hover:text-[#D4A843] transition-colors duration-200"
                       >
                         {link.label}
                       </a>
@@ -128,10 +129,10 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="py-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-white/30">
+          <p className="text-xs text-white/50">
             © {new Date().getFullYear()} DiplomatiQ. All rights reserved.
           </p>
-          <p className="text-xs text-white/30 flex items-center gap-1.5">
+          <p className="text-xs text-white/50 flex items-center gap-1.5">
             Made with <span className="text-[#D4A843]">diplomatic precision</span>
             <Mail className="w-3 h-3" />
           </p>

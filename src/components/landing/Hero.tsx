@@ -129,7 +129,7 @@ export default function Hero() {
 
         {/* Subtitle */}
         <motion.p
-          className="mt-6 text-lg md:text-xl text-white/60 max-w-2xl mx-auto leading-relaxed"
+          className="mt-6 text-lg md:text-xl text-white/75 max-w-2xl mx-auto leading-relaxed"
           variants={itemVariants}
         >
           The all-in-one platform that transforms how schools train delegates,
@@ -141,21 +141,25 @@ export default function Hero() {
           className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4"
           variants={itemVariants}
         >
-          <Button
-            size="lg"
-            className="bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold text-base px-8 h-13 shadow-lg shadow-[#0D7377]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#0D7377]/40 hover:scale-[1.02]"
-          >
-            Start Free Trial
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-          <Button
-            size="lg"
-            variant="outline"
-            className="border-white/20 text-white hover:bg-white/10 text-base px-8 h-13 transition-all duration-300 hover:border-[#D4A843]/50 hover:text-[#D4A843] group"
-          >
-            <Play className="w-4 h-4 mr-2 group-hover:text-[#D4A843] transition-colors" />
-            Watch Demo
-          </Button>
+          <a href="/auth/register">
+            <Button
+              size="lg"
+              className="bg-[#0D7377] text-white hover:bg-[#10908F] font-semibold text-base px-8 h-13 shadow-lg shadow-[#0D7377]/30 transition-all duration-300 hover:shadow-xl hover:shadow-[#0D7377]/40 hover:scale-[1.02]"
+            >
+              Start Free Trial
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          </a>
+          <a href="#features">
+            <Button
+              size="lg"
+              variant="outline"
+              className="border-white/20 text-white hover:bg-white/10 text-base px-8 h-13 transition-all duration-300 hover:border-[#D4A843]/50 hover:text-[#D4A843] group"
+            >
+              <Play className="w-4 h-4 mr-2 group-hover:text-[#D4A843] transition-colors" />
+              Watch Demo
+            </Button>
+          </a>
         </motion.div>
 
         {/* Stats Bar */}
@@ -173,7 +177,7 @@ export default function Hero() {
                 transition={{ duration: 0.6, delay: 1 + i * 0.1 }}
               >
                 <span className="text-2xl md:text-3xl font-bold text-[#D4A843]">{stat.value}</span>
-                <span className="text-sm text-white/50 mt-1">{stat.label}</span>
+                <span className="text-sm text-white/65 mt-1">{stat.label}</span>
               </motion.div>
             ))}
           </div>

@@ -3,7 +3,7 @@
 import React from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
-  Globe, Home, ClipboardList, BookOpen, Building2, MessageSquare,
+  Globe, Home, ClipboardCheck, BookOpen, Building2, MessageSquare,
   Search, BarChart3, Settings, Users, Trophy, FileText,
   LogOut, ChevronLeft, ChevronRight, Shield, Crown, Star, Flame, FileSearch
 } from 'lucide-react'
@@ -27,7 +27,7 @@ interface NavItem {
 
 const STUDENT_NAV: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
-  { id: 'assessment', label: 'Assessment', icon: ClipboardList },
+  { id: 'assessment', label: 'Assessment', icon: ClipboardCheck },
   { id: 'training', label: 'Training', icon: BookOpen },
   { id: 'conferences', label: 'Conferences', icon: Building2 },
   { id: 'schools', label: 'Schools', icon: Building2 },
@@ -39,7 +39,7 @@ const STUDENT_NAV: NavItem[] = [
 
 const TEACHER_NAV: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
-  { id: 'assessment', label: 'Assessment', icon: ClipboardList },
+  { id: 'assessment', label: 'Assessment', icon: ClipboardCheck },
   { id: 'training', label: 'Training', icon: BookOpen },
   { id: 'conferences', label: 'Conferences', icon: Building2 },
   { id: 'schools', label: 'Schools', icon: Building2 },
@@ -160,7 +160,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
               exit={{ opacity: 0, width: 0 }}
               transition={{ duration: 0.2 }}
             >
-              Diplomat<span className="text-[#D4A843]">iQ</span>
+              Diplomati<span className="text-[#D4A843]">Q</span>
             </motion.span>
           )}
         </AnimatePresence>
@@ -182,7 +182,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                       className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all relative group ${
                         isActive
                           ? 'bg-[#D4A843]/15 text-[#D4A843] font-medium'
-                          : 'text-white/50 hover:text-white/80 hover:bg-white/[0.06]'
+                          : 'text-white/60 hover:text-white/80 hover:bg-white/[0.06]'
                       }`}
                       whileHover={{ x: 2 }}
                       whileTap={{ scale: 0.98 }}
@@ -195,7 +195,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                           transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                         />
                       )}
-                      <item.icon className={`w-[18px] h-[18px] shrink-0 ${isActive ? 'text-[#D4A843]' : 'text-white/40 group-hover:text-white/60'}`} />
+                      <item.icon className={`w-[18px] h-[18px] shrink-0 ${isActive ? 'text-[#D4A843]' : 'text-white/50 group-hover:text-white/60'}`} />
                       <AnimatePresence>
                         {!sidebarCollapsed && (
                           <motion.span
@@ -237,7 +237,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.2 }}
             >
-              <div className="flex items-center justify-between text-xs text-white/40 mb-1.5">
+              <div className="flex items-center justify-between text-xs text-white/55 mb-1.5">
                 <span className="flex items-center gap-1">
                   <Flame className="w-3 h-3 text-[#D4A843]" />
                   {currentLevel.name}
@@ -254,7 +254,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                 />
               </div>
               {nextLevel && (
-                <div className="text-[10px] text-white/30 mt-1 text-right">
+                <div className="text-[10px] text-white/45 mt-1 text-right">
                   {(nextLevel.minXP - xp).toLocaleString()} XP to {nextLevel.name}
                 </div>
               )}
@@ -282,7 +282,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                     </TooltipTrigger>
                     <TooltipContent side="top" className="bg-[#264B5E] text-white border-white/10">
                       <div className="text-xs font-medium">{badge.name}</div>
-                      <div className="text-[10px] text-white/50">{badge.description}</div>
+                      <div className="text-[10px] text-white/60">{badge.description}</div>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
@@ -309,7 +309,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
               >
                 <div className="text-sm font-medium text-white truncate">{user.name}</div>
                 <div className="flex items-center gap-2">
-                  <span className="text-xs text-white/40">{getMUNRoleDisplay(user.munRole)}</span>
+                  <span className="text-xs text-white/55">{getMUNRoleDisplay(user.munRole)}</span>
                   <SubscriptionBadge tier={user.subscriptionTier} />
                 </div>
               </motion.div>
@@ -328,7 +328,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
                     <TooltipTrigger asChild>
                       <button
                         onClick={handleLogout}
-                        className="text-white/30 hover:text-white/60 transition-colors p-1"
+                        className="text-white/45 hover:text-white/60 transition-colors p-1"
                       >
                         <LogOut className="w-4 h-4" />
                       </button>
@@ -347,7 +347,7 @@ export default function Sidebar({ onMobileClose }: SidebarProps) {
       {/* Collapse toggle */}
       <button
         onClick={toggleSidebar}
-        className="absolute -right-3 top-20 w-6 h-6 bg-[#1B3A4B] border border-white/10 rounded-full flex items-center justify-center text-white/40 hover:text-white/70 hover:bg-[#264B5E] transition-all z-10"
+        className="absolute -right-3 top-20 w-6 h-6 bg-[#1B3A4B] border border-white/10 rounded-full flex items-center justify-center text-white/50 hover:text-white/70 hover:bg-[#264B5E] transition-all z-10"
       >
         {sidebarCollapsed ? <ChevronRight className="w-3 h-3" /> : <ChevronLeft className="w-3 h-3" />}
       </button>

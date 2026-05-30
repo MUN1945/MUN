@@ -2,36 +2,28 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { Star, Quote } from 'lucide-react'
+import { Globe, Users, Trophy, ArrowRight, Sparkles } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 
-const testimonials = [
+const stats = [
+  { icon: Users, value: '2,000+', label: 'Delegates Worldwide' },
+  { icon: Globe, value: '50+', label: 'Countries Represented' },
+  { icon: Trophy, value: '100+', label: 'Conferences Powered' },
+]
+
+const reasons = [
   {
-    quote: 'DiplomatiQ has completely transformed how we prepare our delegates. The AI assessments pinpoint exactly where students need to improve, and the training modules have increased our conference performance by 40%.',
-    name: 'Dr. Sarah Al-Mansouri',
-    role: 'MUN Director',
-    school: 'American School of Dubai',
-    location: 'Dubai, UAE',
-    rating: 5,
-    avatar: 'SA',
+    title: 'Purpose-Built for MUN',
+    desc: 'Every feature is designed around how Model United Nations actually works — from delegate prep to committee voting.',
   },
   {
-    quote: 'As a student, I went from being nervous about my first conference to winning Best Delegate at THIMUN. The Diplomatic Academy gave me the skills and confidence I needed to represent my country effectively.',
-    name: 'Ahmed Hassan',
-    role: 'Head Delegate',
-    school: 'GEMS Wellington Academy',
-    location: 'Abu Dhabi, UAE',
-    rating: 5,
-    avatar: 'AH',
+    title: 'AI That Understands Diplomacy',
+    desc: 'Our assessment engine evaluates real diplomatic competencies, not just quiz answers. Get actionable feedback that improves performance.',
   },
   {
-    quote: 'Managing a 200-delegate conference used to take months of planning. With DiplomatiQ\'s Conference Command, we streamlined registration, committee assignments, and voting — all in one platform. It\'s a game-changer.',
-    name: 'Priya Sharma',
-    role: 'Secretary-General',
-    school: 'Delhi Public School',
-    location: 'New Delhi, India',
-    rating: 5,
-    avatar: 'PS',
+    title: 'One Platform, Zero Fragmentation',
+    desc: 'Replace scattered spreadsheets, group chats, and paper forms with one integrated system for training, conferences, and analytics.',
   },
 ]
 
@@ -53,22 +45,39 @@ export default function Testimonials() {
           viewport={{ once: true, margin: '-100px' }}
           transition={{ duration: 0.7 }}
         >
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#059669]/10 text-[#059669] text-sm font-medium mb-4">
-            Testimonials
+          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0D7377]/10 text-[#0D7377] text-sm font-medium mb-4">
+            <Sparkles className="w-4 h-4" />
+            Join the Community
           </span>
           <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-[#0D1B2A] tracking-tight">
-            Demo Testimonials — Sample Content
+            Why Teams Choose <span className="text-[#D4A843]">DiplomatiQ</span>
           </h2>
           <p className="mt-4 text-lg text-[#0D1B2A]/60 leading-relaxed">
-            The following testimonials are placeholder examples for demonstration purposes only.
+            Schools and delegates around the world trust DiplomatiQ to elevate their MUN experience.
           </p>
         </motion.div>
 
-        {/* Testimonial Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {testimonials.map((testimonial, i) => (
+        {/* Stats Row */}
+        <motion.div
+          className="grid grid-cols-3 gap-6 mb-16 max-w-2xl mx-auto"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: '-50px' }}
+          transition={{ duration: 0.6 }}
+        >
+          {stats.map((stat) => (
+            <div key={stat.label} className="text-center">
+              <div className="text-3xl md:text-4xl font-bold text-[#0D7377]">{stat.value}</div>
+              <div className="text-sm text-[#1B3A4B]/60 mt-1">{stat.label}</div>
+            </div>
+          ))}
+        </motion.div>
+
+        {/* Reason Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 mb-16">
+          {reasons.map((reason, i) => (
             <motion.div
-              key={testimonial.name}
+              key={reason.title}
               initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, margin: '-50px' }}
@@ -76,44 +85,57 @@ export default function Testimonials() {
             >
               <Card className="bg-white border-[#1B3A4B]/10 hover:border-[#0D7377]/30 hover:shadow-lg transition-all duration-300 h-full flex flex-col group">
                 <CardContent className="p-6 flex flex-col flex-1">
-                  {/* Quote mark */}
-                  <div className="mb-4">
-                    <Quote className="w-8 h-8 text-[#0D7377]/20 group-hover:text-[#0D7377]/40 transition-colors" />
+                  <div className="w-10 h-10 rounded-lg bg-[#0D7377]/10 flex items-center justify-center mb-4">
+                    <Globe className="w-5 h-5 text-[#0D7377]" />
                   </div>
-
-                  {/* Stars */}
-                  <div className="flex gap-1 mb-4">
-                    {[...Array(testimonial.rating)].map((_, j) => (
-                      <Star
-                        key={j}
-                        className="w-4 h-4 fill-[#D4A843] text-[#D4A843]"
-                      />
-                    ))}
-                  </div>
-
-                  {/* Quote text */}
-                  <p className="text-[#1B3A4B]/70 text-sm leading-relaxed flex-1 mb-6">
-                    &ldquo;{testimonial.quote}&rdquo;
+                  <h3 className="text-lg font-semibold text-[#1B3A4B] mb-2 group-hover:text-[#0D7377] transition-colors">
+                    {reason.title}
+                  </h3>
+                  <p className="text-[#1B3A4B]/60 text-sm leading-relaxed flex-1">
+                    {reason.desc}
                   </p>
-
-                  {/* Author */}
-                  <div className="flex items-center gap-3 pt-4 border-t border-[#1B3A4B]/10">
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#0D7377] to-[#10908F] flex items-center justify-center text-white text-sm font-semibold shrink-0">
-                      {testimonial.avatar}
-                    </div>
-                    <div>
-                      <div className="font-semibold text-sm text-[#1B3A4B]">{testimonial.name}</div>
-                      <div className="text-xs text-[#1B3A4B]/50">
-                        {testimonial.role} · {testimonial.school}
-                      </div>
-                      <div className="text-xs text-[#0D7377]/60">{testimonial.location}</div>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </motion.div>
           ))}
         </div>
+
+        {/* CTA */}
+        <motion.div
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="bg-gradient-to-r from-[#1B3A4B] to-[#0D1B2A] rounded-2xl p-8 md:p-12 max-w-3xl mx-auto">
+            <h3 className="text-2xl md:text-3xl font-bold text-white mb-3">
+              Ready to Elevate Your MUN Program?
+            </h3>
+            <p className="text-white/65 mb-6 max-w-lg mx-auto">
+              Join thousands of delegates and educators who are transforming their MUN experience with DiplomatiQ.
+            </p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Button
+                size="lg"
+                className="bg-[#D4A843] text-[#1B3A4B] hover:bg-[#C49B38] font-semibold px-8 shadow-lg shadow-[#D4A843]/20 transition-all duration-300"
+              >
+                Start Free Trial
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Button>
+              <a href="/auth/register">
+                <Button
+                  variant="outline"
+                  size="lg"
+                  className="border-white/20 text-white hover:bg-white/10 font-medium"
+                >
+                  Schedule a Demo
+                </Button>
+              </a>
+            </div>
+            <p className="mt-4 text-xs text-white/55">No credit card required · 14-day free trial · Cancel anytime</p>
+          </div>
+        </motion.div>
       </div>
     </section>
   )

@@ -153,6 +153,7 @@ enum Curriculum {
   AMERICAN
   BRITISH
   IB
+  CBSE
   NATIONAL
   OTHER
 }
@@ -290,6 +291,7 @@ model School {
   longitude         Float?
   munProgramActive  Boolean           @default(false)
   munProgramSize    Int               @default(0)
+  isOtherSchool     Boolean           @default(false)  // Special flag for "Other School" option
   isActive          Boolean           @default(true)
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt

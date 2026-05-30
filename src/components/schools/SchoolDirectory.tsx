@@ -27,7 +27,7 @@ import { useAuthStore } from '@/lib/store'
 // ============================================================
 
 type SchoolType = 'PUBLIC' | 'PRIVATE' | 'INTERNATIONAL' | 'CHARTER'
-type Curriculum = 'AMERICAN' | 'BRITISH' | 'IB' | 'NATIONAL' | 'OTHER'
+type Curriculum = 'AMERICAN' | 'BRITISH' | 'IB' | 'CBSE' | 'NATIONAL' | 'OTHER'
 type Country = 'UAE' | 'Qatar' | 'Oman' | 'Bahrain' | 'Kuwait' | 'Saudi Arabia'
 type UAEEmirate = 'Abu Dhabi' | 'Dubai' | 'Sharjah' | 'Ajman' | 'Ras Al Khaimah' | 'Fujairah' | 'Umm Al Quwain' | 'Al Ain'
 
@@ -63,7 +63,7 @@ interface SchoolRequest {
 }
 
 // ============================================================
-// SCHOOL SEED DATA — 45 Real UAE/GCC Schools
+// SCHOOL SEED DATA — 55+ Real UAE/GCC Schools
 // ============================================================
 
 const SCHOOLS: School[] = [
@@ -149,6 +149,56 @@ const SCHOOLS: School[] = [
     studentCount: 2200,
     teacherCount: 180,
     website: 'https://www.alnahda.sch.ae',
+  },
+  {
+    id: 'uae-ad-6',
+    name: 'Raha International School',
+    officialName: 'Raha International School',
+    city: 'Abu Dhabi',
+    emirate: 'Abu Dhabi',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'INTERNATIONAL',
+    curriculum: 'IB',
+    isVerified: true,
+    munProgramActive: true,
+    munProgramSize: 30,
+    studentCount: 1600,
+    teacherCount: 140,
+    website: 'https://www.raha.sch.ae',
+  },
+  {
+    id: 'uae-ad-7',
+    name: 'Cranleigh Abu Dhabi',
+    officialName: 'Cranleigh Abu Dhabi',
+    city: 'Abu Dhabi',
+    emirate: 'Abu Dhabi',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'INTERNATIONAL',
+    curriculum: 'BRITISH',
+    isVerified: true,
+    munProgramActive: false,
+    studentCount: 1150,
+    teacherCount: 100,
+    website: 'https://www.cranleigh.ae',
+  },
+  {
+    id: 'uae-ad-8',
+    name: 'Amity International Abu Dhabi',
+    officialName: 'Amity International School Abu Dhabi',
+    city: 'Abu Dhabi',
+    emirate: 'Abu Dhabi',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'INTERNATIONAL',
+    curriculum: 'CBSE',
+    isVerified: true,
+    munProgramActive: true,
+    munProgramSize: 25,
+    studentCount: 1350,
+    teacherCount: 115,
+    website: 'https://www.amityabudhabi.ae',
   },
   // ===== UAE — Dubai =====
   {
@@ -267,6 +317,55 @@ const SCHOOLS: School[] = [
     teacherCount: 120,
     website: 'https://www.disdubai.ae',
   },
+  {
+    id: 'uae-dx-8',
+    name: 'The Indian High School Dubai',
+    officialName: 'The Indian High School Dubai',
+    city: 'Dubai',
+    emirate: 'Dubai',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'PRIVATE',
+    curriculum: 'CBSE',
+    isVerified: true,
+    munProgramActive: true,
+    munProgramSize: 30,
+    studentCount: 3800,
+    teacherCount: 280,
+    website: 'https://www.indianhighschooldubai.org',
+  },
+  {
+    id: 'uae-dx-9',
+    name: 'GEMS Founders School Dubai',
+    officialName: 'GEMS Founders School Dubai',
+    city: 'Dubai',
+    emirate: 'Dubai',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'INTERNATIONAL',
+    curriculum: 'BRITISH',
+    isVerified: true,
+    munProgramActive: false,
+    studentCount: 1650,
+    teacherCount: 140,
+    website: 'https://www.gemsfoundersschool.com',
+  },
+  {
+    id: 'uae-dx-10',
+    name: 'Our Own High School Al Warqa',
+    officialName: 'Our Own High School Al Warqa Dubai',
+    city: 'Dubai',
+    emirate: 'Dubai',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'PRIVATE',
+    curriculum: 'CBSE',
+    isVerified: true,
+    munProgramActive: false,
+    studentCount: 1550,
+    teacherCount: 130,
+    website: 'https://www.oohsaw.gems.ae',
+  },
   // ===== UAE — Sharjah =====
   {
     id: 'uae-sh-1',
@@ -310,12 +409,29 @@ const SCHOOLS: School[] = [
     country: 'UAE',
     region: 'GCC',
     schoolType: 'PRIVATE',
-    curriculum: 'NATIONAL',
+    curriculum: 'CBSE',
     isVerified: true,
-    munProgramActive: false,
+    munProgramActive: true,
+    munProgramSize: 20,
     studentCount: 4500,
     teacherCount: 300,
     website: 'https://www.dpssharjah.com',
+  },
+  {
+    id: 'uae-sh-4',
+    name: 'Pristine Private School Sharjah',
+    officialName: 'Pristine Private School Sharjah',
+    city: 'Sharjah',
+    emirate: 'Sharjah',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'PRIVATE',
+    curriculum: 'BRITISH',
+    isVerified: true,
+    munProgramActive: false,
+    studentCount: 700,
+    teacherCount: 60,
+    website: 'https://www.pristineprivateschool.com',
   },
   // ===== UAE — Ajman =====
   {
@@ -350,6 +466,22 @@ const SCHOOLS: School[] = [
     teacherCount: 45,
     website: '',
   },
+  {
+    id: 'uae-aj-3',
+    name: 'Woodlem Park School Ajman',
+    officialName: 'Woodlem Park School Ajman',
+    city: 'Ajman',
+    emirate: 'Ajman',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'PRIVATE',
+    curriculum: 'AMERICAN',
+    isVerified: false,
+    munProgramActive: false,
+    studentCount: 550,
+    teacherCount: 45,
+    website: '',
+  },
   // ===== UAE — Ras Al Khaimah =====
   {
     id: 'uae-rak-1',
@@ -362,7 +494,8 @@ const SCHOOLS: School[] = [
     schoolType: 'INTERNATIONAL',
     curriculum: 'BRITISH',
     isVerified: true,
-    munProgramActive: false,
+    munProgramActive: true,
+    munProgramSize: 20,
     studentCount: 1500,
     teacherCount: 120,
     website: 'https://www.rakacademy.org',
@@ -383,6 +516,22 @@ const SCHOOLS: School[] = [
     teacherCount: 90,
     website: '',
   },
+  {
+    id: 'uae-rak-3',
+    name: 'Al Shomoukh Intl School RAK',
+    officialName: 'Al Shomoukh International School Ras Al Khaimah',
+    city: 'Ras Al Khaimah',
+    emirate: 'Ras Al Khaimah',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'INTERNATIONAL',
+    curriculum: 'AMERICAN',
+    isVerified: false,
+    munProgramActive: false,
+    studentCount: 650,
+    teacherCount: 55,
+    website: '',
+  },
   // ===== UAE — Fujairah =====
   {
     id: 'uae-fj-1',
@@ -395,7 +544,8 @@ const SCHOOLS: School[] = [
     schoolType: 'PRIVATE',
     curriculum: 'BRITISH',
     isVerified: true,
-    munProgramActive: false,
+    munProgramActive: true,
+    munProgramSize: 15,
     studentCount: 700,
     teacherCount: 60,
     website: 'https://www.fpa.sch.ae',
@@ -409,7 +559,7 @@ const SCHOOLS: School[] = [
     country: 'UAE',
     region: 'GCC',
     schoolType: 'PRIVATE',
-    curriculum: 'NATIONAL',
+    curriculum: 'CBSE',
     isVerified: true,
     munProgramActive: false,
     studentCount: 2800,
@@ -431,6 +581,22 @@ const SCHOOLS: School[] = [
     munProgramActive: false,
     studentCount: 3200,
     teacherCount: 250,
+    website: '',
+  },
+  {
+    id: 'uae-uaq-2',
+    name: 'Al Salam Private School UAQ',
+    officialName: 'Al Salam Private School Umm Al Quwain',
+    city: 'Umm Al Quwain',
+    emirate: 'Umm Al Quwain',
+    country: 'UAE',
+    region: 'GCC',
+    schoolType: 'PRIVATE',
+    curriculum: 'CBSE',
+    isVerified: false,
+    munProgramActive: false,
+    studentCount: 500,
+    teacherCount: 40,
     website: '',
   },
   // ===== UAE — Al Ain =====
@@ -736,8 +902,8 @@ const SCHOOLS: School[] = [
   },
 ]
 
-// Demo pending school requests
-const DEMO_PENDING_REQUESTS: SchoolRequest[] = [
+// Pending school requests
+const PENDING_REQUESTS: SchoolRequest[] = [
   {
     id: 'req-1',
     schoolName: 'GEMS Founders School Dubai',
@@ -799,6 +965,7 @@ const CURRICULUM_LABELS: Record<Curriculum, string> = {
   'AMERICAN': 'American',
   'BRITISH': 'British',
   'IB': 'IB',
+  'CBSE': 'CBSE (Indian)',
   'NATIONAL': 'National',
   'OTHER': 'Other',
 }
@@ -814,6 +981,7 @@ const CURRICULUM_COLORS: Record<Curriculum, string> = {
   'AMERICAN': 'bg-red-50 text-red-600 border-red-200',
   'BRITISH': 'bg-blue-50 text-blue-600 border-blue-200',
   'IB': 'bg-orange-50 text-orange-600 border-orange-200',
+  'CBSE': 'bg-teal-50 text-teal-600 border-teal-200',
   'NATIONAL': 'bg-green-50 text-green-600 border-green-200',
   'OTHER': 'bg-gray-50 text-gray-600 border-gray-200',
 }
@@ -838,17 +1006,23 @@ export default function SchoolDirectory() {
   // Registration flow state
   const [regSearch, setRegSearch] = useState('')
   const [showNotListedForm, setShowNotListedForm] = useState(false)
+  const [isOtherSchoolSelected, setIsOtherSchoolSelected] = useState(false)
+  const [customSchoolName, setCustomSchoolName] = useState('')
   const [notListedForm, setNotListedForm] = useState({
     schoolName: '',
     city: '',
+    emirate: '',
     country: 'UAE',
+    curriculum: 'OTHER' as Curriculum,
     website: '',
     yourRole: 'STUDENT',
+    additionalInfo: '',
   })
   const [regSubmitted, setRegSubmitted] = useState(false)
+  const [requestSubmitted, setRequestSubmitted] = useState(false)
 
   // Admin approval state
-  const [pendingRequests, setPendingRequests] = useState<SchoolRequest[]>(DEMO_PENDING_REQUESTS)
+  const [pendingRequests, setPendingRequests] = useState<SchoolRequest[]>(PENDING_REQUESTS)
   const [selectedRequests, setSelectedRequests] = useState<string[]>([])
   const [rejectDialogOpen, setRejectDialogOpen] = useState(false)
   const [rejectTarget, setRejectTarget] = useState<string | null>(null)
@@ -1351,7 +1525,7 @@ export default function SchoolDirectory() {
                         <Input
                           placeholder="Type your school name..."
                           value={regSearch}
-                          onChange={(e) => setRegSearch(e.target.value)}
+                          onChange={(e) => { setRegSearch(e.target.value); setIsOtherSchoolSelected(false) }}
                           className="pl-10 bg-white border-[#E8DED0] focus-visible:ring-[#0D7377]/20"
                         />
                       </div>
@@ -1366,6 +1540,7 @@ export default function SchoolDirectory() {
                                 className="w-full text-left px-4 py-2.5 hover:bg-[#0D7377]/5 transition-colors flex items-center gap-3 border-b border-[#E8DED0]/50 last:border-0"
                                 onClick={() => {
                                   setRegSearch(school.name)
+                                  setIsOtherSchoolSelected(false)
                                 }}
                               >
                                 <div className="w-8 h-8 rounded-lg bg-[#0D7377]/10 flex items-center justify-center shrink-0">
@@ -1389,19 +1564,80 @@ export default function SchoolDirectory() {
                               No schools match &quot;{regSearch}&quot;
                             </div>
                           )}
-                          <div className="border-t border-[#E8DED0]">
+                          {/* "Other School" option at bottom of dropdown */}
+                          <div className="border-t-2 border-[#D4A843]/30">
                             <button
-                              className="w-full text-left px-4 py-2.5 hover:bg-[#D4A843]/5 transition-colors flex items-center gap-2 text-[#D4A843] font-medium text-sm"
-                              onClick={() => setShowNotListedForm(true)}
+                              className="w-full text-left px-4 py-3 hover:bg-[#D4A843]/5 transition-colors flex items-center gap-3"
+                              onClick={() => {
+                                setIsOtherSchoolSelected(true)
+                                setCustomSchoolName(regSearch)
+                              }}
                             >
-                              <AlertCircle className="w-4 h-4" />
-                              My school is not listed — request addition
+                              <div className="w-8 h-8 rounded-lg bg-[#D4A843]/10 flex items-center justify-center shrink-0">
+                                <AlertCircle className="w-4 h-4 text-[#D4A843]" />
+                              </div>
+                              <div className="min-w-0 flex-1">
+                                <div className="text-sm font-medium text-[#D4A843]">
+                                  Other School — Not Listed
+                                </div>
+                                <div className="text-xs text-[#D4A843]/70">
+                                  Select this if your school is not in our directory. You can type your school name manually.
+                                </div>
+                              </div>
                             </button>
                           </div>
                         </div>
                       )}
 
-                      {/* Quick access: Recently added */}
+                      {/* Manual school name input when "Other School" is selected */}
+                      {isOtherSchoolSelected && (
+                        <motion.div
+                          initial={{ opacity: 0, y: -5 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="bg-[#D4A843]/5 border border-[#D4A843]/30 rounded-lg p-4 space-y-3"
+                        >
+                          <div className="flex items-center gap-2 mb-2">
+                            <AlertCircle className="w-4 h-4 text-[#D4A843]" />
+                            <span className="text-sm font-medium text-[#D4A843]">Your school is not in our directory yet</span>
+                          </div>
+                          <div>
+                            <Label className="text-sm text-[#1B3A4B]">Enter your school name</Label>
+                            <Input
+                              placeholder="Type your school name exactly as it appears"
+                              value={customSchoolName}
+                              onChange={(e) => setCustomSchoolName(e.target.value)}
+                              className="mt-1.5 border-[#E8DED0] focus-visible:ring-[#D4A843]/20"
+                            />
+                          </div>
+                          <div className="flex flex-col sm:flex-row gap-2">
+                            <Button
+                              className="bg-[#0D7377] hover:bg-[#0A6266] text-white"
+                              disabled={!customSchoolName.trim()}
+                              onClick={() => {
+                                setRegSubmitted(true)
+                              }}
+                            >
+                              Continue with &quot;{customSchoolName || 'Other School'}&quot;
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="border-[#D4A843] text-[#D4A843] hover:bg-[#D4A843]/10"
+                              onClick={() => {
+                                setNotListedForm((f) => ({ ...f, schoolName: customSchoolName }))
+                                setShowNotListedForm(true)
+                              }}
+                            >
+                              <Send className="w-4 h-4 mr-2" />
+                              Request School Addition Instead
+                            </Button>
+                          </div>
+                          <p className="text-xs text-muted-foreground">
+                            You can proceed with registration using your school name, or submit a request to have it officially added to the directory.
+                          </p>
+                        </motion.div>
+                      )}
+
+                      {/* Quick access: Popular Schools */}
                       <div className="mt-6">
                         <h3 className="text-sm font-medium text-[#1B3A4B] mb-2">Popular Schools</h3>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -1409,7 +1645,7 @@ export default function SchoolDirectory() {
                             <button
                               key={school.id}
                               className="text-left p-3 rounded-lg border border-[#E8DED0] hover:border-[#0D7377]/30 hover:bg-[#0D7377]/5 transition-all"
-                              onClick={() => setRegSearch(school.name)}
+                              onClick={() => { setRegSearch(school.name); setIsOtherSchoolSelected(false) }}
                             >
                               <div className="flex items-center gap-2">
                                 <Globe className="w-4 h-4 text-[#D4A843] shrink-0" />
@@ -1422,9 +1658,20 @@ export default function SchoolDirectory() {
                           ))}
                         </div>
                       </div>
+
+                      {/* Request School Addition link at bottom */}
+                      <div className="mt-4 pt-4 border-t border-[#E8DED0]">
+                        <button
+                          className="flex items-center gap-2 text-sm text-[#0D7377] hover:text-[#0A6266] font-medium transition-colors"
+                          onClick={() => setShowNotListedForm(true)}
+                        >
+                          <Send className="w-4 h-4" />
+                          Request School Addition — Submit your school to be added to the directory
+                        </button>
+                      </div>
                     </div>
                   ) : (
-                    /* Not Listed Form */
+                    /* Request School Addition Form */
                     <div className="space-y-4">
                       <div className="flex items-center gap-2 mb-2">
                         <Button
@@ -1439,12 +1686,12 @@ export default function SchoolDirectory() {
                       <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
                         <AlertCircle className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" />
                         <div className="text-xs text-amber-800">
-                          Your school will be reviewed by our team before being added to the directory. This typically takes 1–3 business days.
+                          Your school addition request will be reviewed by our team before being added to the directory. This typically takes 1–3 business days. You&apos;ll receive a notification once it&apos;s approved.
                         </div>
                       </div>
                       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                          <Label className="text-sm text-[#1B3A4B]">School Name</Label>
+                          <Label className="text-sm text-[#1B3A4B]">School Name *</Label>
                           <Input
                             placeholder="Official school name"
                             value={notListedForm.schoolName}
@@ -1453,13 +1700,26 @@ export default function SchoolDirectory() {
                           />
                         </div>
                         <div>
-                          <Label className="text-sm text-[#1B3A4B]">City</Label>
+                          <Label className="text-sm text-[#1B3A4B]">City *</Label>
                           <Input
                             placeholder="City"
                             value={notListedForm.city}
                             onChange={(e) => setNotListedForm((f) => ({ ...f, city: e.target.value }))}
                             className="mt-1.5 border-[#E8DED0] focus-visible:ring-[#0D7377]/20"
                           />
+                        </div>
+                        <div>
+                          <Label className="text-sm text-[#1B3A4B]">Emirate</Label>
+                          <Select value={notListedForm.emirate} onValueChange={(v) => setNotListedForm((f) => ({ ...f, emirate: v }))}>
+                            <SelectTrigger className="mt-1.5 border-[#E8DED0]">
+                              <SelectValue placeholder="Select emirate" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {UAE_EMIRATES.map((em) => (
+                                <SelectItem key={em} value={em}>{em}</SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
                         </div>
                         <div>
                           <Label className="text-sm text-[#1B3A4B]">Country</Label>
@@ -1472,6 +1732,19 @@ export default function SchoolDirectory() {
                                 <SelectItem key={country} value={country}>
                                   {flag} {country}
                                 </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <div>
+                          <Label className="text-sm text-[#1B3A4B]">Curriculum</Label>
+                          <Select value={notListedForm.curriculum} onValueChange={(v) => setNotListedForm((f) => ({ ...f, curriculum: v as Curriculum }))}>
+                            <SelectTrigger className="mt-1.5 border-[#E8DED0]">
+                              <SelectValue />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {Object.entries(CURRICULUM_LABELS).map(([key, label]) => (
+                                <SelectItem key={key} value={key}>{label}</SelectItem>
                               ))}
                             </SelectContent>
                           </Select>
@@ -1498,6 +1771,16 @@ export default function SchoolDirectory() {
                             </SelectContent>
                           </Select>
                         </div>
+                        <div className="sm:col-span-2">
+                          <Label className="text-sm text-[#1B3A4B]">Additional Info (optional)</Label>
+                          <Textarea
+                            placeholder="Any additional details about the school, MUN program, etc."
+                            value={notListedForm.additionalInfo}
+                            onChange={(e) => setNotListedForm((f) => ({ ...f, additionalInfo: e.target.value }))}
+                            className="mt-1.5 border-[#E8DED0] focus-visible:ring-[#0D7377]/20"
+                            rows={2}
+                          />
+                        </div>
                       </div>
                       <Button
                         className="bg-[#0D7377] hover:bg-[#0A6266] text-white"
@@ -1505,7 +1788,7 @@ export default function SchoolDirectory() {
                         onClick={() => setRegSubmitted(true)}
                       >
                         <Send className="w-4 h-4 mr-2" />
-                        Submit Request
+                        Submit School Addition Request
                       </Button>
                     </div>
                   )}
@@ -1521,10 +1804,14 @@ export default function SchoolDirectory() {
                   >
                     <CheckCircle2 className="w-8 h-8 text-emerald-600" />
                   </motion.div>
-                  <h3 className="text-lg font-bold text-[#1B3A4B]">Request Submitted!</h3>
+                  <h3 className="text-lg font-bold text-[#1B3A4B]">
+                    {isOtherSchoolSelected ? 'Registered with Custom School!' : 'Request Submitted!'}
+                  </h3>
                   <p className="text-sm text-muted-foreground mt-2 max-w-md mx-auto">
-                    Your school addition request has been submitted. Our team will review it within 1–3 business days.
-                    You&apos;ll receive a notification once it&apos;s approved.
+                    {isOtherSchoolSelected
+                      ? `You have been registered with "${customSchoolName}". Our team will verify and add your school to the directory.`
+                      : 'Your school addition request has been submitted. Our team will review it within 1–3 business days. You\'ll receive a notification once it\'s approved.'
+                    }
                   </p>
                   <Button
                     variant="outline"
@@ -1532,8 +1819,10 @@ export default function SchoolDirectory() {
                     onClick={() => {
                       setRegSubmitted(false)
                       setShowNotListedForm(false)
+                      setIsOtherSchoolSelected(false)
                       setRegSearch('')
-                      setNotListedForm({ schoolName: '', city: '', country: 'UAE', website: '', yourRole: 'STUDENT' })
+                      setCustomSchoolName('')
+                      setNotListedForm({ schoolName: '', city: '', emirate: '', country: 'UAE', curriculum: 'OTHER' as Curriculum, website: '', yourRole: 'STUDENT', additionalInfo: '' })
                     }}
                   >
                     Submit Another Request
@@ -1542,6 +1831,34 @@ export default function SchoolDirectory() {
               )}
             </CardContent>
           </Card>
+
+          {/* Request School Addition Card — always visible below registration */}
+          {!regSubmitted && !showNotListedForm && (
+            <Card className="border-[#D4A843]/30 bg-[#D4A843]/5">
+              <CardContent className="p-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#D4A843]/20 flex items-center justify-center shrink-0">
+                    <Send className="w-5 h-5 text-[#D4A843]" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-sm font-semibold text-[#1B3A4B]">Don&apos;t see your school?</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">
+                      Submit a request to have your school added to the DiplomatiQ directory. Our team reviews all requests within 1–3 business days.
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-2 border-[#D4A843] text-[#D4A843] hover:bg-[#D4A843]/10"
+                      onClick={() => setShowNotListedForm(true)}
+                    >
+                      <Send className="w-3.5 h-3.5 mr-1.5" />
+                      Request School Addition
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </TabsContent>
 
         {/* ============== ADMIN APPROVAL TAB ============== */}

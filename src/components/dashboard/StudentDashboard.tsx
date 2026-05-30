@@ -337,7 +337,7 @@ export default function StudentDashboard() {
               <h2 className="text-2xl font-bold text-white">
                 Welcome back, <span className="text-[#D4A843]">{user.name.split(' ')[0]}</span>
               </h2>
-              <p className="text-white/50 mt-1">
+              <p className="text-white/65 mt-1">
                 {getMUNRoleFull(user.munRole)} · {delegateProfile.xp.toLocaleString()} XP
               </p>
             </div>

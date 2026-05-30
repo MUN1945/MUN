@@ -90,7 +90,7 @@ export default function AuthModal() {
             <Globe className="w-6 h-6 text-[#1B3A4B]" />
           </div>
           <span className="text-xl font-bold tracking-tight">
-            MUN<span className="text-[#D4A843]">ified</span>
+            Diplomati<span className="text-[#D4A843]">Q</span>
           </span>
         </div>
 
@@ -176,7 +176,7 @@ export default function AuthModal() {
                       )}
                     </Button>
 
-                    {/* No demo access — production auth only */}
+
                   </CardContent>
                 </TabsContent>
 
