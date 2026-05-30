@@ -2,7 +2,9 @@ import { Resend } from "resend"
 
 const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
 
-const FROM_ADDRESS = "DiplomatiQ <noreply@diplomatiq.io>"
+// Use Resend's default sending domain until diplomatiq.io is verified
+// When you verify your domain in Resend, change this to: "DiplomatiQ <noreply@diplomatiq.io>"
+const FROM_ADDRESS = process.env.EMAIL_FROM || "DiplomatiQ <onboarding@resend.dev>"
 
 // DiplomatiQ Brand Colors
 const COLORS = {
