@@ -118,6 +118,49 @@ export default function AppShell() {
 
   const unreadCount = notifications.filter(n => !n.isRead).length
 
+  // Trial banner logic
+  const isOnTrial = user?.subscriptionStatus === 'TRIAL'
+  const trialEndsAt = user?.subscriptionTier === 'FREE' ? null : undefined
+  const [trialTimeLeft, setTrialTimeLeft] = React.useState<string>('')
+
+  React.useEffect(() => {
+    if (!isOnTrial) return
+    const fetchSubscription = async () => {
+      try {
+        const res = await fetch('/api/subscriptions')
+        if (res.ok) {
+          const data = await res.json()
+          const endsAt = data.data?.trialEndsAt
+          if (endsAt) {
+            const updateTimer = () => {
+              const now = new Date().getTime()
+              const end = new Date(endsAt).getTime()
+              const diff = end - now
+              if (diff <= 0) {
+                setTrialTimeLeft('Expired')
+                return
+              }
+              const hours = Math.floor(diff / (1000 * 60 * 60))
+              const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))
+              const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+              if (hours > 0) {
+                setTrialTimeLeft(`${hours}h ${minutes}m remaining`)
+              } else {
+                setTrialTimeLeft(`${minutes}m ${seconds}s remaining`)
+              }
+            }
+            updateTimer()
+            const interval = setInterval(updateTimer, 1000)
+            return () => clearInterval(interval)
+          }
+        }
+      } catch {
+        // silently fail
+      }
+    }
+    fetchSubscription()
+  }, [isOnTrial])
+
   // Session is already managed by auth store
 
   if (!user) return null
@@ -267,6 +310,25 @@ export default function AppShell() {
 
         {/* Main content area */}
         <main className={`flex-1 overflow-y-auto custom-scrollbar ${currentView === 'chat' ? 'flex flex-col' : ''}`}>
+          {/* Trial Banner */}
+          {isOnTrial && trialTimeLeft && (
+            <div className="bg-[#D4A843]/10 border-b border-[#D4A843]/20 px-4 md:px-6 py-2 flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <span className="w-2 h-2 bg-[#D4A843] rounded-full animate-pulse" />
+                <span className="text-sm text-[#1B3A4B]">
+                  <strong>24-Hour Free Trial</strong> — {trialTimeLeft}
+                  <span className="text-[#1B3A4B]/50 ml-2">Restricted access: basic courses & limited assessments only</span>
+                </span>
+              </div>
+              <Button
+                size="sm"
+                className="bg-[#D4A843] text-[#0D1B2A] hover:bg-[#E0BC6A] font-semibold text-xs h-7 shadow-sm"
+                onClick={() => useNavStore.getState().navigate('pricing')}
+              >
+                Upgrade Now
+              </Button>
+            </div>
+          )}
           <div className={currentView === 'chat' ? 'flex-1 flex flex-col p-2 md:p-3 min-h-0' : 'p-4 md:p-6 lg:p-8 max-w-7xl mx-auto'}>
             <AnimatePresence mode="wait">
               <motion.div

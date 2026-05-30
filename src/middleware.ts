@@ -114,7 +114,8 @@ export async function middleware(request: NextRequest) {
   }
 
   // For admin API routes, check authentication and role
-  if (isAdminApi) {
+  // Exception: /api/admin/ensure-accounts is accessible without auth (setup endpoint)
+  if (isAdminApi && !pathname.includes('/api/admin/ensure-accounts')) {
     const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET })
 
     if (!token) {

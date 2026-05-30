@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { motion } from 'framer-motion'
-import { ArrowRight, Play, Globe, Handshake, Gavel } from 'lucide-react'
+import { ArrowRight, Globe, Handshake, Gavel } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const stats = [
@@ -156,8 +156,8 @@ export default function Hero() {
               variant="outline"
               className="border-white/20 text-white hover:bg-white/10 text-base px-8 h-13 transition-all duration-300 hover:border-[#D4A843]/50 hover:text-[#D4A843] group"
             >
-              <Play className="w-4 h-4 mr-2 group-hover:text-[#D4A843] transition-colors" />
-              Watch Demo
+              Explore Features
+              <ArrowRight className="w-4 h-4 ml-2 group-hover:text-[#D4A843] transition-colors" />
             </Button>
           </a>
         </motion.div>

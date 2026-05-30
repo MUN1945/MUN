@@ -74,25 +74,23 @@ function SignInForm() {
 
     setIsLoading(true)
     try {
-      const res = await fetch('/api/auth/callback/credentials', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams({ email, password }),
+      // Use next-auth/react signIn() which handles CSRF tokens automatically
+      const result = await signIn('credentials', {
+        email,
+        password,
+        redirect: false,
       })
 
-      if (res.ok) {
-        // Verify session was created
-        const sessionRes = await fetch('/api/auth/session')
-        if (sessionRes.ok) {
-          const session = await sessionRes.json()
-          if (session?.user) {
-            router.push(callbackUrl)
-            return
-          }
-        }
+      if (result?.error) {
+        setError(result.error === 'CredentialsSignin'
+          ? 'Invalid email or password. Please try again.'
+          : result.error
+        )
+      } else if (result?.ok) {
+        router.push(callbackUrl)
+      } else {
+        setError('Invalid email or password. Please try again.')
       }
-
-      setError('Invalid email or password. Please try again.')
     } catch {
       setError('Unable to connect to server. Please check your connection.')
     } finally {

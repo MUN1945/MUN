@@ -197,16 +197,21 @@ export default function RegisterPage() {
       const result = await res.json()
 
       if (res.ok && result?.user) {
-        // Auto-login after registration
-        const loginRes = await fetch('/api/auth/callback/credentials', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams({ email: email.trim().toLowerCase(), password }),
-        })
+        // Auto-login after registration using next-auth/react signIn() (handles CSRF)
+        try {
+          const { signIn: authSignIn } = await import('next-auth/react')
+          const loginResult = await authSignIn('credentials', {
+            email: email.trim().toLowerCase(),
+            password,
+            redirect: false,
+          })
 
-        if (loginRes.ok) {
-          router.push('/dashboard')
-          return
+          if (loginResult?.ok) {
+            router.push('/dashboard')
+            return
+          }
+        } catch {
+          // Auto-login failed, redirect to sign-in page
         }
 
         // If auto-login fails, redirect to sign-in
@@ -532,7 +537,7 @@ export default function RegisterPage() {
                 {isLoading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
                 ) : (
-                  <>Start Free Trial <ArrowRight className="w-4 h-4 ml-2" /></>
+                  <>Start 24-Hour Free Trial <ArrowRight className="w-4 h-4 ml-2" /></>
                 )}
               </Button>
             </CardContent>
@@ -549,7 +554,7 @@ export default function RegisterPage() {
               </div>
 
               <div className="text-center text-xs text-white/25">
-                By creating an account, you agree to our Terms of Service and Privacy Policy.
+                By creating an account, you agree to our Terms of Service and Privacy Policy. Your 24-hour free trial includes restricted access to basic courses and limited assessments only.
               </div>
             </CardFooter>
           </form>
