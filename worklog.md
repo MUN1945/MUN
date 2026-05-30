@@ -139,3 +139,28 @@ Stage Summary:
 - Database migrated with new enum values and field names
 - Deployed to https://mun-diplomatiq.vercel.app
 - Still TODO: Set up webhook in Lemon Squeezy dashboard, set LEMONSQUEEZY_WEBHOOK_SECRET
+---
+Task ID: b1-b6
+Agent: Main Agent + 3 Full-Stack Developer Subagents
+Task: Fix 6 critical bugs identified by QA testing
+
+Work Log:
+- Investigated all 6 bugs with 3 parallel investigation subagents
+- Fixed Bug #1: Email delivery - validated Resend API key format (must start with 're_')
+- Fixed Bug #5: Sign-out - replaced raw fetch with NextAuth signOut() with CSRF token
+- Fixed Bug #4: Account deletion - created /api/user/delete route, added onClick handler, cascade deletes
+- Fixed Bug #2a: Chat - added channelId param, mapped field names (createdAt→timestamp, user.name→userName)
+- Fixed Bug #2b: Conferences - used _count.registrations, removed layout, aligned enums, added POST save
+- Fixed Bug #2c: Leaderboard, Analytics, Founder Dashboard, Gamification API, Schools API, Sidebar nav
+- Fixed Bug #3: Training Academy - added content to API, reordered courses by difficulty, removed hardcoded data
+- Pushed Prisma schema changes to database (cascade deletes, set null)
+- Updated course ordering in database for proper learning path
+- Committed, pushed to GitHub, deployed to Vercel
+
+Stage Summary:
+- 18 files modified across 6 bug fixes
+- All pages now functional (no more crashes)
+- Sign-out works properly
+- Account deletion works with cascade deletes
+- Training academy shows real content from database with proper difficulty ordering
+- Email system validates API key properly (will work when Resend is configured with real key in Vercel)
