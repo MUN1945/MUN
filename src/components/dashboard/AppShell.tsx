@@ -101,6 +101,8 @@ function ViewRouter({ view }: { view: ViewName }) {
       return <FounderDashboard />
     case 'schools':
       return <SchoolDirectory />
+    case 'users':
+      return <PlaceholderView title="User Management" description="Manage user accounts, roles, and permissions." />
     default:
       return isStudent ? <StudentDashboard /> : <TeacherDashboard />
   }

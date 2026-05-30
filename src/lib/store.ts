@@ -1,4 +1,5 @@
 import { create } from 'zustand'
+import { signOut } from 'next-auth/react'
 
 // ============================================================
 // TYPES
@@ -15,6 +16,7 @@ export type ViewName =
   | 'research'
   | 'analytics'
   | 'settings'
+  | 'users'
   | 'pricing'
   | 'conduct'
   | 'profile'
@@ -361,10 +363,9 @@ export const useAuthStore = create<AuthState & AuthActions>((set) => ({
 
   logout: async () => {
     try {
-      // Properly destroy the NextAuth session on the server
-      await fetch('/api/auth/signout', { method: 'POST' })
+      await signOut({ redirect: false })
     } catch (error) {
-      console.error('[AUTH] Failed to sign out from NextAuth:', error)
+      console.error('[AUTH] Failed to sign out:', error)
     }
     set({
       user: null,

@@ -28,7 +28,7 @@ export async function GET(request: NextRequest) {
         include: {
           _count: { select: { enrollments: true, lessons: true } },
           lessons: {
-            select: { id: true, title: true, order: true, type: true, duration: true },
+            select: { id: true, title: true, order: true, type: true, duration: true, content: true },
             orderBy: { order: "asc" },
           },
         },

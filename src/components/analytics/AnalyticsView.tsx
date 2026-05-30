@@ -152,8 +152,20 @@ function TeacherAnalytics() {
         const res = await fetch('/api/analytics')
         if (res.ok) {
           const data = await res.json()
-          if (data.teacherAnalytics) {
-            setApiData(data.teacherAnalytics)
+          // API returns { success: true, data: { overview: {...} } }
+          const apiResponse = data.data || data
+          if (apiResponse.overview) {
+            setApiData({
+              totalStudents: apiResponse.overview.totalStudents || 0,
+              avgAssessment: Math.round(apiResponse.overview.activeSubscriptions || 0),
+              trainingCompletion: apiResponse.overview.totalEnrollments || 0,
+              confParticipation: apiResponse.overview.totalConferences || 0,
+              assessmentDist: assessmentDistribution,
+              trainingProg: trainingProgress,
+              monthlyAct: monthlyActivity,
+              confSuccess: conferenceSuccess,
+              topStudents: topStudents,
+            })
           }
         }
       } catch {

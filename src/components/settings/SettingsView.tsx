@@ -682,6 +682,31 @@ function LanguageSection() {
 
 function DangerZone() {
   const [deleteConfirm, setDeleteConfirm] = useState('')
+  const [deleting, setDeleting] = useState(false)
+  const { logout } = useAuthStore()
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirm !== 'DELETE') return
+    setDeleting(true)
+    try {
+      const res = await fetch('/api/user/delete', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ confirmation: deleteConfirm }),
+      })
+      if (res.ok) {
+        await logout()
+        window.location.href = '/'
+      } else {
+        const data = await res.json()
+        console.error('[ACCOUNT DELETE] Failed:', data.error)
+        setDeleting(false)
+      }
+    } catch (error) {
+      console.error('[ACCOUNT DELETE] Network error:', error)
+      setDeleting(false)
+    }
+  }
 
   return (
     <Card className="border-red-200">
@@ -720,8 +745,12 @@ function DangerZone() {
               </div>
               <AlertDialogFooter>
                 <AlertDialogCancel onClick={() => setDeleteConfirm('')}>Cancel</AlertDialogCancel>
-                <AlertDialogAction className="bg-red-500 hover:bg-red-600 text-white" disabled={deleteConfirm !== 'DELETE'}>
-                  Permanently Delete
+                <AlertDialogAction
+                  className="bg-red-500 hover:bg-red-600 text-white"
+                  disabled={deleteConfirm !== 'DELETE' || deleting}
+                  onClick={handleDeleteAccount}
+                >
+                  {deleting ? 'Deleting...' : 'Permanently Delete'}
                 </AlertDialogAction>
               </AlertDialogFooter>
             </AlertDialogContent>

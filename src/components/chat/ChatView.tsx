@@ -646,21 +646,45 @@ export default function ChatView() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [channelsRes, messagesRes] = await Promise.all([
-          fetch('/api/channels'),
-          fetch('/api/messages'),
-        ])
+        const channelsRes = await fetch('/api/channels')
         if (channelsRes.ok) {
           const data = await channelsRes.json()
-          const channelList = Array.isArray(data) ? data : (data.channels || data.data || [])
+          const rawChannels = Array.isArray(data) ? data : (data.channels || data.data || [])
+          // Bug #4 fix: provide sensible defaults for missing channel fields
+          const channelList: ChatChannel[] = rawChannels.map((ch: Record<string, unknown>) => ({
+            id: String(ch.id || ''),
+            name: String(ch.name || ''),
+            type: (ch.type as ChannelType) || 'text',
+            category: String(ch.category || 'General'),
+            description: String(ch.description || ''),
+            unread: Number(ch.unread || 0),
+            isMuted: Boolean(ch.isMuted || false),
+          }))
           setChannels(channelList)
           if (channelList.length > 0 && !channelList.find((c: ChatChannel) => c.id === activeChannel)) {
             setActiveChannel(channelList[0].id)
           }
-        }
-        if (messagesRes.ok) {
-          const data = await messagesRes.json()
-          setMessages(Array.isArray(data) ? data : (data.messages || data.data || []))
+
+          // Bug #1 fix: pass channelId to messages fetch
+          const selectedId = channelList.length > 0 ? channelList[0].id : activeChannel
+          const messagesRes = await fetch(`/api/messages?channelId=${selectedId}`)
+          if (messagesRes.ok) {
+            const msgData = await messagesRes.json()
+            const rawMessages = Array.isArray(msgData) ? msgData : (msgData.messages || msgData.data || [])
+            // Bug #2 & #3 fix: map createdAt→timestamp and nested user fields→flat fields
+            const mappedMessages: ChatMessage[] = rawMessages.map((m: Record<string, unknown>) => ({
+              id: String(m.id || ''),
+              channelId: String(m.channelId || ''),
+              userId: String(m.userId || (m.user as Record<string, unknown>)?.id || ''),
+              userName: String(m.userName || (m.user as Record<string, unknown>)?.name || 'Unknown'),
+              userRole: String(m.userRole || (m.user as Record<string, unknown>)?.role || 'STUDENT') as UserRole,
+              content: String(m.content || ''),
+              timestamp: String(m.timestamp || m.createdAt || new Date().toISOString()),
+              isSystem: Boolean(m.isSystem || false),
+              isEdited: Boolean(m.isEdited || false),
+            }))
+            setMessages(mappedMessages)
+          }
         }
       } catch {
         // API not available, show empty states
@@ -695,7 +719,20 @@ export default function ChatView() {
         }),
       })
       if (res.ok) {
-        const newMsg = await res.json()
+        const response = await res.json()
+        // Bug #5 fix: extract message from wrapped response { success, data: message }
+        const rawMsg = response.data || response
+        const newMsg: ChatMessage = {
+          id: String(rawMsg.id || ''),
+          channelId: String(rawMsg.channelId || activeChannel),
+          userId: String(rawMsg.userId || (rawMsg.user as Record<string, unknown>)?.id || ''),
+          userName: String(rawMsg.userName || (rawMsg.user as Record<string, unknown>)?.name || 'You'),
+          userRole: String(rawMsg.userRole || (rawMsg.user as Record<string, unknown>)?.role || 'STUDENT') as UserRole,
+          content: String(rawMsg.content || content),
+          timestamp: String(rawMsg.timestamp || rawMsg.createdAt || new Date().toISOString()),
+          isSystem: Boolean(rawMsg.isSystem || false),
+          isEdited: Boolean(rawMsg.isEdited || false),
+        }
         setMessages(prev => [...prev, newMsg])
       }
     } catch {

@@ -82,13 +82,6 @@ export async function GET(request: NextRequest) {
             email: true,
             role: true,
             munRole: true,
-          },
-        },
-        user: {
-          select: {
-            id: true,
-            name: true,
-            avatar: true,
             badges: {
               include: {
                 badge: true,

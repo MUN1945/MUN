@@ -8,7 +8,7 @@ import {
   Search, Shield, AlertTriangle, Eye, Edit, Trash2, Ban, CheckCircle2,
   XCircle, Star, RefreshCw, KeyRound, FileWarning, Ticket, Clock,
   MonitorSmartphone, ScrollText, Filter, ChevronDown, MoreHorizontal,
-  Merge, Pin, Unlock, Lock, AlertCircle, CheckCircle, X as XIcon
+  Merge, Pin, Unlock, Lock, AlertCircle, CheckCircle, X as XIcon, Globe
 } from 'lucide-react'
 import {
   BarChart, Bar, LineChart, Line, PieChart, Pie, AreaChart, Area,
@@ -104,6 +104,13 @@ interface AuditLogEntry {
   timestamp: string
   ip: string
   severity: string
+  priority: string
+  subject: string
+  createdAt: string
+  status: string
+  type: string
+  location: string
+  device: string
 }
 
 interface SupportTicket {
@@ -196,7 +203,7 @@ const cardVariants = {
   hidden: { opacity: 0, y: 20 },
   visible: (i: number) => ({
     opacity: 1, y: 0,
-    transition: { delay: i * 0.05, duration: 0.4, ease: 'easeOut' }
+    transition: { delay: i * 0.05, duration: 0.4, ease: [0.25, 0.1, 0.25, 1] as [number, number, number, number] }
   }),
 }
 

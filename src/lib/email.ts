@@ -1,6 +1,8 @@
 import { Resend } from "resend"
 
-const resend = process.env.RESEND_API_KEY ? new Resend(process.env.RESEND_API_KEY) : null
+const resend = process.env.RESEND_API_KEY?.startsWith('re_')
+  ? new Resend(process.env.RESEND_API_KEY)
+  : null
 
 // Use Resend's default sending domain until diplomatiq.io is verified
 // When you verify your domain in Resend, change this to: "DiplomatiQ <noreply@diplomatiq.io>"

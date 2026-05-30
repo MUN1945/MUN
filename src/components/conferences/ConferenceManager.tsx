@@ -6,15 +6,13 @@ import {
   Search, Plus, CalendarDays, MapPin, Users, Building2,
   ArrowLeft, Filter, MoreHorizontal, Globe, Clock, Edit, Trash2,
   Eye, Shield, Landmark, Siren, Scale, UserPlus, LayoutGrid, CheckCircle2,
-  X, Sparkles, Calculator, ChevronDown, Gavel, UserCheck,
-  ToggleLeft, Rows3, CircleDot, Milestone
+  X, Sparkles, Calculator, ChevronDown, Gavel, UserCheck
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Badge } from '@/components/ui/badge'
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Separator } from '@/components/ui/separator'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -42,14 +40,13 @@ type CommitteeType =
   | 'GENERAL_ASSEMBLY'
   | 'SECURITY_COUNCIL'
   | 'ECOSOC'
+  | 'SPECIALIZED_AGENCY'
   | 'CRISIS_COMMITTEE'
+  | 'HISTORICAL_COMMITTEE'
+  | 'INTERNATIONAL_COURT'
   | 'HUMAN_RIGHTS_COUNCIL'
-  | 'ICJ'
-  | 'WHO'
-  | 'UNEP'
-  | 'CUSTOM'
-
-type LayoutType = 'U_SHAPE' | 'CLASSROOM' | 'ROUND_TABLE' | 'HORSESHOE'
+  | 'DISARMAMENT_COMMITTEE'
+  | 'WORLD_HEALTH_ASSEMBLY'
 
 type ExperienceLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
 
@@ -62,14 +59,6 @@ interface Committee {
   chair?: string
 }
 
-interface Delegate {
-  id: string
-  name: string
-  country: string
-  committeeId: string
-  school: string
-}
-
 interface Conference {
   id: string
   name: string
@@ -79,9 +68,8 @@ interface Conference {
   location: string
   status: ConferenceStatus
   theme: string
-  layout: LayoutType
   committees: Committee[]
-  delegates: Delegate[]
+  registrationCount: number
 }
 
 // ============================================================
@@ -105,23 +93,13 @@ const COMMITTEE_TYPE_CONFIG: Record<CommitteeType, { label: string; icon: React.
   GENERAL_ASSEMBLY: { label: 'General Assembly', icon: Landmark, color: '#0D7377' },
   SECURITY_COUNCIL: { label: 'Security Council', icon: Shield, color: '#DC2626' },
   ECOSOC: { label: 'ECOSOC', icon: Scale, color: '#D4A843' },
+  SPECIALIZED_AGENCY: { label: 'Specialized Agency', icon: Globe, color: '#06B6D4' },
   CRISIS_COMMITTEE: { label: 'Crisis Committee', icon: Siren, color: '#F59E0B' },
+  HISTORICAL_COMMITTEE: { label: 'Historical Committee', icon: Landmark, color: '#10B981' },
+  INTERNATIONAL_COURT: { label: 'International Court of Justice', icon: Gavel, color: '#059669' },
   HUMAN_RIGHTS_COUNCIL: { label: 'Human Rights Council', icon: Users, color: '#8B5CF6' },
-  ICJ: { label: 'International Court of Justice', icon: Gavel, color: '#059669' },
-  WHO: { label: 'World Health Organization', icon: Globe, color: '#06B6D4' },
-  UNEP: { label: 'UN Environment Programme', icon: Landmark, color: '#10B981' },
-  CUSTOM: { label: 'Custom Committee', icon: CircleDot, color: '#6B7280' },
-}
-
-// ============================================================
-// LAYOUT CONFIG
-// ============================================================
-
-const LAYOUT_CONFIG: Record<LayoutType, { label: string; icon: React.ElementType }> = {
-  U_SHAPE: { label: 'U-Shape', icon: ToggleLeft },
-  CLASSROOM: { label: 'Classroom', icon: Rows3 },
-  ROUND_TABLE: { label: 'Round Table', icon: CircleDot },
-  HORSESHOE: { label: 'Horseshoe', icon: Milestone },
+  DISARMAMENT_COMMITTEE: { label: 'Disarmament Committee', icon: Shield, color: '#94A3B8' },
+  WORLD_HEALTH_ASSEMBLY: { label: 'World Health Assembly', icon: Globe, color: '#06B6D4' },
 }
 
 // ============================================================
@@ -167,29 +145,6 @@ function CommitteeTypeIcon({ type, size = 16 }: { type: CommitteeType; size?: nu
   const config = COMMITTEE_TYPE_CONFIG[type]
   const Icon = config.icon
   return <Icon style={{ width: size, height: size, color: config.color }} />
-}
-
-// ============================================================
-// LAYOUT ICON VISUAL
-// ============================================================
-
-function LayoutVisual({ layout, selected, onClick }: { layout: LayoutType; selected: boolean; onClick: () => void }) {
-  const config = LAYOUT_CONFIG[layout]
-  const Icon = config.icon
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`flex flex-col items-center gap-2 p-3 rounded-xl border-2 transition-all ${
-        selected
-          ? 'border-[#0D7377] bg-[#0D7377]/5 text-[#0D7377]'
-          : 'border-[#E8DED0] bg-white text-muted-foreground hover:border-[#0D7377]/30 hover:bg-[#0D7377]/[0.02]'
-      }`}
-    >
-      <Icon className="w-6 h-6" />
-      <span className="text-xs font-medium">{config.label}</span>
-    </button>
-  )
 }
 
 // ============================================================
@@ -358,7 +313,7 @@ function ConferenceListView({
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Users className="w-3.5 h-3.5 text-[#D4A843]" />
-                    <span>{conference.delegates.length} Delegate{conference.delegates.length !== 1 ? 's' : ''}</span>
+                    <span>{conference.registrationCount} Registration{conference.registrationCount !== 1 ? 's' : ''}</span>
                   </div>
                 </div>
               </CardFooter>
@@ -398,7 +353,6 @@ function ConferenceForm({
   const [endDate, setEndDate] = useState(initialData?.endDate || '')
   const [location, setLocation] = useState(initialData?.location || '')
   const [theme, setTheme] = useState(initialData?.theme || '')
-  const [layout, setLayout] = useState<LayoutType>(initialData?.layout || 'U_SHAPE')
   const [committees, setCommittees] = useState<Committee[]>(
     initialData?.committees || [{ id: `new-cm-${Date.now()}`, name: '', type: 'GENERAL_ASSEMBLY', topic: '', countryLimit: 50 }]
   )
@@ -431,9 +385,8 @@ function ConferenceForm({
       location,
       status,
       theme,
-      layout,
       committees,
-      delegates: initialData?.delegates || [],
+      registrationCount: initialData?.registrationCount || 0,
     }
     onSave(conference)
   }
@@ -531,28 +484,6 @@ function ConferenceForm({
                     onChange={(e) => setTheme(e.target.value)}
                     className="border-[#E8DED0] focus-visible:ring-[#0D7377]/20"
                   />
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-
-          {/* Layout Selector */}
-          <motion.div initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-base">Committee Layout</CardTitle>
-                <CardDescription>Choose the seating arrangement for your committees</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                  {(Object.keys(LAYOUT_CONFIG) as LayoutType[]).map((lt) => (
-                    <LayoutVisual
-                      key={lt}
-                      layout={lt}
-                      selected={layout === lt}
-                      onClick={() => setLayout(lt)}
-                    />
-                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -701,7 +632,7 @@ function ConferenceForm({
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <LayoutGrid className="w-3.5 h-3.5 text-[#D4A843]" />
-                  {LAYOUT_CONFIG[layout].label} Layout
+                  {committees.length} Committee{committees.length !== 1 ? 's' : ''} configured
                 </div>
               </CardContent>
               <CardFooter className="flex-col gap-2">
@@ -787,7 +718,7 @@ function ConferenceDetailView({
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Users className="w-4 h-4 text-[#D4A843]" />
-                    {conference.delegates.length} / {totalCountrySeats} Delegates
+                    {conference.registrationCount} / {totalCountrySeats} Delegates
                   </div>
                 </div>
               </div>
@@ -843,7 +774,7 @@ function ConferenceDetailView({
                       <Users className="w-5 h-5 text-[#D4A843]" />
                     </div>
                     <div>
-                      <div className="text-2xl font-bold text-[#1B3A4B]">{conference.delegates.length}</div>
+                      <div className="text-2xl font-bold text-[#1B3A4B]">{conference.registrationCount}</div>
                       <div className="text-xs text-muted-foreground">Registered Delegates</div>
                     </div>
                   </div>
@@ -872,7 +803,7 @@ function ConferenceDetailView({
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {conference.committees.map((cm, i) => {
               const typeConfig = COMMITTEE_TYPE_CONFIG[cm.type]
-              const delegatesInCm = conference.delegates.filter((d) => d.committeeId === cm.id)
+              const delegatesInCm = 0 // registration count is per-conference, not per-committee
               return (
                 <motion.div key={cm.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 * i }}>
                   <Card className="hover:shadow-md transition-shadow">
@@ -888,7 +819,7 @@ function ConferenceDetailView({
                           <div className="flex items-center gap-4 mt-2 text-xs text-muted-foreground">
                             <span className="flex items-center gap-1">
                               <Users className="w-3 h-3" />
-                              {delegatesInCm.length} / {cm.countryLimit} delegates
+                              {delegatesInCm} / {cm.countryLimit} delegates
                             </span>
                             {cm.chair && (
                               <span className="flex items-center gap-1">
@@ -910,38 +841,11 @@ function ConferenceDetailView({
         <TabsContent value="delegates" className="mt-4">
           <Card>
             <CardContent className="p-0">
-              {conference.delegates.length > 0 ? (
-                <div className="divide-y divide-[#E8DED0]">
-                  {conference.delegates.map((d, i) => {
-                    const cm = conference.committees.find((c) => c.id === d.committeeId)
-                    return (
-                      <motion.div
-                        key={d.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.03 * i }}
-                        className="flex items-center gap-3 p-4 hover:bg-[#F5F0EB]/50 transition-colors"
-                      >
-                        <Avatar className="w-9 h-9 border border-[#E8DED0]">
-                          <AvatarFallback className="bg-[#0D7377]/10 text-[#0D7377] text-xs font-semibold">
-                            {d.name.split(' ').map((n) => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="text-sm font-medium text-[#1B3A4B]">{d.name}</div>
-                          <div className="text-xs text-muted-foreground">{d.school}</div>
-                        </div>
-                        <Badge variant="outline" className="text-[10px] border-[#0D7377]/20 text-[#0D7377]">
-                          {d.country}
-                        </Badge>
-                        {cm && (
-                          <Badge variant="secondary" className="text-[10px]">
-                            {cm.name}
-                          </Badge>
-                        )}
-                      </motion.div>
-                    )
-                  })}
+              {conference.registrationCount > 0 ? (
+                <div className="py-8 text-center">
+                  <Users className="w-10 h-10 text-[#D4A843] mx-auto mb-3" />
+                  <h3 className="text-lg font-semibold text-[#1B3A4B]">{conference.registrationCount} Registration{conference.registrationCount !== 1 ? 's' : ''}</h3>
+                  <p className="text-sm text-muted-foreground mt-1">Open registration to start receiving delegates</p>
                 </div>
               ) : (
                 <div className="py-12 text-center">
@@ -1120,11 +1024,48 @@ export default function ConferenceManager() {
     setView('create')
   }
 
-  const handleSave = (conference: Conference) => {
-    if (selectedConference) {
-      setConferences(conferences.map((c) => (c.id === conference.id ? conference : c)))
-    } else {
-      setConferences([conference, ...conferences])
+  const handleSave = async (conference: Conference) => {
+    try {
+      const isEdit = selectedConference && !selectedConference.id.startsWith('conf-')
+      const method = isEdit ? 'PATCH' : 'POST'
+      const res = await fetch('/api/conferences', {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          ...(isEdit ? { id: conference.id } : {}),
+          name: conference.name,
+          description: conference.description,
+          startDate: conference.startDate,
+          endDate: conference.endDate,
+          location: conference.location,
+          theme: conference.theme,
+          status: conference.status,
+          committees: conference.committees,
+        }),
+      })
+      if (res.ok) {
+        const result = await res.json()
+        const saved = result.data || conference
+        if (isEdit) {
+          setConferences(conferences.map((c) => (c.id === conference.id ? { ...c, ...saved, registrationCount: saved._count?.registrations ?? c.registrationCount } : c)))
+        } else {
+          setConferences([{ ...saved, registrationCount: saved._count?.registrations ?? 0 }, ...conferences])
+        }
+      } else {
+        // Fallback: update local state even if API fails
+        if (isEdit) {
+          setConferences(conferences.map((c) => (c.id === conference.id ? conference : c)))
+        } else {
+          setConferences([conference, ...conferences])
+        }
+      }
+    } catch {
+      // Fallback: update local state even if API fails
+      if (selectedConference) {
+        setConferences(conferences.map((c) => (c.id === conference.id ? conference : c)))
+      } else {
+        setConferences([conference, ...conferences])
+      }
     }
     setSelectedConference(null)
     setView('list')

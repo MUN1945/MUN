@@ -344,7 +344,7 @@ model Subscription {
   createdAt         DateTime          @default(now())
   updatedAt         DateTime          @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([tier])
   @@index([status])
@@ -411,7 +411,7 @@ model Committee {
   updatedAt    DateTime      @updatedAt
 
   conference    Conference             @relation(fields: [conferenceId], references: [id])
-  chair         User?                  @relation(fields: [chairId], references: [id])
+  chair         User?                  @relation(fields: [chairId], references: [id], onDelete: SetNull)
   registrations ConferenceRegistration[]
 
   @@index([conferenceId])
@@ -450,7 +450,7 @@ model Assessment {
   completedAt        DateTime       @default(now())
   createdAt          DateTime       @default(now())
 
-  user       User                  @relation(fields: [userId], references: [id])
+  user       User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
   responses  AssessmentResponse[]
 
   @@index([userId])
@@ -491,7 +491,7 @@ model AssessmentResponse {
   timeSpent    Int?     // in seconds
   createdAt    DateTime @default(now())
 
-  assessment Assessment        @relation(fields: [assessmentId], references: [id])
+  assessment Assessment        @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
   question   AssessmentQuestion @relation(fields: [questionId], references: [id])
 
   @@index([assessmentId])
@@ -562,7 +562,7 @@ model UserBadge {
   badgeId   String
   earnedAt  DateTime @default(now())
 
-  user User  @relation(fields: [userId], references: [id])
+  user User  @relation(fields: [userId], references: [id], onDelete: Cascade)
   badge Badge @relation(fields: [badgeId], references: [id])
 
   @@unique([userId, badgeId])
@@ -588,7 +588,7 @@ model DelegateProfile {
   bio                 String?
   updatedAt           DateTime @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([xp])
   @@index([level])
@@ -606,7 +606,7 @@ model ConferenceRegistration {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  user       User      @relation(fields: [userId], references: [id])
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   conference Conference @relation(fields: [conferenceId], references: [id])
   committee  Committee? @relation(fields: [committeeId], references: [id])
 
@@ -626,7 +626,7 @@ model CourseEnrollment {
   completedAt DateTime?
   updatedAt   DateTime  @updatedAt
 
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   course Course @relation(fields: [courseId], references: [id])
 
   @@unique([userId, courseId])
@@ -658,7 +658,7 @@ model Message {
   createdAt DateTime @default(now())
 
   channel Channel @relation(fields: [channelId], references: [id])
-  user    User    @relation(fields: [userId], references: [id])
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([channelId])
   @@index([userId])
@@ -667,7 +667,7 @@ model Message {
 
 model ResearchTask {
   id          String   @id @default(cuid())
-  schoolId    String
+  schoolId    String?
   title       String
   description String
   assignedTo  String?
@@ -678,8 +678,8 @@ model ResearchTask {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
-  assignee User?  @relation("AssignedTasks", fields: [assignedTo], references: [id])
-  creator  User   @relation(fields: [schoolId], references: [id])
+  assignee User?  @relation("AssignedTasks", fields: [assignedTo], references: [id], onDelete: SetNull)
+  creator  User?  @relation(fields: [schoolId], references: [id], onDelete: SetNull)
 
   @@index([assignedTo])
   @@index([status])
@@ -696,7 +696,7 @@ model Activity {
   xpEarned     Int      @default(0)
   createdAt    DateTime @default(now())
 
-  user       User?       @relation(fields: [userId], references: [id])
+  user       User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
   conference Conference? @relation(fields: [conferenceId], references: [id])
 
   @@index([userId])
@@ -714,7 +714,7 @@ model Notification {
   link        String?
   createdAt   DateTime @default(now())
 
-  user User @relation("SentTo", fields: [userId], references: [id])
+  user User @relation("SentTo", fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([isRead])
@@ -733,7 +733,7 @@ model Payment {
   metadata          String?
   createdAt         DateTime      @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([status])
@@ -756,7 +756,7 @@ model Invoice {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([status])
@@ -774,7 +774,7 @@ model AuditLog {
   userAgent String?
   createdAt DateTime    @default(now())
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([userId])
   @@index([action])
@@ -858,8 +858,8 @@ model ResearchPaper {
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
 
-  student    User           @relation(fields: [studentId], references: [id])
-  teacher    User?          @relation("PaperTeacher", fields: [teacherId], references: [id])
+  student    User           @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  teacher    User?          @relation("PaperTeacher", fields: [teacherId], references: [id], onDelete: SetNull)
   evaluation PaperEvaluation?
   feedbacks  PaperFeedback[]
 
@@ -892,7 +892,7 @@ model PaperEvaluation {
   evaluatedAt            DateTime @default(now())
   createdAt              DateTime @default(now())
 
-  paper     ResearchPaper   @relation(fields: [paperId], references: [id])
+  paper     ResearchPaper   @relation(fields: [paperId], references: [id], onDelete: Cascade)
   feedbacks PaperFeedback[]
 
   @@index([paperId])
@@ -910,8 +910,8 @@ model PaperFeedback {
   studentProgressTrend String? // JSON tracking progress over time
   createdAt          DateTime @default(now())
 
-  paper      ResearchPaper   @relation(fields: [paperId], references: [id])
-  evaluation PaperEvaluation @relation(fields: [evaluationId], references: [id])
+  paper      ResearchPaper   @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  evaluation PaperEvaluation @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
 
   @@index([paperId])
   @@index([evaluationId])
@@ -935,7 +935,7 @@ model SecurityEvent {
   resolvedAt    DateTime?
   createdAt     DateTime            @default(now())
 
-  user User? @relation(fields: [userId], references: [id])
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([eventType])
@@ -954,7 +954,7 @@ model Session {
   isActive  Boolean  @default(true)
   createdAt DateTime @default(now())
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([token])

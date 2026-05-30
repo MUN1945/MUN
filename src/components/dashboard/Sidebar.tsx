@@ -54,7 +54,7 @@ const ADMIN_NAV: NavItem[] = [
   { id: 'dashboard', label: 'Dashboard', icon: Home },
   { id: 'analytics', label: 'Analytics', icon: BarChart3 },
   { id: 'conferences', label: 'Conferences', icon: Building2 },
-  { id: 'settings', label: 'Users', icon: Users },
+  { id: 'users', label: 'Users', icon: Users },
   { id: 'settings', label: 'Settings', icon: Settings },
 ]
 

@@ -50,10 +50,10 @@ export async function GET(request: NextRequest) {
       where.city = city
     }
     if (schoolType && schoolType !== 'all') {
-      where.schoolType = schoolType as Prisma.EnumSchoolTypeFilter['equals']
+      where.schoolType = schoolType
     }
     if (curriculum && curriculum !== 'all') {
-      where.curriculum = curriculum as Prisma.EnumCurriculumFilter['equals']
+      where.curriculum = curriculum
     }
     if (munActive === 'true') {
       where.munProgramActive = true

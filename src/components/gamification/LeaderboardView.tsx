@@ -232,19 +232,24 @@ export default function LeaderboardView() {
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const res = await fetch('/api/gamification')
+        const res = await fetch('/api/gamification?action=leaderboard')
         if (res.ok) {
           const data = await res.json()
-          if (data.leaderboard && Array.isArray(data.leaderboard) && data.leaderboard.length > 0) {
-            setApiUsers(data.leaderboard.map((u: Record<string, unknown>) => ({
-              id: u.id || String(Math.random()),
-              name: u.name || 'Unknown',
-              school: u.school || '',
-              xp: u.xp || 0,
-              conferences: u.conferences || 0,
-              diplomacy: u.diplomacy || 0,
-              research: u.research || 0,
-            })))
+          const leaderboardData = data.data && Array.isArray(data.data) ? data.data : []
+          if (leaderboardData.length > 0) {
+            setApiUsers(leaderboardData.map((entry: Record<string, unknown>) => {
+              const userData = (entry.user as Record<string, unknown>) || {}
+              const schoolData = (userData.school as Record<string, unknown>) || {}
+              return {
+                id: String(userData.id || entry.id || Math.random()),
+                name: String(userData.name || 'Unknown'),
+                school: String(schoolData.name || ''),
+                xp: Number(entry.xp || 0),
+                conferences: Number(entry.conferencesAttended || 0),
+                diplomacy: Number(entry.awardsReceived || 0),
+                research: Number(entry.resolutionsWritten || 0),
+              }
+            }))
           }
         }
       } catch {
