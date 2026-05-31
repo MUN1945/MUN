@@ -244,3 +244,24 @@ Stage Summary:
 - 34 standard MUN committee channels created with AI welcome messages
 - DiplomatiQ Guru AI assistant is active in all committee channels
 - AI assistant enforces scope, safety, and functional restrictions per requirements
+---
+Task ID: chat-research-lab-fixes
+Agent: Main Agent
+Task: Fix Chat Bot and Research Lab critical issues
+
+Work Log:
+- Read and analyzed ChatView.tsx, ResearchPaperEvaluation.tsx, ai-assistant/route.ts, research/evaluate/route.ts, research/route.ts
+- Identified critical bugs in both features
+- Fixed ChatView.tsx: Added useAuthStore import, replaced hardcoded isTeacher={false} with dynamic role check, added 5-second message polling, populated members sidebar with bot user
+- Fixed research/evaluate/route.ts: Added authentication requirement, added max_tokens=2000, evaluation results now save to database (PaperEvaluation + ResearchPaper)
+- Fixed ResearchPaperEvaluation.tsx StudentView: Removed fake DEFAULT_EVALUATION fallback on error, added proper error messages display
+- Fixed ResearchPaperEvaluation.tsx TeacherView: Replaced hardcoded mock data with API fetch, added loading state, made Approve/Return buttons save to database
+- Fixed division-by-zero in avgScore/avgAI calculations
+- Fixed role check to include all admin roles
+- Build succeeded with no errors
+- Pushed to GitHub and deployed to Vercel production
+
+Stage Summary:
+- Chat Bot: Now has dynamic teacher role detection, message polling every 5 seconds, and members sidebar with DiplomatiQ Guru bot
+- Research Lab: Evaluate API now requires auth, saves to DB, StudentView shows errors instead of fake data, TeacherView fetches real submissions and saves feedback
+- Deployed to: https://mun-diplomatiq.vercel.app (Status: READY)
