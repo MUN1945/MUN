@@ -372,8 +372,8 @@ function UserManagement() {
       toast.error('All fields are required')
       return
     }
-    if (newUser.password.length < 6) {
-      toast.error('Password must be at least 6 characters')
+    if (newUser.password.length < 8) {
+      toast.error('Password must be at least 8 characters')
       return
     }
     setIsCreating(true)

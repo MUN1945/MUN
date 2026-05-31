@@ -2,24 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { db } from "@/lib/db"
-
-// XP thresholds for each level
-const XP_LEVELS: Record<string, number> = {
-  OBSERVER: 0,
-  DELEGATE: 100,
-  AMBASSADOR: 300,
-  DIPLOMAT: 600,
-  ENVOY: 1000,
-  SECRETARY_GENERAL: 1500,
-}
-
-function calculateLevel(xp: number): string {
-  const levels = Object.entries(XP_LEVELS).sort(([, a], [, b]) => b - a)
-  for (const [level, threshold] of levels) {
-    if (xp >= threshold) return level
-  }
-  return "OBSERVER"
-}
+import { XP_LEVELS, getLevelForXP } from "@/lib/xp-levels"
 
 // GET /api/gamification - Get user profile with XP, level, badges
 export async function GET(request: NextRequest) {
@@ -101,7 +84,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Calculate current level based on XP
-    const calculatedLevel = calculateLevel(profile.xp)
+    const calculatedLevel = getLevelForXP(profile.xp)
 
     // Update level if it has changed
     if (calculatedLevel !== profile.level) {

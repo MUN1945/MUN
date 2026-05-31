@@ -148,9 +148,9 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate password length
-    if (password.length < 6) {
+    if (password.length < 8) {
       return NextResponse.json(
-        { success: false, error: "Password must be at least 6 characters" },
+        { success: false, error: "Password must be at least 8 characters" },
         { status: 400 }
       )
     }
@@ -298,7 +298,7 @@ export async function POST(request: NextRequest) {
     console.error("[ADMIN USERS] Full error:", errorMessage)
 
     return NextResponse.json(
-      { success: false, error: `Failed to create user: ${errorMessage}` },
+      { success: false, error: "Failed to create user. Please try again or contact support." },
       { status: 500 }
     )
   }

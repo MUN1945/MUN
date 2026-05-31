@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server"
 import { hash } from "bcryptjs"
 import { db } from "@/lib/db"
 
-const SETUP_SECRET = "diplomatiq-setup-2026"
+const SETUP_SECRET = process.env.SETUP_SECRET || ""
 
 const MASTER_ACCOUNT = {
   email: "modelunitednations45@gmail.com",
-  password: "DiplomatiQ2026!MasterAdmin",
+  password: process.env.MASTER_ADMIN_PASSWORD || "DiplomatiQ2026!MasterAdmin",
   name: "DiplomatiQ Master Admin",
   role: "MASTER_ADMIN" as const,
   munRole: "SECRETARY_GENERAL" as const,
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
 
     if (querySecret !== SETUP_SECRET && headerSecret !== SETUP_SECRET) {
       return NextResponse.json(
-        { error: "Unauthorized. Provide ?secret=diplomatiq-setup-2026 or X-Setup-Secret header." },
+        { error: "Unauthorized. Provide the setup secret via ?secret= or X-Setup-Secret header." },
         { status: 401 }
       )
     }
@@ -137,9 +137,4 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     )
   }
-}
-
-// Also allow GET for easy browser-triggered setup
-export async function GET(request: NextRequest) {
-  return POST(request)
 }

@@ -24,6 +24,7 @@ import {
   DropdownMenuSeparator, DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { useIsMobile } from '@/hooks/use-mobile'
+import { useAuthStore } from '@/lib/store'
 
 // ============================================================
 // TYPES
@@ -756,6 +757,8 @@ function AIThinkingIndicator() {
 
 export default function ChatView() {
   const isMobile = useIsMobile()
+  const { user } = useAuthStore()
+  const isTeacher = user && ['TEACHER', 'ADMIN', 'SCHOOL_ADMIN', 'SUPER_ADMIN', 'FOUNDER', 'MASTER_ADMIN'].includes(user.role)
   const [activeChannel, setActiveChannel] = useState('')
   const [showMembers, setShowMembers] = useState(!isMobile)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
@@ -959,7 +962,7 @@ export default function ChatView() {
       channels={channels}
       activeChannel={activeChannel}
       onSelectChannel={handleSelectChannel}
-      isTeacher={false}
+      isTeacher={!!isTeacher}
     />
   )
 

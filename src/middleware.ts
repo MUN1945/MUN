@@ -2,6 +2,8 @@ import { NextResponse } from "next/server"
 import type { NextRequest } from "next/server"
 import { getToken } from "next-auth/jwt"
 
+const ALLOWED_ORIGINS = ['https://diplomatiq.io', 'https://www.diplomatiq.io', 'https://app.diplomatiq.io', 'https://mun-diplomatiq.vercel.app', 'https://mun-diplomatiq-mun-1945.vercel.app']
+
 // Simple in-memory rate limiter
 const rateLimitMap = new Map<string, { count: number; lastReset: number }>()
 const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute
@@ -56,8 +58,10 @@ export async function middleware(request: NextRequest) {
 
   // Handle preflight requests
   if (request.method === "OPTIONS") {
+    const origin = request.headers.get("origin") || ""
+    const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
     const response = new NextResponse(null, { status: 204 })
-    response.headers.set("Access-Control-Allow-Origin", request.headers.get("origin") || "*")
+    response.headers.set("Access-Control-Allow-Origin", allowedOrigin)
     response.headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
     response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
     response.headers.set("Access-Control-Max-Age", "86400")
@@ -246,7 +250,9 @@ export async function middleware(request: NextRequest) {
 
   // Add CORS headers for API routes
   if (pathname.startsWith("/api")) {
-    response.headers.set("Access-Control-Allow-Origin", request.headers.get("origin") || "*")
+    const origin = request.headers.get("origin") || ""
+    const allowedOrigin = ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0]
+    response.headers.set("Access-Control-Allow-Origin", allowedOrigin)
     response.headers.set("Access-Control-Allow-Methods", "GET, POST, PATCH, PUT, DELETE, OPTIONS")
     response.headers.set("Access-Control-Allow-Headers", "Content-Type, Authorization")
     response.headers.set("Access-Control-Max-Age", "86400")

@@ -169,7 +169,7 @@ export async function PATCH(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { id, ...updateData } = body
+    const { id } = body
 
     if (!id) {
       return NextResponse.json(
@@ -178,10 +178,19 @@ export async function PATCH(request: NextRequest) {
       )
     }
 
+    // Whitelist allowed fields to prevent mass assignment
+    const allowedFields = ['name', 'description', 'startDate', 'endDate', 'location', 'theme', 'status', 'website', 'logo']
+    const updateData: Record<string, unknown> = {}
+    for (const field of allowedFields) {
+      if (body[field] !== undefined) {
+        updateData[field] = body[field]
+      }
+    }
+
     // Validate dates if provided
     if (updateData.startDate && updateData.endDate) {
-      const start = new Date(updateData.startDate)
-      const end = new Date(updateData.endDate)
+      const start = new Date(updateData.startDate as string)
+      const end = new Date(updateData.endDate as string)
       if (end <= start) {
         return NextResponse.json(
           { success: false, error: "End date must be after start date" },

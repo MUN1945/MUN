@@ -1,8 +1,29 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
+import { getUserSubscriptionAccess } from '@/lib/subscription'
 import ZAI from 'z-ai-web-dev-sdk'
 
 export async function POST(request: NextRequest) {
   try {
+    // Require authentication
+    const session = await getServerSession(authOptions)
+    if (!session?.user?.id) {
+      return NextResponse.json(
+        { error: 'Authentication required.' },
+        { status: 401 }
+      )
+    }
+
+    // Check subscription access for AI evaluation
+    const access = await getUserSubscriptionAccess(session.user.id)
+    if (!access.features.canUseAIEvaluation) {
+      return NextResponse.json(
+        { error: 'AI evaluation requires a paid subscription. Please upgrade to access this feature.' },
+        { status: 403 }
+      )
+    }
+
     const body = await request.json()
     const { content, title } = body
 
