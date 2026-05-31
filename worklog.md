@@ -26,3 +26,36 @@ Stage Summary:
 - Environment variables: ⚠️ Need to be set in Vercel dashboard
 - OAuth integration: ❌ No client IDs/secrets configured
 - Email (Resend): ❌ API key is placeholder
+
+---
+Task ID: 2
+Agent: Main
+Task: Fix user creation error, implement subscription enforcement, define trial access rules
+
+Work Log:
+- Investigated admin user creation flow — found generic error swallowing in catch block
+- Added detailed Prisma error codes (P2002, P2003, P2012) with specific messages
+- Added password length validation to frontend Add User form
+- Fixed TEACHER creation: teachers now get DIRECTOR_PRO trial tier instead of FREE
+- Created complete subscription enforcement library (src/lib/subscription.ts) with:
+  - Feature permissions per tier (FREE, TRIAL, DELEGATE_PRO, DIRECTOR_PRO, SCHOOL_*)
+  - getUserSubscriptionAccess() with auto-trial-expiry
+  - canAccessCourse(), canTakeAssessment() gating functions
+  - requireFeature(), requireMinTier() enforcement functions
+  - SubscriptionError class
+- Added /api/subscriptions/access endpoint (GET + POST)
+- Updated middleware with subscription status checks for protected routes
+- Added EXPIRED/CANCELLED user blocking on subscription-required API routes
+- Added subscription headers (x-subscription-tier, x-subscription-status) to dashboard responses
+- Updated AppShell with three distinct banners: Trial (gold), Expired (red), Free tier (teal)
+- Updated registration to give TEACHER role DIRECTOR_PRO trial
+- Added subscription check to course enrollment API
+- Build succeeds, pushed to GitHub
+
+Stage Summary:
+- User creation: ✅ Fixed with detailed errors + TEACHER tier fix
+- Subscription enforcement: ✅ Complete library + middleware + API routes
+- Trial access rules: ✅ Clearly defined and implemented
+- 24h trial CAN: 3 modules, 1 assessment, chat, AI assistant, leaderboard, XP
+- 24h trial CANNOT: Advanced courses, teacher training, conferences, research, analytics
+- After trial expires: Downgraded to FREE, red banner, upgrade prompt
