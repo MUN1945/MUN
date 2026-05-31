@@ -826,8 +826,8 @@ export default function TrainingHub() {
                       </Badge>
                     </div>
                   </CardHeader>
-                  <CardContent className="pt-5">
-                    <ScrollArea className="max-h-[380px]">
+                  <CardContent className="pt-5 flex flex-col">
+                    <ScrollArea className="max-h-[340px] flex-1">
                       <motion.div
                         initial={{ opacity: 0, y: 8 }}
                         animate={{ opacity: 1, y: 0 }}

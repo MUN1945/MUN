@@ -152,18 +152,37 @@ const sectionVariants = {
 
 function StatusBadge({ status }: { status: string }) {
   const config: Record<string, string> = {
-    Active: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    Suspended: 'bg-red-500/20 text-red-400 border-red-500/30',
-    Unverified: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    Pending: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    Inactive: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
-    pending: 'bg-amber-500/20 text-amber-400 border-amber-500/30',
-    completed: 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30',
-    expired: 'bg-slate-500/20 text-slate-400 border-slate-500/30',
+    Active: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+    Suspended: 'bg-red-500/20 text-red-300 border-red-500/40',
+    Unverified: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+    Pending: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+    Inactive: 'bg-slate-500/20 text-slate-300 border-slate-500/40',
+    pending: 'bg-amber-500/20 text-amber-300 border-amber-500/40',
+    completed: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
+    expired: 'bg-slate-500/20 text-slate-300 border-slate-500/40',
+    APPROVED: 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40',
   }
   return (
-    <Badge variant="outline" className={`text-[10px] px-2 py-0.5 font-medium ${config[status] || 'bg-slate-500/20 text-slate-400 border-slate-500/30'}`}>
+    <Badge variant="outline" className={`text-[11px] px-2.5 py-0.5 font-semibold ${config[status] || 'bg-slate-500/20 text-slate-300 border-slate-500/40'}`}>
       {status}
+    </Badge>
+  )
+}
+
+function RoleBadge({ role }: { role: string }) {
+  const config: Record<string, string> = {
+    MASTER_ADMIN: 'bg-[#D4A843]/20 text-[#D4A843] border-[#D4A843]/40',
+    FOUNDER: 'bg-purple-500/20 text-purple-300 border-purple-500/40',
+    SUPER_ADMIN: 'bg-blue-500/20 text-blue-300 border-blue-500/40',
+    ADMIN: 'bg-sky-500/20 text-sky-300 border-sky-500/40',
+    SCHOOL_ADMIN: 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40',
+    TEACHER: 'bg-teal-500/20 text-teal-300 border-teal-500/40',
+    STUDENT: 'bg-slate-400/20 text-slate-300 border-slate-400/40',
+  }
+  return (
+    <Badge variant="outline" className={`text-[11px] px-2.5 py-0.5 font-semibold whitespace-nowrap ${config[role] || 'bg-slate-500/20 text-slate-300 border-slate-500/40'}`}>
+      {role === 'MASTER_ADMIN' && <Crown className="w-3 h-3 mr-1 inline" />}
+      {role.replace(/_/g, ' ')}
     </Badge>
   )
 }
@@ -527,7 +546,7 @@ function UserManagement() {
                   <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1B2A4A] border-white/10">
+                  <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
                     <SelectItem value="STUDENT">Student</SelectItem>
                     <SelectItem value="TEACHER">Teacher</SelectItem>
                     <SelectItem value="SCHOOL_ADMIN">School Admin</SelectItem>
@@ -559,7 +578,7 @@ function UserManagement() {
           <SelectTrigger className="w-full sm:w-[160px] bg-[#1B2A4A] border-white/10 text-white">
             <SelectValue placeholder="Role" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1B2A4A] border-white/10">
+          <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
             <SelectItem value="all">All Roles</SelectItem>
             <SelectItem value="STUDENT">Student</SelectItem>
             <SelectItem value="TEACHER">Teacher</SelectItem>
@@ -574,13 +593,13 @@ function UserManagement() {
           <SelectTrigger className="w-full sm:w-[160px] bg-[#1B2A4A] border-white/10 text-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1B2A4A] border-white/10">
+          <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
             <SelectItem value="all">All</SelectItem>
             <SelectItem value="active">Active</SelectItem>
             <SelectItem value="inactive">Inactive</SelectItem>
           </SelectContent>
         </Select>
-        <Button variant="outline" onClick={fetchUsers} className="bg-[#1B2A4A] border-white/10 text-slate-300 hover:bg-[#264B5E]">
+        <Button variant="outline" onClick={fetchUsers} className="bg-[#1B2A4A] border-white/10 text-slate-300 hover:bg-white/10">
           <RefreshCw className="w-4 h-4 mr-2" /> Refresh
         </Button>
       </div>
@@ -588,85 +607,82 @@ function UserManagement() {
       {/* Table */}
       <DarkCard>
         <CardContent className="p-0">
-          <ScrollArea className="max-h-[500px]">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-white/10 hover:bg-transparent">
-                  <TableHead className="text-slate-400">Name</TableHead>
-                  <TableHead className="text-slate-400">Email</TableHead>
-                  <TableHead className="text-slate-400">Role</TableHead>
-                  <TableHead className="text-slate-400 hidden md:table-cell">School</TableHead>
-                  <TableHead className="text-slate-400">Status</TableHead>
-                  <TableHead className="text-slate-400 hidden lg:table-cell">Subscription</TableHead>
-                  <TableHead className="text-slate-400">Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className="border-white/5">
-                      {Array.from({ length: 7 }).map((_, j) => (
-                        <TableCell key={j}><div className="h-4 bg-white/10 rounded animate-pulse w-20" /></TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : filtered.length === 0 ? (
-                  <TableRow><TableCell colSpan={7} className="text-center text-slate-500 py-8">No users found</TableCell></TableRow>
-                ) : filtered.map((u) => (
-                  <TableRow key={u.id} className="border-white/5 hover:bg-white/5">
-                    <TableCell className="font-medium text-white">{u.name}</TableCell>
-                    <TableCell className="text-slate-400 text-sm">{u.email}</TableCell>
-                    <TableCell>
-                      <Badge variant="outline" className={`text-[10px] border-white/20 ${u.role === 'MASTER_ADMIN' ? 'text-[#D4A843] border-[#D4A843]/30' : 'text-slate-300'}`}>
-                        {u.role === 'MASTER_ADMIN' && <Crown className="w-3 h-3 mr-1" />}
-                        {u.role.replace(/_/g, ' ')}
-                      </Badge>
-                    </TableCell>
-                    <TableCell className="text-slate-400 hidden md:table-cell text-sm">{u.school?.name || '—'}</TableCell>
-                    <TableCell><StatusBadge status={u.isActive ? 'Active' : 'Suspended'} /></TableCell>
-                    <TableCell className="text-slate-400 hidden lg:table-cell text-xs">{u.subscription ? `${u.subscription.tier} (${u.subscription.status})` : 'Free'}</TableCell>
-                    <TableCell>
-                      <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10">
-                            <MoreHorizontal className="w-4 h-4" />
-                          </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="bg-[#1B2A4A] border-white/10">
-                          <DropdownMenuLabel className="text-slate-400">Actions</DropdownMenuLabel>
-                          <DropdownMenuSeparator className="bg-white/10" />
-                          <DropdownMenuItem className="text-slate-300 focus:text-white focus:bg-white/10"
-                            onClick={() => { setEditTarget(u); setEditRole(u.role); setEditRoleOpen(true) }}>
-                            <Edit className="w-4 h-4 mr-2" /> Change Role
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className="text-slate-300 focus:text-white focus:bg-white/10"
-                            onClick={() => { setResetTarget(u); setResetPwdOpen(true) }}>
-                            <KeyRound className="w-4 h-4 mr-2" /> Reset Password
-                          </DropdownMenuItem>
-                          <DropdownMenuItem className={u.isActive ? "text-amber-400 focus:text-amber-300 focus:bg-white/10" : "text-emerald-400 focus:text-emerald-300 focus:bg-white/10"}
-                            onClick={() => handleToggleActive(u)}>
-                            {u.isActive ? <><Ban className="w-4 h-4 mr-2" /> Suspend</> : <><CheckCircle2 className="w-4 h-4 mr-2" /> Activate</>}
-                          </DropdownMenuItem>
-                          <DropdownMenuSeparator className="bg-white/10" />
-                          <DropdownMenuItem className="text-red-400 focus:text-red-300 focus:bg-white/10"
-                            onClick={() => setDeleteTarget(u)}>
-                            <Trash2 className="w-4 h-4 mr-2" /> Delete
-                          </DropdownMenuItem>
-                        </DropdownMenuContent>
-                      </DropdownMenu>
-                    </TableCell>
+          <div className="overflow-x-auto">
+            <ScrollArea className="max-h-[500px]">
+              <Table className="min-w-[900px]">
+                <TableHeader>
+                  <TableRow className="border-white/10 hover:bg-transparent bg-white/5">
+                    <TableHead className="text-slate-300 font-semibold min-w-[140px]">Name</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[180px]">Email</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[130px]">Role</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[120px]">School</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[100px]">Status</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[140px]">Subscription</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[80px] sticky right-0 bg-[#1B2A4A]">Actions</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={i} className="border-white/5">
+                        {Array.from({ length: 7 }).map((_, j) => (
+                          <TableCell key={j}><div className="h-4 bg-white/10 rounded animate-pulse w-20" /></TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : filtered.length === 0 ? (
+                    <TableRow><TableCell colSpan={7} className="text-center text-slate-400 py-8">No users found</TableCell></TableRow>
+                  ) : filtered.map((u) => (
+                    <TableRow key={u.id} className="border-white/5 hover:bg-white/5 transition-colors">
+                      <TableCell className="font-medium text-white whitespace-nowrap">{u.name}</TableCell>
+                      <TableCell className="text-slate-300 text-sm whitespace-nowrap">{u.email}</TableCell>
+                      <TableCell><RoleBadge role={u.role} /></TableCell>
+                      <TableCell className="text-slate-300 text-sm whitespace-nowrap">{u.school?.name || '—'}</TableCell>
+                      <TableCell><StatusBadge status={u.isActive ? 'Active' : 'Suspended'} /></TableCell>
+                      <TableCell className="text-slate-300 text-xs whitespace-nowrap">{u.subscription ? `${u.subscription.tier.replace(/_/g, ' ')} (${u.subscription.status})` : 'Free'}</TableCell>
+                      <TableCell className="sticky right-0 bg-[#1B2A4A]">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-400 hover:text-white hover:bg-white/10">
+                              <MoreHorizontal className="w-4 h-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent className="bg-[#1B2A4A] border-white/10 z-50" align="end">
+                            <DropdownMenuLabel className="text-slate-400">Actions</DropdownMenuLabel>
+                            <DropdownMenuSeparator className="bg-white/10" />
+                            <DropdownMenuItem className="text-slate-300 focus:text-white focus:bg-white/10"
+                              onClick={() => { setEditTarget(u); setEditRole(u.role); setEditRoleOpen(true) }}>
+                              <Edit className="w-4 h-4 mr-2" /> Change Role
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className="text-slate-300 focus:text-white focus:bg-white/10"
+                              onClick={() => { setResetTarget(u); setResetPwdOpen(true) }}>
+                              <KeyRound className="w-4 h-4 mr-2" /> Reset Password
+                            </DropdownMenuItem>
+                            <DropdownMenuItem className={u.isActive ? "text-amber-400 focus:text-amber-300 focus:bg-white/10" : "text-emerald-400 focus:text-emerald-300 focus:bg-white/10"}
+                              onClick={() => handleToggleActive(u)}>
+                              {u.isActive ? <><Ban className="w-4 h-4 mr-2" /> Suspend</> : <><CheckCircle2 className="w-4 h-4 mr-2" /> Activate</>}
+                            </DropdownMenuItem>
+                            <DropdownMenuSeparator className="bg-white/10" />
+                            <DropdownMenuItem className="text-red-400 focus:text-red-300 focus:bg-white/10"
+                              onClick={() => setDeleteTarget(u)}>
+                              <Trash2 className="w-4 h-4 mr-2" /> Delete
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </div>
         </CardContent>
       </DarkCard>
-      <div className="flex items-center justify-between text-xs text-slate-500">
+      <div className="flex items-center justify-between text-xs text-slate-400 mt-2">
         <span>Showing {filtered.length} of {totalUsers} users</span>
         <div className="flex gap-2">
-          <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="bg-[#1B2A4A] border-white/10 text-slate-300 h-7 text-xs">Previous</Button>
-          <Button variant="outline" size="sm" disabled={filtered.length < 25} onClick={() => setPage(p => p + 1)} className="bg-[#1B2A4A] border-white/10 text-slate-300 h-7 text-xs">Next</Button>
+          <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="bg-[#1B2A4A] border-white/10 text-slate-300 h-7 text-xs hover:bg-white/10">Previous</Button>
+          <Button variant="outline" size="sm" disabled={filtered.length < 25} onClick={() => setPage(p => p + 1)} className="bg-[#1B2A4A] border-white/10 text-slate-300 h-7 text-xs hover:bg-white/10">Next</Button>
         </div>
       </div>
 
@@ -708,7 +724,7 @@ function UserManagement() {
               <Label className="text-slate-300">New Role</Label>
               <Select value={editRole} onValueChange={setEditRole}>
                 <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                <SelectContent className="bg-[#1B2A4A] border-white/10">
+                <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
                   <SelectItem value="STUDENT">Student</SelectItem>
                   <SelectItem value="TEACHER">Teacher</SelectItem>
                   <SelectItem value="SCHOOL_ADMIN">School Admin</SelectItem>
@@ -833,7 +849,7 @@ function PasswordResetRequests() {
             <SelectTrigger className="w-[140px] bg-[#1B2A4A] border-white/10 text-white text-xs">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-[#1B2A4A] border-white/10">
+            <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
               <SelectItem value="">All</SelectItem>
               <SelectItem value="pending">Pending</SelectItem>
               <SelectItem value="completed">Completed</SelectItem>
@@ -1038,7 +1054,7 @@ function SchoolManagement() {
                   <Label className="text-slate-300">Emirate</Label>
                   <Select value={newSchool.emirate} onValueChange={(v) => setNewSchool({ ...newSchool, emirate: v })}>
                     <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1B2A4A] border-white/10">
+                    <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
                       <SelectItem value="Abu Dhabi">Abu Dhabi</SelectItem>
                       <SelectItem value="Dubai">Dubai</SelectItem>
                       <SelectItem value="Sharjah">Sharjah</SelectItem>
@@ -1055,7 +1071,7 @@ function SchoolManagement() {
                   <Label className="text-slate-300">School Type</Label>
                   <Select value={newSchool.schoolType} onValueChange={(v) => setNewSchool({ ...newSchool, schoolType: v })}>
                     <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1B2A4A] border-white/10">
+                    <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
                       <SelectItem value="PUBLIC">Public</SelectItem>
                       <SelectItem value="PRIVATE">Private</SelectItem>
                       <SelectItem value="INTERNATIONAL">International</SelectItem>
@@ -1066,7 +1082,7 @@ function SchoolManagement() {
                   <Label className="text-slate-300">Curriculum</Label>
                   <Select value={newSchool.curriculum} onValueChange={(v) => setNewSchool({ ...newSchool, curriculum: v })}>
                     <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1B2A4A] border-white/10">
+                    <SelectContent className="bg-[#1B2A4A] border-white/10 z-50">
                       <SelectItem value="AMERICAN">American</SelectItem>
                       <SelectItem value="BRITISH">British</SelectItem>
                       <SelectItem value="IB">IB</SelectItem>
@@ -1134,49 +1150,51 @@ function SchoolManagement() {
       {/* Table */}
       <DarkCard>
         <CardContent className="p-0">
-          <ScrollArea className="max-h-[500px]">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-white/10 hover:bg-transparent">
-                  <TableHead className="text-slate-400">Name</TableHead>
-                  <TableHead className="text-slate-400 hidden md:table-cell">City</TableHead>
-                  <TableHead className="text-slate-400">Type</TableHead>
-                  <TableHead className="text-slate-400">Verified</TableHead>
-                  <TableHead className="text-slate-400 hidden lg:table-cell">Users</TableHead>
-                  <TableHead className="text-slate-400">Status</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className="border-white/5">
-                      {Array.from({ length: 6 }).map((_, j) => (
-                        <TableCell key={j}><div className="h-4 bg-white/10 rounded animate-pulse w-20" /></TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : schools.length === 0 ? (
-                  <TableRow><TableCell colSpan={6} className="text-center text-slate-500 py-8">No schools found</TableCell></TableRow>
-                ) : schools.map(s => (
-                  <TableRow key={s.id} className="border-white/5 hover:bg-white/5">
-                    <TableCell className="font-medium text-white">
-                      <div className="flex items-center gap-2">
-                        {s.isFeatured && <Star className="w-3.5 h-3.5 text-[#D4A843] fill-[#D4A843]" />}
-                        {s.name}
-                      </div>
-                    </TableCell>
-                    <TableCell className="text-slate-400 hidden md:table-cell">{s.city || '—'}</TableCell>
-                    <TableCell className="text-slate-400">{s.schoolType || '—'}</TableCell>
-                    <TableCell>
-                      {s.isVerified ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <XCircle className="w-4 h-4 text-red-400" />}
-                    </TableCell>
-                    <TableCell className="text-slate-400 hidden lg:table-cell">{s._count?.users || 0}</TableCell>
-                    <TableCell><StatusBadge status={s.verificationStatus} /></TableCell>
+          <div className="overflow-x-auto">
+            <ScrollArea className="max-h-[500px]">
+              <Table className="min-w-[700px]">
+                <TableHeader>
+                  <TableRow className="border-white/10 hover:bg-transparent bg-white/5">
+                    <TableHead className="text-slate-300 font-semibold min-w-[180px]">Name</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[100px]">City</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[100px]">Type</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[80px]">Verified</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[60px]">Users</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[100px]">Status</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={i} className="border-white/5">
+                        {Array.from({ length: 6 }).map((_, j) => (
+                          <TableCell key={j}><div className="h-4 bg-white/10 rounded animate-pulse w-20" /></TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : schools.length === 0 ? (
+                    <TableRow><TableCell colSpan={6} className="text-center text-slate-400 py-8">No schools found</TableCell></TableRow>
+                  ) : schools.map(s => (
+                    <TableRow key={s.id} className="border-white/5 hover:bg-white/5 transition-colors">
+                      <TableCell className="font-medium text-white whitespace-nowrap">
+                        <div className="flex items-center gap-2">
+                          {s.isFeatured && <Star className="w-3.5 h-3.5 text-[#D4A843] fill-[#D4A843]" />}
+                          {s.name}
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-slate-300 whitespace-nowrap">{s.city || '—'}</TableCell>
+                      <TableCell className="text-slate-300 whitespace-nowrap">{s.schoolType || '—'}</TableCell>
+                      <TableCell>
+                        {s.isVerified ? <CheckCircle2 className="w-4 h-4 text-emerald-400" /> : <XCircle className="w-4 h-4 text-red-400" />}
+                      </TableCell>
+                      <TableCell className="text-slate-300">{s._count?.users || 0}</TableCell>
+                      <TableCell><StatusBadge status={s.verificationStatus} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </div>
         </CardContent>
       </DarkCard>
     </motion.div>
@@ -1213,42 +1231,44 @@ function AuditLogs() {
       <h3 className="text-lg font-semibold text-white">Audit Logs</h3>
       <DarkCard>
         <CardContent className="p-0">
-          <ScrollArea className="max-h-[500px]">
-            <Table>
-              <TableHeader>
-                <TableRow className="border-white/10 hover:bg-transparent">
-                  <TableHead className="text-slate-400">Action</TableHead>
-                  <TableHead className="text-slate-400">User</TableHead>
-                  <TableHead className="text-slate-400">Resource</TableHead>
-                  <TableHead className="text-slate-400 hidden md:table-cell">Details</TableHead>
-                  <TableHead className="text-slate-400">Time</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {isLoading ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <TableRow key={i} className="border-white/5">
-                      {Array.from({ length: 5 }).map((_, j) => (
-                        <TableCell key={j}><div className="h-4 bg-white/10 rounded animate-pulse w-20" /></TableCell>
-                      ))}
-                    </TableRow>
-                  ))
-                ) : logs.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center text-slate-500 py-8">No audit logs yet</TableCell></TableRow>
-                ) : logs.map(log => (
-                  <TableRow key={log.id} className="border-white/5 hover:bg-white/5">
-                    <TableCell>
-                      <Badge variant="outline" className="text-[10px] border-white/20 text-slate-300">{log.action}</Badge>
-                    </TableCell>
-                    <TableCell className="text-slate-400 text-sm">{log.user?.name || 'System'}</TableCell>
-                    <TableCell className="text-slate-300 text-sm">{log.resource}</TableCell>
-                    <TableCell className="text-slate-500 text-xs hidden md:table-cell max-w-[200px] truncate">{log.details || '—'}</TableCell>
-                    <TableCell className="text-slate-500 text-xs">{formatDateTime(log.createdAt)}</TableCell>
+          <div className="overflow-x-auto">
+            <ScrollArea className="max-h-[500px]">
+              <Table className="min-w-[700px]">
+                <TableHeader>
+                  <TableRow className="border-white/10 hover:bg-transparent bg-white/5">
+                    <TableHead className="text-slate-300 font-semibold min-w-[100px]">Action</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[120px]">User</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[100px]">Resource</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[200px]">Details</TableHead>
+                    <TableHead className="text-slate-300 font-semibold min-w-[140px]">Time</TableHead>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </ScrollArea>
+                </TableHeader>
+                <TableBody>
+                  {isLoading ? (
+                    Array.from({ length: 5 }).map((_, i) => (
+                      <TableRow key={i} className="border-white/5">
+                        {Array.from({ length: 5 }).map((_, j) => (
+                          <TableCell key={j}><div className="h-4 bg-white/10 rounded animate-pulse w-20" /></TableCell>
+                        ))}
+                      </TableRow>
+                    ))
+                  ) : logs.length === 0 ? (
+                    <TableRow><TableCell colSpan={5} className="text-center text-slate-400 py-8">No audit logs yet</TableCell></TableRow>
+                  ) : logs.map(log => (
+                    <TableRow key={log.id} className="border-white/5 hover:bg-white/5 transition-colors">
+                      <TableCell>
+                        <Badge variant="outline" className="text-[11px] border-white/20 text-slate-300 font-semibold">{log.action}</Badge>
+                      </TableCell>
+                      <TableCell className="text-slate-300 text-sm whitespace-nowrap">{log.user?.name || 'System'}</TableCell>
+                      <TableCell className="text-slate-300 text-sm whitespace-nowrap">{log.resource}</TableCell>
+                      <TableCell className="text-slate-400 text-xs max-w-[250px] truncate">{log.details || '—'}</TableCell>
+                      <TableCell className="text-slate-400 text-xs whitespace-nowrap">{formatDateTime(log.createdAt)}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </ScrollArea>
+          </div>
         </CardContent>
       </DarkCard>
     </motion.div>
@@ -1264,6 +1284,7 @@ export default function FounderDashboard() {
   const [subscriptionBreakdown, setSubscriptionBreakdown] = useState<{ tier: string; count: number }[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [activeTab, setActiveTab] = useState('overview')
+  const [tabError, setTabError] = useState<string | null>(null)
 
   useEffect(() => {
     const fetchAdminData = async () => {
@@ -1273,6 +1294,8 @@ export default function FounderDashboard() {
           const data = await res.json()
           setOverview(data.data?.overview || null)
           setSubscriptionBreakdown(data.data?.subscriptionBreakdown || [])
+        } else {
+          console.error('[FOUNDER] Admin API returned status:', res.status)
         }
       } catch (err) {
         console.error('Failed to fetch admin data:', err)
@@ -1282,6 +1305,30 @@ export default function FounderDashboard() {
     }
     fetchAdminData()
   }, [])
+
+  // Clear tab error when switching tabs
+  const handleTabChange = (value: string) => {
+    setTabError(null)
+    setActiveTab(value)
+  }
+
+  // Error boundary wrapper for tab content
+  const TabErrorBoundary = ({ children }: { children: React.ReactNode }) => {
+    try {
+      return <>{children}</>
+    } catch (err) {
+      setTabError('This section encountered an error. Please refresh the page.')
+      return (
+        <div className="flex flex-col items-center justify-center py-12 text-center">
+          <AlertCircle className="w-10 h-10 text-amber-400 mb-3" />
+          <p className="text-slate-400">Something went wrong loading this section.</p>
+          <Button variant="outline" onClick={() => window.location.reload()} className="mt-3 bg-[#1B2A4A] border-white/10 text-slate-300 hover:bg-white/10">
+            <RefreshCw className="w-4 h-4 mr-2" /> Reload Page
+          </Button>
+        </div>
+      )
+    }
+  }
 
   return (
     <div className="space-y-6">
@@ -1294,56 +1341,65 @@ export default function FounderDashboard() {
           </h1>
           <p className="text-sm text-slate-500 mt-1">Master Administrator — Full platform control</p>
         </div>
-        <Button variant="outline" onClick={() => window.location.reload()} className="text-[#1B3A4B] border-[#1B3A4B]/20">
+        <Button variant="outline" onClick={() => window.location.reload()} className="text-[#1B3A4B] border-[#1B3A4B]/20 hover:bg-[#1B3A4B]/5">
           <RefreshCw className="w-4 h-4 mr-2" /> Refresh
         </Button>
       </div>
 
       {/* Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="bg-[#1B3A4B]/5 border border-[#1B3A4B]/10">
-          <TabsTrigger value="overview" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white">Overview</TabsTrigger>
-          <TabsTrigger value="subscriptions" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white">Subscriptions</TabsTrigger>
-          <TabsTrigger value="users" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white">Users</TabsTrigger>
-          <TabsTrigger value="passwords" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white">
-            Password Resets
-          </TabsTrigger>
-          <TabsTrigger value="schools" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white">Schools</TabsTrigger>
-          <TabsTrigger value="audit" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white">Audit Logs</TabsTrigger>
-        </TabsList>
+      <Tabs value={activeTab} onValueChange={handleTabChange}>
+        <div className="overflow-x-auto pb-1">
+          <TabsList className="bg-[#1B3A4B]/5 border border-[#1B3A4B]/10 w-full sm:w-auto inline-flex">
+            <TabsTrigger value="overview" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white text-xs sm:text-sm px-3 sm:px-4">Overview</TabsTrigger>
+            <TabsTrigger value="subscriptions" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white text-xs sm:text-sm px-3 sm:px-4">Subscriptions</TabsTrigger>
+            <TabsTrigger value="users" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white text-xs sm:text-sm px-3 sm:px-4">Users</TabsTrigger>
+            <TabsTrigger value="passwords" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white text-xs sm:text-sm px-3 sm:px-4">
+              Password Resets
+            </TabsTrigger>
+            <TabsTrigger value="schools" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white text-xs sm:text-sm px-3 sm:px-4">Schools</TabsTrigger>
+            <TabsTrigger value="audit" className="data-[state=active]:bg-[#1B3A4B] data-[state=active]:text-white text-xs sm:text-sm px-3 sm:px-4">Audit Logs</TabsTrigger>
+          </TabsList>
+        </div>
+
+        {tabError && (
+          <div className="mt-4 p-3 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-400 text-sm flex items-center gap-2">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            {tabError}
+          </div>
+        )}
 
         <TabsContent value="overview" className="mt-6">
-          <div className="bg-[#0D1B2A] rounded-2xl p-6">
+          <div className="bg-[#0D1B2A] rounded-2xl p-4 md:p-6">
             <PlatformOverview overview={overview} isLoading={isLoading} />
           </div>
         </TabsContent>
 
         <TabsContent value="subscriptions" className="mt-6">
-          <div className="bg-[#0D1B2A] rounded-2xl p-6">
+          <div className="bg-[#0D1B2A] rounded-2xl p-4 md:p-6">
             <SubscriptionOverview breakdown={subscriptionBreakdown} />
           </div>
         </TabsContent>
 
         <TabsContent value="users" className="mt-6">
-          <div className="bg-[#0D1B2A] rounded-2xl p-6">
+          <div className="bg-[#0D1B2A] rounded-2xl p-4 md:p-6">
             <UserManagement />
           </div>
         </TabsContent>
 
         <TabsContent value="passwords" className="mt-6">
-          <div className="bg-[#0D1B2A] rounded-2xl p-6">
+          <div className="bg-[#0D1B2A] rounded-2xl p-4 md:p-6">
             <PasswordResetRequests />
           </div>
         </TabsContent>
 
         <TabsContent value="schools" className="mt-6">
-          <div className="bg-[#0D1B2A] rounded-2xl p-6">
+          <div className="bg-[#0D1B2A] rounded-2xl p-4 md:p-6">
             <SchoolManagement />
           </div>
         </TabsContent>
 
         <TabsContent value="audit" className="mt-6">
-          <div className="bg-[#0D1B2A] rounded-2xl p-6">
+          <div className="bg-[#0D1B2A] rounded-2xl p-4 md:p-6">
             <AuditLogs />
           </div>
         </TabsContent>
