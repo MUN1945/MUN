@@ -43,11 +43,15 @@ export async function GET(request: NextRequest) {
             id: true,
             content: true,
             createdAt: true,
-            user: { select: { id: true, name: true, avatar: true } },
+            user: { select: { id: true, name: true, avatar: true, isBot: true } },
           },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [
+        { category: "asc" },
+        { isCommittee: "desc" },
+        { name: "asc" },
+      ],
     })
 
     return NextResponse.json({ success: true, data: channels })
@@ -79,7 +83,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json()
-    const { name, description, type, committeeId, schoolId } = body
+    const { name, description, type, committeeId, schoolId, category, isCommittee } = body
 
     if (!name) {
       return NextResponse.json(
@@ -108,6 +112,8 @@ export async function POST(request: NextRequest) {
         name,
         description: description || null,
         type: type || "general",
+        category: category || null,
+        isCommittee: isCommittee || false,
         committeeId: committeeId || null,
         schoolId: schoolId || session.user.schoolId || null,
       },

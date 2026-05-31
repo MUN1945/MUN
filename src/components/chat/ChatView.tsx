@@ -1,13 +1,13 @@
 'use client'
 
-import React, { useState, useRef, useEffect, useMemo } from 'react'
+import React, { useState, useRef, useEffect, useMemo, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import {
   Hash, Bell, BellOff, Users, Plus, Search, Menu, X, Send,
   Paperclip, Bold, Italic, ChevronDown, ChevronRight,
   Shield, Globe, BookOpen, Megaphone, MessageSquare,
-  AtSign, Settings, Volume2, Pin,
-  MoreHorizontal, Mic
+  AtSign, Settings, Volume2, Pin, Sparkles, Bot,
+  MoreHorizontal, Mic, Loader2
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -29,8 +29,8 @@ import { useIsMobile } from '@/hooks/use-mobile'
 // TYPES
 // ============================================================
 
-type ChannelType = 'text' | 'announcement' | 'voice' | 'study'
-type UserRole = 'TEACHER' | 'STUDENT' | 'ADMIN'
+type ChannelType = 'text' | 'announcement' | 'voice' | 'study' | 'committee'
+type UserRole = 'TEACHER' | 'STUDENT' | 'ADMIN' | 'SCHOOL_ADMIN' | 'SUPER_ADMIN' | 'FOUNDER' | 'MASTER_ADMIN'
 type UserStatus = 'online' | 'away' | 'offline'
 
 interface ChatChannel {
@@ -41,6 +41,7 @@ interface ChatChannel {
   description: string
   unread: number
   isMuted: boolean
+  isCommittee: boolean
 }
 
 interface ChatUser {
@@ -49,6 +50,7 @@ interface ChatUser {
   role: UserRole
   status: UserStatus
   avatar?: string
+  isBot?: boolean
 }
 
 interface ChatMessage {
@@ -61,21 +63,25 @@ interface ChatMessage {
   timestamp: string
   isSystem?: boolean
   isEdited?: boolean
+  isBot?: boolean
 }
 
 // ============================================================
-// DATA IS FETCHED FROM /api/channels AND /api/messages
+// ROLE COLORS & BOT STYLE
 // ============================================================
 
-// ============================================================
-// ROLE COLORS
-// ============================================================
-
-const ROLE_COLORS: Record<UserRole, string> = {
+const ROLE_COLORS: Record<string, string> = {
   TEACHER: '#D4A843',
   STUDENT: '#0D7377',
   ADMIN: '#DC2626',
+  SCHOOL_ADMIN: '#7C3AED',
+  SUPER_ADMIN: '#DC2626',
+  FOUNDER: '#D4A843',
+  MASTER_ADMIN: '#D4A843',
 }
+
+const BOT_COLOR = '#0D7377'
+const BOT_NAME = 'DiplomatiQ Guru'
 
 const STATUS_COLORS: Record<UserStatus, string> = {
   online: '#059669',
@@ -95,6 +101,8 @@ function ChannelIcon({ type, className = '' }: { type: ChannelType; className?: 
       return <Volume2 className={`w-4 h-4 ${className}`} />
     case 'study':
       return <BookOpen className={`w-4 h-4 ${className}`} />
+    case 'committee':
+      return <Shield className={`w-4 h-4 ${className}`} />
     default:
       return <Hash className={`w-4 h-4 ${className}`} />
   }
@@ -227,6 +235,9 @@ function ChannelSidebar({
                                   {channel.name}
                                 </span>
                                 <div className="flex items-center gap-1">
+                                  {channel.isCommittee && (
+                                    <Sparkles className="w-3 h-3 text-[#D4A843]/60" />
+                                  )}
                                   {channel.isMuted && (
                                     <BellOff className="w-3 h-3 text-white/20" />
                                   )}
@@ -238,9 +249,14 @@ function ChannelSidebar({
                                 </div>
                               </button>
                             </TooltipTrigger>
-                            <TooltipContent side="right" className="bg-[#264B5E] text-white border-white/10 max-w-[200px]">
-                              <div className="font-medium text-xs">#{channel.name}</div>
+                            <TooltipContent side="right" className="bg-[#264B5E] text-white border-white/10 max-w-[240px]">
+                              <div className="font-medium text-xs">{channel.name}</div>
                               <div className="text-[10px] text-white/50 mt-0.5">{channel.description}</div>
+                              {channel.isCommittee && (
+                                <div className="text-[10px] text-[#D4A843] mt-1 flex items-center gap-1">
+                                  <Bot className="w-3 h-3" /> DiplomatiQ Guru Active
+                                </div>
+                              )}
                             </TooltipContent>
                           </Tooltip>
                         </TooltipProvider>
@@ -296,8 +312,8 @@ function ChannelSidebar({
 // ============================================================
 
 function MessageBubble({ message, showHeader }: { message: ChatMessage; showHeader: boolean }) {
-  const roleColor = ROLE_COLORS[message.userRole]
-  const isTeacher = message.userRole === 'TEACHER'
+  const isBot = message.isBot || message.userName === BOT_NAME
+  const roleColor = isBot ? BOT_COLOR : (ROLE_COLORS[message.userRole] || '#0D7377')
 
   if (message.isSystem) {
     return (
@@ -314,25 +330,25 @@ function MessageBubble({ message, showHeader }: { message: ChatMessage; showHead
     )
   }
 
-  const initials = message.userName.split(' ').map((n) => n[0]).join('')
+  const initials = isBot ? 'DG' : message.userName.split(' ').map((n) => n[0]).join('')
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`group flex items-start gap-3 px-4 py-1 hover:bg-[#F5F0EB]/50 transition-colors ${showHeader ? 'mt-3' : ''}`}
+      className={`group flex items-start gap-3 px-4 py-1 hover:bg-[#F5F0EB]/50 transition-colors ${showHeader ? 'mt-3' : ''} ${isBot ? 'bg-[#0D7377]/[0.03]' : ''}`}
     >
       {showHeader ? (
         <Avatar className="w-9 h-9 mt-0.5 shrink-0">
           <AvatarFallback
-            className="text-xs font-semibold border"
-            style={{
+            className={`text-xs font-semibold border ${isBot ? 'bg-[#0D7377]/20 text-[#0D7377] border-[#0D7377]/30' : ''}`}
+            style={!isBot ? {
               backgroundColor: `${roleColor}15`,
               color: roleColor,
               borderColor: `${roleColor}30`,
-            }}
+            } : undefined}
           >
-            {initials}
+            {isBot ? <Sparkles className="w-4 h-4" /> : initials}
           </AvatarFallback>
         </Avatar>
       ) : (
@@ -340,13 +356,19 @@ function MessageBubble({ message, showHeader }: { message: ChatMessage; showHead
       )}
       <div className="flex-1 min-w-0">
         {showHeader && (
-          <div className="flex items-baseline gap-2 mb-0.5">
+          <div className="flex items-baseline gap-2 mb-0.5 flex-wrap">
             <span className="font-semibold text-sm" style={{ color: roleColor }}>
               {message.userName}
             </span>
-            {isTeacher && (
+            {isBot && (
+              <Badge className="text-[9px] h-4 px-1.5 border-0 bg-[#0D7377]/15 text-[#0D7377]">
+                <Sparkles className="w-2.5 h-2.5 mr-0.5" />
+                AI Assistant
+              </Badge>
+            )}
+            {message.userRole === 'TEACHER' && !isBot && (
               <Badge className="text-[9px] h-4 px-1.5 border-0" style={{ backgroundColor: `${roleColor}20`, color: roleColor }}>
-                {message.userRole === 'TEACHER' ? 'Teacher' : 'Admin'}
+                Teacher
               </Badge>
             )}
             <span className="text-[11px] text-muted-foreground">
@@ -354,7 +376,7 @@ function MessageBubble({ message, showHeader }: { message: ChatMessage; showHead
             </span>
           </div>
         )}
-        <div className="text-sm text-[#1B3A4B] leading-relaxed break-words">
+        <div className={`text-sm leading-relaxed break-words ${isBot ? 'text-[#1B3A4B]' : 'text-[#1B3A4B]'}`}>
           {renderMessageContent(message.content)}
         </div>
       </div>
@@ -367,7 +389,6 @@ function MessageBubble({ message, showHeader }: { message: ChatMessage; showHead
 }
 
 function renderMessageContent(content: string) {
-  // Simple bold/italic rendering
   const parts: React.ReactNode[] = []
   const regex = /(\*\*(.+?)\*\*|\*(.+?)\*)/g
   let lastIndex = 0
@@ -398,35 +419,43 @@ function renderMessageContent(content: string) {
 // ============================================================
 
 function OnlineUsersSidebar({ users, onClose }: { users: ChatUser[]; onClose?: () => void }) {
-  const teachers = users.filter((u) => u.role === 'TEACHER')
-  const students = users.filter((u) => u.role === 'STUDENT')
+  const bots = users.filter((u) => u.isBot)
+  const teachers = users.filter((u) => u.role === 'TEACHER' && !u.isBot)
+  const students = users.filter((u) => u.role === 'STUDENT' && !u.isBot)
 
   const UserRow = ({ user }: { user: ChatUser }) => (
     <div className="flex items-center gap-2 px-2 py-1.5 rounded-md hover:bg-white/50 transition-colors group">
       <div className="relative shrink-0">
         <Avatar className="w-7 h-7">
           <AvatarFallback
-            className="text-[10px] font-semibold border"
-            style={{
-              backgroundColor: `${ROLE_COLORS[user.role]}15`,
-              color: ROLE_COLORS[user.role],
-              borderColor: `${ROLE_COLORS[user.role]}30`,
-            }}
+            className={`text-[10px] font-semibold border ${user.isBot ? 'bg-[#0D7377]/20 text-[#0D7377] border-[#0D7377]/30' : ''}`}
+            style={!user.isBot ? {
+              backgroundColor: `${ROLE_COLORS[user.role] || '#0D7377'}15`,
+              color: ROLE_COLORS[user.role] || '#0D7377',
+              borderColor: `${ROLE_COLORS[user.role] || '#0D7377'}30`,
+            } : undefined}
           >
-            {user.name.split(' ').map((n) => n[0]).join('')}
+            {user.isBot ? <Sparkles className="w-3.5 h-3.5" /> : user.name.split(' ').map((n) => n[0]).join('')}
           </AvatarFallback>
         </Avatar>
-        <span
-          className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#FFF8F0]"
-          style={{ backgroundColor: STATUS_COLORS[user.status] }}
-        />
+        {!user.isBot && (
+          <span
+            className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-[#FFF8F0]"
+            style={{ backgroundColor: STATUS_COLORS[user.status] }}
+          />
+        )}
       </div>
       <span
-        className="text-xs font-medium truncate"
-        style={{ color: user.status === 'offline' ? '#94A3B8' : ROLE_COLORS[user.role] }}
+        className={`text-xs font-medium truncate ${user.isBot ? 'text-[#0D7377]' : ''}`}
+        style={!user.isBot ? { color: user.status === 'offline' ? '#94A3B8' : (ROLE_COLORS[user.role] || '#0D7377') } : undefined}
       >
         {user.name}
       </span>
+      {user.isBot && (
+        <Badge className="text-[8px] h-3.5 px-1 border-0 bg-[#0D7377]/15 text-[#0D7377] ml-auto">
+          AI
+        </Badge>
+      )}
     </div>
   )
 
@@ -436,7 +465,7 @@ function OnlineUsersSidebar({ users, onClose }: { users: ChatUser[]; onClose?: (
         <h3 className="text-sm font-semibold text-[#1B3A4B]">Members</h3>
         <div className="flex items-center gap-1 text-xs text-muted-foreground">
           <Users className="w-3.5 h-3.5" />
-          {users.filter((u) => u.status !== 'offline').length} online
+          {users.filter((u) => u.status !== 'offline' || u.isBot).length} online
         </div>
         {onClose && (
           <Button variant="ghost" size="icon" className="h-7 w-7 md:hidden" onClick={onClose}>
@@ -445,25 +474,41 @@ function OnlineUsersSidebar({ users, onClose }: { users: ChatUser[]; onClose?: (
         )}
       </div>
       <ScrollArea className="flex-1 px-2 py-3">
-        {/* Teachers */}
-        <div className="mb-4">
-          <div className="px-2 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Teachers — {teachers.length}
+        {/* AI Assistants */}
+        {bots.length > 0 && (
+          <div className="mb-4">
+            <div className="px-2 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-[#0D7377]">
+              AI Assistants — {bots.length}
+            </div>
+            {bots.map((u) => (
+              <UserRow key={u.id} user={u} />
+            ))}
           </div>
-          {teachers.map((u) => (
-            <UserRow key={u.id} user={u} />
-          ))}
-        </div>
+        )}
+
+        {/* Teachers */}
+        {teachers.length > 0 && (
+          <div className="mb-4">
+            <div className="px-2 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Teachers — {teachers.length}
+            </div>
+            {teachers.map((u) => (
+              <UserRow key={u.id} user={u} />
+            ))}
+          </div>
+        )}
 
         {/* Students */}
-        <div>
-          <div className="px-2 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-            Students — {students.filter((s) => s.status !== 'offline').length} online
+        {students.length > 0 && (
+          <div>
+            <div className="px-2 mb-1.5 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Students — {students.filter((s) => s.status !== 'offline').length} online
+            </div>
+            {students.map((u) => (
+              <UserRow key={u.id} user={u} />
+            ))}
           </div>
-          {students.map((u) => (
-            <UserRow key={u.id} user={u} />
-          ))}
-        </div>
+        )}
       </ScrollArea>
     </div>
   )
@@ -515,7 +560,19 @@ function TypingIndicator({ users }: { users: string[] }) {
 // MESSAGE INPUT
 // ============================================================
 
-function MessageInput({ onSend, channelName }: { onSend: (msg: string) => void; channelName: string }) {
+function MessageInput({
+  onSend,
+  onAskAI,
+  channelName,
+  isCommitteeChannel,
+  isAILoading,
+}: {
+  onSend: (msg: string) => void
+  onAskAI: (msg: string) => void
+  channelName: string
+  isCommitteeChannel: boolean
+  isAILoading: boolean
+}) {
   const [message, setMessage] = useState('')
   const [isBold, setIsBold] = useState(false)
   const [isItalic, setIsItalic] = useState(false)
@@ -533,6 +590,14 @@ function MessageInput({ onSend, channelName }: { onSend: (msg: string) => void; 
     setIsItalic(false)
   }
 
+  const handleAskAI = () => {
+    if (!message.trim()) return
+    onAskAI(message.trim())
+    setMessage('')
+    setIsBold(false)
+    setIsItalic(false)
+  }
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) {
       e.preventDefault()
@@ -543,8 +608,34 @@ function MessageInput({ onSend, channelName }: { onSend: (msg: string) => void; 
   const charCount = message.length
   const isNearLimit = charCount > MAX_CHARS * 0.9
 
+  // Auto-detect @DiplomatiQ Guru mention
+  const hasAIMention = message.toLowerCase().includes('@diplomatiq guru') || message.toLowerCase().includes('@diplomatiq')
+
   return (
     <div className="border-t border-[#E8DED0] bg-white p-3">
+      {/* AI Assistant Ask Button (committee channels only) */}
+      {isCommitteeChannel && (
+        <div className="mb-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className={`w-full gap-2 text-xs transition-all ${
+              hasAIMention
+                ? 'border-[#0D7377] bg-[#0D7377]/5 text-[#0D7377]'
+                : 'border-[#E8DED0] text-muted-foreground hover:border-[#0D7377]/40 hover:text-[#0D7377]'
+            }`}
+            onClick={handleAskAI}
+            disabled={!message.trim() || isAILoading}
+          >
+            {isAILoading ? (
+              <Loader2 className="w-3.5 h-3.5 animate-spin" />
+            ) : (
+              <Sparkles className="w-3.5 h-3.5" />
+            )}
+            {isAILoading ? 'DiplomatiQ Guru is thinking...' : hasAIMention ? 'Ask DiplomatiQ Guru' : 'Ask DiplomatiQ Guru'}
+          </Button>
+        </div>
+      )}
       <div className="flex items-center gap-1.5 mb-2">
         <TooltipProvider>
           <Tooltip>
@@ -597,7 +688,7 @@ function MessageInput({ onSend, channelName }: { onSend: (msg: string) => void; 
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder={`Message #${channelName}...`}
+          placeholder={`Message #${channelName}${isCommitteeChannel ? ' (type @DiplomatiQ Guru to ask AI)' : ''}...`}
           rows={1}
           className="w-full resize-none rounded-lg border border-[#E8DED0] bg-[#FFF8F0] px-4 py-2.5 text-sm focus:outline-none focus:border-[#0D7377]/40 focus:ring-2 focus:ring-[#0D7377]/10 placeholder:text-muted-foreground/50 min-h-[42px] max-h-[120px]"
           style={{ overflow: 'auto' }}
@@ -627,15 +718,49 @@ function MessageInput({ onSend, channelName }: { onSend: (msg: string) => void; 
 }
 
 // ============================================================
+// AI THINKING INDICATOR
+// ============================================================
+
+function AIThinkingIndicator() {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 5 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-start gap-3 px-4 py-2 bg-[#0D7377]/[0.03]"
+    >
+      <Avatar className="w-9 h-9 mt-0.5 shrink-0">
+        <AvatarFallback className="text-xs font-semibold border bg-[#0D7377]/20 text-[#0D7377] border-[#0D7377]/30">
+          <Sparkles className="w-4 h-4" />
+        </AvatarFallback>
+      </Avatar>
+      <div className="flex-1">
+        <div className="flex items-baseline gap-2 mb-1">
+          <span className="font-semibold text-sm text-[#0D7377]">DiplomatiQ Guru</span>
+          <Badge className="text-[9px] h-4 px-1.5 border-0 bg-[#0D7377]/15 text-[#0D7377]">
+            <Sparkles className="w-2.5 h-2.5 mr-0.5" />
+            AI Assistant
+          </Badge>
+        </div>
+        <div className="flex items-center gap-2 text-xs text-[#0D7377]/60">
+          <Loader2 className="w-3 h-3 animate-spin" />
+          Thinking...
+        </div>
+      </div>
+    </motion.div>
+  )
+}
+
+// ============================================================
 // MAIN CHAT VIEW
 // ============================================================
 
 export default function ChatView() {
   const isMobile = useIsMobile()
-  const [activeChannel, setActiveChannel] = useState('ch-general')
+  const [activeChannel, setActiveChannel] = useState('')
   const [showMembers, setShowMembers] = useState(!isMobile)
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const [typingUsers, setTypingUsers] = useState<string[]>([])
+  const [isAILoading, setIsAILoading] = useState(false)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [channels, setChannels] = useState<ChatChannel[]>([])
@@ -643,14 +768,14 @@ export default function ChatView() {
   const [users, setUsers] = useState<ChatUser[]>([])
   const [loading, setLoading] = useState(true)
 
+  // Fetch channels on mount
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchChannels = async () => {
       try {
         const channelsRes = await fetch('/api/channels')
         if (channelsRes.ok) {
           const data = await channelsRes.json()
           const rawChannels = Array.isArray(data) ? data : (data.channels || data.data || [])
-          // Bug #4 fix: provide sensible defaults for missing channel fields
           const channelList: ChatChannel[] = rawChannels.map((ch: Record<string, unknown>) => ({
             id: String(ch.id || ''),
             name: String(ch.name || ''),
@@ -659,41 +784,53 @@ export default function ChatView() {
             description: String(ch.description || ''),
             unread: Number(ch.unread || 0),
             isMuted: Boolean(ch.isMuted || false),
+            isCommittee: Boolean(ch.isCommittee || false),
           }))
           setChannels(channelList)
-          if (channelList.length > 0 && !channelList.find((c: ChatChannel) => c.id === activeChannel)) {
+          if (channelList.length > 0) {
             setActiveChannel(channelList[0].id)
-          }
-
-          // Bug #1 fix: pass channelId to messages fetch
-          const selectedId = channelList.length > 0 ? channelList[0].id : activeChannel
-          const messagesRes = await fetch(`/api/messages?channelId=${selectedId}`)
-          if (messagesRes.ok) {
-            const msgData = await messagesRes.json()
-            const rawMessages = Array.isArray(msgData) ? msgData : (msgData.messages || msgData.data || [])
-            // Bug #2 & #3 fix: map createdAt→timestamp and nested user fields→flat fields
-            const mappedMessages: ChatMessage[] = rawMessages.map((m: Record<string, unknown>) => ({
-              id: String(m.id || ''),
-              channelId: String(m.channelId || ''),
-              userId: String(m.userId || (m.user as Record<string, unknown>)?.id || ''),
-              userName: String(m.userName || (m.user as Record<string, unknown>)?.name || 'Unknown'),
-              userRole: String(m.userRole || (m.user as Record<string, unknown>)?.role || 'STUDENT') as UserRole,
-              content: String(m.content || ''),
-              timestamp: String(m.timestamp || m.createdAt || new Date().toISOString()),
-              isSystem: Boolean(m.isSystem || false),
-              isEdited: Boolean(m.isEdited || false),
-            }))
-            setMessages(mappedMessages)
           }
         }
       } catch {
-        // API not available, show empty states
+        // API not available
       } finally {
         setLoading(false)
       }
     }
-    fetchData()
+    fetchChannels()
   }, [])
+
+  // Fetch messages when active channel changes
+  const fetchMessages = useCallback(async (channelId: string) => {
+    try {
+      const messagesRes = await fetch(`/api/messages?channelId=${channelId}`)
+      if (messagesRes.ok) {
+        const msgData = await messagesRes.json()
+        const rawMessages = Array.isArray(msgData) ? msgData : (msgData.messages || msgData.data || [])
+        const mappedMessages: ChatMessage[] = rawMessages.map((m: Record<string, unknown>) => ({
+          id: String(m.id || ''),
+          channelId: String(m.channelId || ''),
+          userId: String(m.userId || (m.user as Record<string, unknown>)?.id || ''),
+          userName: String(m.userName || (m.user as Record<string, unknown>)?.name || 'Unknown'),
+          userRole: String(m.userRole || (m.user as Record<string, unknown>)?.role || 'STUDENT') as UserRole,
+          content: String(m.content || ''),
+          timestamp: String(m.timestamp || m.createdAt || new Date().toISOString()),
+          isSystem: Boolean(m.isSystem || false),
+          isEdited: Boolean(m.isEdited || false),
+          isBot: Boolean((m.user as Record<string, unknown>)?.isBot || m.isBot || false),
+        }))
+        setMessages(mappedMessages)
+      }
+    } catch {
+      // Failed to fetch
+    }
+  }, [])
+
+  useEffect(() => {
+    if (activeChannel) {
+      fetchMessages(activeChannel)
+    }
+  }, [activeChannel, fetchMessages])
 
   const currentChannel = channels.find((c) => c.id === activeChannel) || channels[0] || null
 
@@ -702,7 +839,7 @@ export default function ChatView() {
   // Auto-scroll to bottom
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
-  }, [channelMessages.length, activeChannel])
+  }, [channelMessages.length, activeChannel, isAILoading])
 
   const handleSelectChannel = (id: string) => {
     setActiveChannel(id)
@@ -721,7 +858,6 @@ export default function ChatView() {
       })
       if (res.ok) {
         const response = await res.json()
-        // Bug #5 fix: extract message from wrapped response { success, data: message }
         const rawMsg = response.data || response
         const newMsg: ChatMessage = {
           id: String(rawMsg.id || ''),
@@ -733,11 +869,69 @@ export default function ChatView() {
           timestamp: String(rawMsg.timestamp || rawMsg.createdAt || new Date().toISOString()),
           isSystem: Boolean(rawMsg.isSystem || false),
           isEdited: Boolean(rawMsg.isEdited || false),
+          isBot: Boolean((rawMsg.user as Record<string, unknown>)?.isBot || false),
         }
         setMessages(prev => [...prev, newMsg])
       }
     } catch {
       // Failed to send message
+    }
+  }
+
+  const handleAskAI = async (question: string) => {
+    // First, send the user's question as a regular message (so it appears in the chat)
+    const cleanedQuestion = question
+      .replace(/@diplomatiq\s*guru/gi, '')
+      .replace(/@diplomatiq/gi, '')
+      .trim()
+
+    if (cleanedQuestion) {
+      await handleSendMessage(`@DiplomatiQ Guru ${cleanedQuestion}`)
+    }
+
+    // Then call the AI assistant
+    setIsAILoading(true)
+    try {
+      const res = await fetch('/api/ai-assistant', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          channelId: activeChannel,
+          message: cleanedQuestion || question,
+        }),
+      })
+
+      if (res.ok) {
+        const response = await res.json()
+        if (response.data) {
+          const botMsg: ChatMessage = {
+            id: String(response.data.id || ''),
+            channelId: String(response.data.channelId || activeChannel),
+            userId: String(response.data.userId || (response.data.user as Record<string, unknown>)?.id || ''),
+            userName: String((response.data.user as Record<string, unknown>)?.name || BOT_NAME),
+            userRole: String((response.data.user as Record<string, unknown>)?.role || 'ADMIN') as UserRole,
+            content: String(response.data.content || ''),
+            timestamp: String(response.data.createdAt || new Date().toISOString()),
+            isBot: true,
+          }
+          setMessages(prev => [...prev, botMsg])
+        }
+      }
+    } catch {
+      // AI request failed — add error message
+      const errorMsg: ChatMessage = {
+        id: `error-${Date.now()}`,
+        channelId: activeChannel,
+        userId: 'bot',
+        userName: BOT_NAME,
+        userRole: 'ADMIN',
+        content: "I'm experiencing a temporary issue and can't respond right now. Please try again in a moment!",
+        timestamp: new Date().toISOString(),
+        isBot: true,
+      }
+      setMessages(prev => [...prev, errorMsg])
+    } finally {
+      setIsAILoading(false)
     }
   }
 
@@ -750,6 +944,7 @@ export default function ChatView() {
         !msg.isSystem &&
         (!prevMsg ||
           prevMsg.userId !== msg.userId ||
+          prevMsg.isBot !== msg.isBot ||
           prevMsg.isSystem ||
           shouldShowDateSeparator(channelMessages, i))
       groups.push({ showHeader, message: msg })
@@ -778,8 +973,7 @@ export default function ChatView() {
           </div>
           <h2 className="text-xl font-bold text-[#1B3A4B]">No Channels Yet</h2>
           <p className="text-muted-foreground mt-2 max-w-md">
-            Chat channels will appear here once they are created by teachers or administrators. 
-            Join a conference or course to start chatting with other delegates.
+            Chat channels will appear here once they are created. Committee channels include the DiplomatiQ Guru AI assistant.
           </p>
         </div>
       </div>
@@ -822,6 +1016,12 @@ export default function ChatView() {
             )}
             <ChannelIcon type={currentChannel.type} className="text-[#0D7377] shrink-0" />
             <span className="font-semibold text-sm text-[#1B3A4B] truncate">{currentChannel.name}</span>
+            {currentChannel.isCommittee && (
+              <Badge className="bg-[#0D7377]/10 text-[#0D7377] text-[9px] h-4 px-1.5 border-0 gap-0.5">
+                <Sparkles className="w-2.5 h-2.5" />
+                AI
+              </Badge>
+            )}
             {currentChannel.unread > 0 && (
               <Badge className="bg-[#0D7377] text-white text-[10px] h-5 border-0">
                 {currentChannel.unread} new
@@ -833,6 +1033,22 @@ export default function ChatView() {
             </span>
           </div>
           <div className="flex items-center gap-1 shrink-0">
+            {currentChannel.isCommittee && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="h-8 w-8 text-[#0D7377] bg-[#0D7377]/5"
+                    >
+                      <Sparkles className="w-4 h-4" />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>DiplomatiQ Guru is active in this channel</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
+            )}
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -877,10 +1093,16 @@ export default function ChatView() {
               </div>
               <h3 className="text-lg font-bold text-[#1B3A4B]">Welcome to #{currentChannel.name}!</h3>
               <p className="text-sm text-muted-foreground mt-1">{currentChannel.description}</p>
+              {currentChannel.isCommittee && (
+                <div className="mt-3 inline-flex items-center gap-1.5 text-xs text-[#0D7377] bg-[#0D7377]/5 px-3 py-1.5 rounded-full">
+                  <Sparkles className="w-3.5 h-3.5" />
+                  DiplomatiQ Guru is here to help — mention @DiplomatiQ Guru or use the Ask button
+                </div>
+              )}
             </div>
 
             {/* Messages */}
-            {messageGroups.map(({ showHeader, message }, i) => (
+            {messageGroups.map(({ showHeader, message }) => (
               <React.Fragment key={message.id}>
                 {shouldShowDateSeparator(channelMessages, channelMessages.indexOf(message)) && (
                   <div className="flex items-center gap-4 px-4 my-4">
@@ -894,6 +1116,10 @@ export default function ChatView() {
                 <MessageBubble message={message} showHeader={showHeader} />
               </React.Fragment>
             ))}
+
+            {/* AI Thinking Indicator */}
+            {isAILoading && <AIThinkingIndicator />}
+
             <div ref={messagesEndRef} />
           </div>
         </ScrollArea>
@@ -902,7 +1128,13 @@ export default function ChatView() {
         <TypingIndicator users={typingUsers} />
 
         {/* Message Input */}
-        <MessageInput onSend={handleSendMessage} channelName={currentChannel.name} />
+        <MessageInput
+          onSend={handleSendMessage}
+          onAskAI={handleAskAI}
+          channelName={currentChannel.name}
+          isCommitteeChannel={currentChannel.isCommittee}
+          isAILoading={isAILoading}
+        />
       </div>
 
       {/* Online Users Sidebar (Desktop) */}

@@ -232,6 +232,7 @@ model User {
   language           String            @default("en")
   schoolId           String?
   isActive           Boolean           @default(true)
+  isBot              Boolean           @default(false)
   emailVerified      Boolean           @default(false)
   lastLoginAt        DateTime?
   createdAt          DateTime          @default(now())
@@ -641,14 +642,18 @@ model Channel {
   name        String
   description String?
   type        String   @default("general")
+  category    String?  // Grouping: e.g., "General Assembly", "Security Council", "Regional Bodies"
   committeeId String?
   schoolId    String?
+  isCommittee Boolean  @default(false) // True for standard MUN committee channels
   createdAt   DateTime @default(now())
 
   messages Message[]
 
   @@index([type])
   @@index([schoolId])
+  @@index([category])
+  @@index([isCommittee])
 }
 
 model Message {

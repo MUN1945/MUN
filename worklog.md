@@ -200,3 +200,47 @@ Stage Summary:
 - Password reset notification system: admins notified when users request resets
 - School management: create, approve, manage schools
 - Deployed to https://mun-diplomatiq.vercel.app
+---
+Task ID: launch-cleanup-1
+Agent: Main Agent
+Task: Platform cleanup, committee channels, and AI assistant for public launch
+
+Work Log:
+- Updated Prisma schema: added `isBot` Boolean to User model, `category` String and `isCommittee` Boolean to Channel model
+- Pushed schema changes to Neon PostgreSQL database
+- Created production seed script (`prisma/seed-production.ts`) that:
+  - Cleans ALL test/dummy data from every table
+  - Recreates the Master Administrator account (modelunitednations45@gmail.com)
+  - Creates the DiplomatiQ Guru AI bot user
+  - Creates 34 committee channels across 8 categories (General Assembly, Security Council, ECOSOC, Human Rights, Specialized Agencies, Regional Bodies, Crisis Committees, Community)
+  - Posts AI welcome messages in each committee channel
+- Created AI Assistant API endpoint (`/api/ai-assistant`) using z-ai-web-dev-sdk that:
+  - Processes chat messages with comprehensive system prompt
+  - Enforces MUN/UN scope restrictions
+  - Enforces UAE compliance and content safety
+  - Implements functional restrictions (chat-only, no platform actions)
+  - Posts AI responses as messages from the bot user
+  - Logs AI interactions for audit
+  - Handles off-topic detection and polite redirection
+- Updated Channels API to return `category`, `isCommittee`, and `isBot` fields
+- Completely rewrote ChatView component with:
+  - AI assistant integration ("Ask DiplomatiQ Guru" button)
+  - @DiplomatiQ Guru mention detection
+  - AI thinking indicator
+  - Bot user styling (sparkles icon, AI badge, special colors)
+  - Committee channel indicators (AI badge in channel list, header)
+  - Category-based channel ordering
+- Ran production seed successfully - database is clean with:
+  - 1 real user (Master Admin only)
+  - 1 bot user (DiplomatiQ Guru)
+  - 34 channels with welcome messages
+  - 44 schools, 25 badges, 8 courses, 4 pricing plans, 118 assessment questions
+  - 0 test/dummy data
+- Build verified successfully
+
+Stage Summary:
+- Platform is production-ready for public launch
+- All test/dummy data removed
+- 34 standard MUN committee channels created with AI welcome messages
+- DiplomatiQ Guru AI assistant is active in all committee channels
+- AI assistant enforces scope, safety, and functional restrictions per requirements
