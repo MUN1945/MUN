@@ -80,3 +80,34 @@ Stage Summary:
 - Production no longer logs every SQL query
 - Development retains full logging for debugging
 - Only errors logged in production
+---
+Task ID: 1
+Agent: Main Agent
+Task: Complete redesign of Training Material section - fix overflow, scrolling, responsiveness, color contrast, layout
+
+Work Log:
+- Read and analyzed TrainingHub.tsx (832 lines) — identified all layout issues
+- Read AppShell.tsx to understand parent container constraints
+- Read globals.css for CSS variables and theme tokens
+- Identified root causes: hardcoded hex colors, no overflow handling, no responsive breakpoints, missing min-w-0, fixed heights causing overflow, poor color contrast, no horizontal scroll support
+- Rewrote entire TrainingHub.tsx with comprehensive fixes
+- Extracted CourseCard, AchievementCard, LessonContent as separate sub-components
+- Added proper overflow-hidden and min-w-0 to all flex/grid containers
+- Added break-words and line-clamp-2 to prevent text overflow
+- Added ScrollArea with horizontal orientation for filter pills on mobile
+- Added responsive breakpoints (mobile default, sm, md, lg, xl) throughout
+- Replaced all hardcoded hex colors with semantic CSS variable references (text-foreground, bg-primary, etc.)
+- Fixed achievement card opacity from 0.40 to 0.50 for better readability
+- Added empty state for no search results
+- Capped progress at 100% with Math.min() to prevent >100% display bug
+- Added consistent spacing with responsive variants
+- Used proper color contrast ratios throughout
+- Committed: d994e66
+- Pushed to GitHub: main branch confirmed
+- Production site verified: HTTP 200
+
+Stage Summary:
+- TrainingHub.tsx fully redesigned (641 insertions, 417 deletions)
+- All overflow, scrolling, responsiveness, and color contrast issues addressed
+- Commit: d994e66 pushed to origin/main
+- Production: https://mun-diplomatiq.vercel.app (live, auto-deploying)
