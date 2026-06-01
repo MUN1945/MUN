@@ -137,3 +137,37 @@ Stage Summary:
 - Complete color overhaul from dark-theme to light-theme
 - Commit: 43e6345 pushed to origin/main
 - Production: https://mun-diplomatiq.vercel.app (auto-deploying)
+
+---
+Task ID: 3
+Agent: Main Agent
+Task: Fix Password Reset crash, Chat button not working, User Management table scrolling
+
+Work Log:
+- Analyzed all three broken features by reading source code
+- Discovered root cause of Password Reset & Chat crashes: no error boundary
+  - Any React render error in a view component crashes the entire React tree
+  - No error recovery mechanism existed in the app
+- Added ViewErrorBoundary class component to AppShell.tsx
+  - Wraps every view rendered by ViewRouter
+  - Catches errors with getDerivedStateFromError/componentDidCatch
+  - Shows user-friendly error UI with "Try Again" button
+  - Prevents component errors from breaking the whole site
+- Refactored ViewRouter from return-based to variable-based switch
+  - All cases now assign to viewContent variable
+  - Final return wraps in ViewErrorBoundary
+- Fixed User Management table: added min-w-[800px] wrapper inside ScrollArea
+  - Removed all `hidden md:table-cell` and `hidden lg:table-cell` classes
+  - School, Subscription columns now always visible
+  - Horizontal scrolling enabled on smaller screens
+- Fixed Schools table: added min-w-[700px] wrapper, removed hidden classes
+- Fixed Audit Logs table: added min-w-[700px] wrapper, removed hidden classes
+- Build verified successfully
+- Committed: e9f2385, pushed to origin/main
+
+Stage Summary:
+- Error boundary prevents any view from crashing the entire site
+- All 3 tables in Command Center now have horizontal scrolling
+- All table columns always visible (no more hidden columns)
+- Commit: e9f2385 pushed to origin/main
+- Production: https://mun-diplomatiq.vercel.app (auto-deploying)
