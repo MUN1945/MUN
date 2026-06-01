@@ -461,56 +461,62 @@ function BillingSubscriptionSection() {
 
   const isFreePlan = currentTier === 'FREE'
 
+  const [invoiceLoading, setInvoiceLoading] = useState<string | null>(null)
+
   const handleDownloadInvoice = async (invoice: { id: string; date: string; description: string; amount: string; status: string }) => {
-    // First try: open Lemon Squeezy customer portal which has real invoices
+    setInvoiceLoading(invoice.id)
     try {
-      const res = await fetch('/api/billing/portal', { method: 'POST' })
+      // Generate professional PDF invoice via API
+      const amountNum = parseFloat(invoice.amount.replace(/[^0-9.]/g, ''))
+      const res = await fetch('/api/invoices/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          invoiceData: {
+            invoiceNumber: invoice.id,
+            date: invoice.date,
+            description: invoice.description,
+            amount: isNaN(amountNum) ? 0 : amountNum,
+            currency: 'USD',
+            status: invoice.status,
+            planName: planNames[currentTier] || 'Free',
+            billingPeriod: 'Monthly',
+          },
+        }),
+      })
+
       if (res.ok) {
-        const data = await res.json()
-        if (data.url) {
-          window.open(data.url, '_blank')
-          return
+        // Download the PDF
+        const blob = await res.blob()
+        const url = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        a.href = url
+        a.download = `DiplomatiQ-Invoice-${invoice.id}.pdf`
+        document.body.appendChild(a)
+        a.click()
+        document.body.removeChild(a)
+        URL.revokeObjectURL(url)
+      } else {
+        // Fallback: try Lemon Squeezy portal
+        try {
+          const portalRes = await fetch('/api/billing/portal', { method: 'POST' })
+          if (portalRes.ok) {
+            const portalData = await portalRes.json()
+            if (portalData.url) {
+              window.open(portalData.url, '_blank')
+              return
+            }
+          }
+        } catch {
+          // Portal not available either
         }
+        console.error('Failed to generate invoice PDF')
       }
-    } catch {
-      // Portal not available, fall through to generated invoice
+    } catch (error) {
+      console.error('Invoice download error:', error)
+    } finally {
+      setInvoiceLoading(null)
     }
-
-    // Fallback: generate a simple text invoice for demo/local use
-    const invoiceText = [
-      `═══════════════════════════════════════════`,
-      `         DIPLOMATIQ - INVOICE`,
-      `═══════════════════════════════════════════`,
-      ``,
-      `Invoice ID:    ${invoice.id}`,
-      `Date:          ${invoice.date}`,
-      `Description:   ${invoice.description}`,
-      `Amount:        ${invoice.amount}`,
-      `Status:        ${invoice.status}`,
-      ``,
-      `───────────────────────────────────────────`,
-      `Billed To:     ${user?.name || 'N/A'}`,
-      `Email:         ${user?.email || 'N/A'}`,
-      `Plan:          ${planNames[currentTier] || 'Free'}`,
-      `───────────────────────────────────────────`,
-      ``,
-      `Payment Method: Credit Card (via Lemon Squeezy)`,
-      ``,
-      `═══════════════════════════════════════════`,
-      `  DiplomatiQ - The OS for Model United Nations`,
-      `  https://mun-diplomatiq.vercel.app`,
-      `═══════════════════════════════════════════`,
-    ].join('\n')
-
-    const blob = new Blob([invoiceText], { type: 'text/plain' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = `DiplomatiQ-Invoice-${invoice.id}.txt`
-    document.body.appendChild(a)
-    a.click()
-    document.body.removeChild(a)
-    URL.revokeObjectURL(url)
   }
 
   return (
@@ -698,9 +704,14 @@ function BillingSubscriptionSection() {
                           size="sm"
                           className="h-7 w-7 p-0 text-muted-foreground hover:text-[#0D7377]"
                           onClick={() => handleDownloadInvoice(invoice)}
-                          title="Download Invoice"
+                          title="Download Invoice PDF"
+                          disabled={invoiceLoading === invoice.id}
                         >
-                          <Download className="w-3.5 h-3.5" />
+                          {invoiceLoading === invoice.id ? (
+                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          ) : (
+                            <Download className="w-3.5 h-3.5" />
+                          )}
                         </Button>
                       </td>
                     </tr>

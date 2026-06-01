@@ -347,6 +347,18 @@ function UserManagement() {
   const [deleteTarget, setDeleteTarget] = useState<UserData | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
 
+  // Subscription Management Dialog (MASTER_ADMIN only)
+  const [subMgmtOpen, setSubMgmtOpen] = useState(false)
+  const [subMgmtTarget, setSubMgmtTarget] = useState<UserData | null>(null)
+  const [subMgmtAction, setSubMgmtAction] = useState<'reset_trial' | 'upgrade' | 'override_status' | 'activate'>('reset_trial')
+  const [subMgmtTier, setSubMgmtTier] = useState('DELEGATE_PRO')
+  const [subMgmtTrialDays, setSubMgmtTrialDays] = useState('14')
+  const [subMgmtOverrideStatus, setSubMgmtOverrideStatus] = useState('ACTIVE')
+  const [subMgmtOverrideTier, setSubMgmtOverrideTier] = useState('FREE')
+  const [subMgmtReason, setSubMgmtReason] = useState('')
+  const [subMgmtPeriodDays, setSubMgmtPeriodDays] = useState('365')
+  const [isSubMgmtLoading, setIsSubMgmtLoading] = useState(false)
+
   const fetchUsers = useCallback(async () => {
     try {
       const params = new URLSearchParams({ page: String(page), limit: '25' })
@@ -482,6 +494,53 @@ function UserManagement() {
       toast.error('Failed to delete user')
     } finally {
       setIsDeleting(false)
+    }
+  }
+
+  // Subscription Management Handler (MASTER_ADMIN only)
+  const handleSubscriptionAction = async () => {
+    if (!subMgmtTarget) return
+    setIsSubMgmtLoading(true)
+    try {
+      const body: Record<string, unknown> = { action: subMgmtAction }
+
+      switch (subMgmtAction) {
+        case 'reset_trial':
+          body.trialDays = parseInt(subMgmtTrialDays) || 14
+          break
+        case 'upgrade':
+          body.tier = subMgmtTier
+          break
+        case 'override_status':
+          body.status = subMgmtOverrideStatus
+          body.tier = subMgmtOverrideTier
+          body.reason = subMgmtReason
+          body.periodEndDays = parseInt(subMgmtPeriodDays) || 365
+          body.trialDays = parseInt(subMgmtTrialDays) || 14
+          break
+        case 'activate':
+          body.trialDays = parseInt(subMgmtTrialDays) || 14
+          break
+      }
+
+      const res = await fetch(`/api/admin/users/${subMgmtTarget.id}/subscription`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      })
+      const data = await res.json()
+      if (res.ok) {
+        toast.success(data.message || `Subscription updated for ${subMgmtTarget.email}`)
+        setSubMgmtOpen(false)
+        setSubMgmtTarget(null)
+        fetchUsers()
+      } else {
+        toast.error(data.error || 'Failed to update subscription')
+      }
+    } catch {
+      toast.error('Failed to update subscription')
+    } finally {
+      setIsSubMgmtLoading(false)
     }
   }
 
@@ -644,6 +703,11 @@ function UserManagement() {
                             {u.isActive ? <><Ban className="w-4 h-4 mr-2" /> Suspend</> : <><CheckCircle2 className="w-4 h-4 mr-2" /> Activate</>}
                           </DropdownMenuItem>
                           <DropdownMenuSeparator className="bg-white/10" />
+                          <DropdownMenuItem className="text-[#0A7E8C] focus:text-[#0A9EAC] focus:bg-white/10"
+                            onClick={() => { setSubMgmtTarget(u); setSubMgmtAction('reset_trial'); setSubMgmtOpen(true) }}>
+                            <RefreshCw className="w-4 h-4 mr-2" /> Manage Subscription
+                          </DropdownMenuItem>
+                          <DropdownMenuSeparator className="bg-white/10" />
                           <DropdownMenuItem className="text-red-400 focus:text-red-300 focus:bg-white/10"
                             onClick={() => setDeleteTarget(u)}>
                             <Trash2 className="w-4 h-4 mr-2" /> Delete
@@ -743,6 +807,168 @@ function UserManagement() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* Subscription Management Dialog (MASTER_ADMIN only) */}
+      <Dialog open={subMgmtOpen} onOpenChange={setSubMgmtOpen}>
+        <DialogContent className="bg-[#1B2A4A] border-white/10 text-white max-w-lg [&>button]:text-white/50 [&>button]:hover:text-white">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Crown className="w-5 h-5 text-[#D4A843]" />
+              Manage Subscription
+            </DialogTitle>
+            <DialogDescription className="text-slate-400">
+              {subMgmtTarget?.email} — Current: {subMgmtTarget?.subscription ? `${subMgmtTarget.subscription.tier} (${subMgmtTarget.subscription.status})` : 'No subscription'}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            {/* Action Selector */}
+            <div className="space-y-2">
+              <Label className="text-slate-300">Action</Label>
+              <Select value={subMgmtAction} onValueChange={(v) => setSubMgmtAction(v as typeof subMgmtAction)}>
+                <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                  <SelectItem value="reset_trial" className="text-slate-200 focus:bg-white/10 focus:text-white">
+                    <div className="flex items-center gap-2">
+                      <RefreshCw className="w-3.5 h-3.5 text-[#0A7E8C]" />
+                      Reset Trial Period
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="upgrade" className="text-slate-200 focus:bg-white/10 focus:text-white">
+                    <div className="flex items-center gap-2">
+                      <ArrowUpRight className="w-3.5 h-3.5 text-[#D4A843]" />
+                      Manual Upgrade to Pro
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="override_status" className="text-slate-200 focus:bg-white/10 focus:text-white">
+                    <div className="flex items-center gap-2">
+                      <Shield className="w-3.5 h-3.5 text-[#8B5CF6]" />
+                      Override Subscription Status
+                    </div>
+                  </SelectItem>
+                  <SelectItem value="activate" className="text-slate-200 focus:bg-white/10 focus:text-white">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                      Activate Client Account
+                    </div>
+                  </SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Action-specific fields */}
+            {subMgmtAction === 'reset_trial' && (
+              <div className="space-y-3 p-3 rounded-lg bg-[#0A7E8C]/10 border border-[#0A7E8C]/20">
+                <p className="text-xs text-slate-400">Reset the trial period for this client. All trial dates will be restarted from today.</p>
+                <div className="space-y-2">
+                  <Label className="text-slate-300 text-xs">Trial Duration (days)</Label>
+                  <Input type="number" value={subMgmtTrialDays} onChange={(e) => setSubMgmtTrialDays(e.target.value)} className="bg-[#0D1B2A] border-white/10 text-white" placeholder="14" min="1" max="90" />
+                </div>
+              </div>
+            )}
+
+            {subMgmtAction === 'upgrade' && (
+              <div className="space-y-3 p-3 rounded-lg bg-[#D4A843]/10 border border-[#D4A843]/20">
+                <p className="text-xs text-slate-400">Manually upgrade this client from their current plan to a Pro plan. No payment required.</p>
+                <div className="space-y-2">
+                  <Label className="text-slate-300 text-xs">Upgrade To</Label>
+                  <Select value={subMgmtTier} onValueChange={setSubMgmtTier}>
+                    <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                      <SelectItem value="DELEGATE_PRO" className="text-slate-200 focus:bg-white/10 focus:text-white">Delegate Pro ($11/mo)</SelectItem>
+                      <SelectItem value="DIRECTOR_PRO" className="text-slate-200 focus:bg-white/10 focus:text-white">Director Pro ($29/mo)</SelectItem>
+                      <SelectItem value="SCHOOL_STARTER" className="text-slate-200 focus:bg-white/10 focus:text-white">School Starter ($99/mo)</SelectItem>
+                      <SelectItem value="SCHOOL_PROFESSIONAL" className="text-slate-200 focus:bg-white/10 focus:text-white">School Professional ($249/mo)</SelectItem>
+                      <SelectItem value="SCHOOL_ENTERPRISE" className="text-slate-200 focus:bg-white/10 focus:text-white">School Enterprise (Custom)</SelectItem>
+                      <SelectItem value="CONFERENCE_PACKAGE" className="text-slate-200 focus:bg-white/10 focus:text-white">Conference Package</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            )}
+
+            {subMgmtAction === 'override_status' && (
+              <div className="space-y-3 p-3 rounded-lg bg-[#8B5CF6]/10 border border-[#8B5CF6]/20">
+                <p className="text-xs text-slate-400">Manually override subscription status. Use for internal testing, customer support, promotional access, or strategic partnerships.</p>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="space-y-2">
+                    <Label className="text-slate-300 text-xs">Status</Label>
+                    <Select value={subMgmtOverrideStatus} onValueChange={setSubMgmtOverrideStatus}>
+                      <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                        <SelectItem value="ACTIVE" className="text-slate-200 focus:bg-white/10 focus:text-white">Active</SelectItem>
+                        <SelectItem value="TRIAL" className="text-slate-200 focus:bg-white/10 focus:text-white">Trial</SelectItem>
+                        <SelectItem value="PAST_DUE" className="text-slate-200 focus:bg-white/10 focus:text-white">Past Due</SelectItem>
+                        <SelectItem value="CANCELLED" className="text-slate-200 focus:bg-white/10 focus:text-white">Cancelled</SelectItem>
+                        <SelectItem value="EXPIRED" className="text-slate-200 focus:bg-white/10 focus:text-white">Expired</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label className="text-slate-300 text-xs">Tier</Label>
+                    <Select value={subMgmtOverrideTier} onValueChange={setSubMgmtOverrideTier}>
+                      <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white text-xs">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                        <SelectItem value="FREE" className="text-slate-200 focus:bg-white/10 focus:text-white">Free</SelectItem>
+                        <SelectItem value="DELEGATE_PRO" className="text-slate-200 focus:bg-white/10 focus:text-white">Delegate Pro</SelectItem>
+                        <SelectItem value="DIRECTOR_PRO" className="text-slate-200 focus:bg-white/10 focus:text-white">Director Pro</SelectItem>
+                        <SelectItem value="SCHOOL_STARTER" className="text-slate-200 focus:bg-white/10 focus:text-white">School Starter</SelectItem>
+                        <SelectItem value="SCHOOL_PROFESSIONAL" className="text-slate-200 focus:bg-white/10 focus:text-white">School Professional</SelectItem>
+                        <SelectItem value="SCHOOL_ENTERPRISE" className="text-slate-200 focus:bg-white/10 focus:text-white">School Enterprise</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                {subMgmtOverrideStatus === 'ACTIVE' && (
+                  <div className="space-y-2">
+                    <Label className="text-slate-300 text-xs">Access Duration (days)</Label>
+                    <Input type="number" value={subMgmtPeriodDays} onChange={(e) => setSubMgmtPeriodDays(e.target.value)} className="bg-[#0D1B2A] border-white/10 text-white" placeholder="365" min="1" />
+                  </div>
+                )}
+                {subMgmtOverrideStatus === 'TRIAL' && (
+                  <div className="space-y-2">
+                    <Label className="text-slate-300 text-xs">Trial Duration (days)</Label>
+                    <Input type="number" value={subMgmtTrialDays} onChange={(e) => setSubMgmtTrialDays(e.target.value)} className="bg-[#0D1B2A] border-white/10 text-white" placeholder="14" min="1" max="90" />
+                  </div>
+                )}
+                <div className="space-y-2">
+                  <Label className="text-slate-300 text-xs">Reason (for audit log)</Label>
+                  <Input value={subMgmtReason} onChange={(e) => setSubMgmtReason(e.target.value)} className="bg-[#0D1B2A] border-white/10 text-white" placeholder="e.g., Customer support, promotional access, testing" />
+                </div>
+              </div>
+            )}
+
+            {subMgmtAction === 'activate' && (
+              <div className="space-y-3 p-3 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
+                <p className="text-xs text-slate-400">Activate this client account and restore access immediately. If their subscription is expired, they will receive a new trial period.</p>
+                <div className="space-y-2">
+                  <Label className="text-slate-300 text-xs">Trial Duration for Reactivated Account (days)</Label>
+                  <Input type="number" value={subMgmtTrialDays} onChange={(e) => setSubMgmtTrialDays(e.target.value)} className="bg-[#0D1B2A] border-white/10 text-white" placeholder="14" min="1" max="90" />
+                </div>
+              </div>
+            )}
+
+            {/* Warning */}
+            <div className="flex items-start gap-2 p-2 rounded bg-[#D4A843]/5 border border-[#D4A843]/10">
+              <AlertTriangle className="w-4 h-4 text-[#D4A843] shrink-0 mt-0.5" />
+              <p className="text-[10px] text-slate-500">This action is restricted to MASTER_ADMIN only. All changes are recorded in the audit log.</p>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={() => setSubMgmtOpen(false)} className="border-white/10 text-slate-300">Cancel</Button>
+            <Button onClick={handleSubscriptionAction} disabled={isSubMgmtLoading} className="bg-[#0D7377] hover:bg-[#0A5E62] text-white">
+              {isSubMgmtLoading ? 'Processing...' : 'Apply Changes'}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </motion.div>
   )
 }

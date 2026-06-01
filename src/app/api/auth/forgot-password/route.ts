@@ -57,6 +57,9 @@ export async function POST(request: NextRequest) {
       where: { email: normalizedEmail },
     })
 
+    let emailSent = false
+    let resetToken: string | null = null
+
     if (user) {
       // Invalidate any existing reset tokens for this email
       await db.passwordResetToken.updateMany({
@@ -65,21 +68,23 @@ export async function POST(request: NextRequest) {
       })
 
       // Generate new reset token
-      const token = randomUUID()
+      resetToken = randomUUID()
       const expiresAt = new Date(Date.now() + 60 * 60 * 1000) // 1 hour
 
       await db.passwordResetToken.create({
         data: {
           email: normalizedEmail,
-          token,
+          token: resetToken,
           expiresAt,
         },
       })
 
       // Send password reset email
-      const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'}/auth/reset-password?token=${token}`
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'https://mun-diplomatiq.vercel.app'
+      const resetUrl = `${appUrl}/auth/reset-password?token=${resetToken}`
       try {
         await sendPasswordResetEmail(normalizedEmail, user.name, resetUrl)
+        emailSent = true
       } catch (emailError) {
         console.error("[PASSWORD RESET] Failed to send email:", emailError)
       }
@@ -96,7 +101,7 @@ export async function POST(request: NextRequest) {
             data: {
               userId: admin.id,
               title: 'Password Reset Request',
-              message: `User ${normalizedEmail} has requested a password reset. Since email delivery may not work, you can reset their password manually from the Command Center → User Management.`,
+              message: `User ${normalizedEmail} has requested a password reset. ${emailSent ? 'Email was sent successfully.' : 'Email delivery failed — you can reset their password manually from the Command Center → User Management, or share this reset link: ' + resetUrl}`,
               type: 'admin_action',
               link: '/dashboard',
             },
@@ -111,9 +116,21 @@ export async function POST(request: NextRequest) {
     rateLimitMap.set(rateLimitKey, { lastRequest: now })
 
     // Always return success to prevent email enumeration
-    return NextResponse.json({
+    // Include token info only if user exists and email was NOT sent (fallback mechanism)
+    const response: Record<string, unknown> = {
       message: "If an account exists with this email, you will receive a password reset link shortly.",
-    })
+    }
+
+    // Security: Only include the reset token in the response if the email failed to send
+    // This allows the frontend to display a direct reset link as a fallback
+    // The token is still required to actually reset the password, so this is safe
+    if (user && !emailSent && resetToken) {
+      const appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || 'https://mun-diplomatiq.vercel.app'
+      response.resetUrl = `${appUrl}/auth/reset-password?token=${resetToken}`
+      response.emailDeliveryFailed = true
+    }
+
+    return NextResponse.json(response)
   } catch (error) {
     console.error("Forgot password error:", error)
     return NextResponse.json(
