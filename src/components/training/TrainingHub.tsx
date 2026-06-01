@@ -393,6 +393,7 @@ export default function TrainingHub() {
   const [userXp, setUserXp] = useState(0)
   const [streak, setStreak] = useState(0)
   const [userLevel, setUserLevel] = useState('Observer')
+  const [mobileLessonsOpen, setMobileLessonsOpen] = useState(false)
 
   // Fetch all data
   useEffect(() => {
@@ -710,8 +711,24 @@ export default function TrainingHub() {
 
         {/* Lesson area — sidebar + content */}
         <div className="grid grid-cols-1 lg:grid-cols-[300px_1fr] gap-4 sm:gap-5">
+          {/* Mobile lesson toggle */}
+          <div className="lg:hidden">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => setMobileLessonsOpen(!mobileLessonsOpen)}
+              className="w-full justify-between border-[#E0E5EA] text-[#0D1B2A] hover:bg-[#F3F5F7]"
+            >
+              <span className="flex items-center gap-2">
+                <BookOpen className="w-4 h-4 text-[#0D7377]" />
+                Lessons ({completedCount}/{selectedCourse.lessons.length})
+              </span>
+              <ChevronRight className={`w-4 h-4 text-[#5A6A7A] transition-transform duration-200 ${mobileLessonsOpen ? 'rotate-90' : ''}`} />
+            </Button>
+          </div>
+
           {/* Lesson list sidebar */}
-          <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }}>
+          <motion.div initial={{ opacity: 0, x: -16 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.4, delay: 0.1 }} className={`${mobileLessonsOpen ? 'block' : 'hidden'} lg:block`}>
             <Card className="overflow-hidden border-[#E0E5EA] bg-white">
               <CardHeader className="pb-2 pt-4 px-4">
                 <CardTitle className="text-xs sm:text-sm font-semibold text-[#0D1B2A] flex items-center gap-2">
@@ -723,7 +740,7 @@ export default function TrainingHub() {
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <ScrollArea className="max-h-[320px] lg:max-h-[500px]">
+                <div className="max-h-[320px] lg:max-h-[500px] overflow-y-auto">
                   <div className="space-y-0.5 px-2 pb-2">
                     {selectedCourse.lessons.map((lesson, i) => {
                       const isDone = completedLessons[lesson.id]
@@ -777,7 +794,7 @@ export default function TrainingHub() {
                       )
                     })}
                   </div>
-                </ScrollArea>
+                </div>
               </CardContent>
             </Card>
           </motion.div>
@@ -810,8 +827,7 @@ export default function TrainingHub() {
                   <Separator className="bg-[#E0E5EA]" />
 
                   {/* Lesson body — scrollable */}
-                  <CardContent className="p-4 sm:p-5">
-                    <ScrollArea className="max-h-[400px] lg:max-h-[500px]">
+                  <CardContent className="p-4 sm:p-5 overflow-y-auto max-h-[60vh] lg:max-h-[70vh]">
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -819,13 +835,12 @@ export default function TrainingHub() {
                       >
                         <LessonContent content={activeLesson.content} />
                       </motion.div>
-                    </ScrollArea>
                   </CardContent>
 
                   <Separator className="bg-[#E0E5EA]" />
 
                   {/* Mark Complete footer */}
-                  <div className="px-4 sm:px-5 py-3 sm:py-4">
+                  <div className="px-4 sm:px-5 py-3 sm:py-4 bg-[#F8FAFB] border-t border-[#E0E5EA]">
                     {completedLessons[activeLesson.id] ? (
                       <div className="flex items-center gap-2 text-[#059669]">
                         <CheckCircle2 className="w-4.5 h-4.5" />

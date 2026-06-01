@@ -23,7 +23,6 @@ import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@/components/ui/separator'
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow
@@ -497,7 +496,7 @@ function UserManagement() {
               <UserPlus className="w-4 h-4 mr-2" /> Add User
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-[#1B2A4A] border-white/10 text-white">
+          <DialogContent className="bg-[#1B2A4A] border-white/10 text-white [&>button]:text-white/50 [&>button]:hover:text-white">
             <DialogHeader>
               <DialogTitle>Create New User</DialogTitle>
               <DialogDescription className="text-slate-400">Add a user to the platform with a specific role and subscription.</DialogDescription>
@@ -521,14 +520,14 @@ function UserManagement() {
                   <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white">
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent className="bg-[#1B2A4A] border-white/10">
-                    <SelectItem value="STUDENT">Student</SelectItem>
-                    <SelectItem value="TEACHER">Teacher</SelectItem>
-                    <SelectItem value="SCHOOL_ADMIN">School Admin</SelectItem>
-                    <SelectItem value="ADMIN">Admin</SelectItem>
-                    <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-                    <SelectItem value="FOUNDER">Founder</SelectItem>
-                    <SelectItem value="MASTER_ADMIN">Master Admin</SelectItem>
+                  <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                    <SelectItem value="STUDENT" className="text-slate-200 focus:bg-white/10 focus:text-white">Student</SelectItem>
+                    <SelectItem value="TEACHER" className="text-slate-200 focus:bg-white/10 focus:text-white">Teacher</SelectItem>
+                    <SelectItem value="SCHOOL_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">School Admin</SelectItem>
+                    <SelectItem value="ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Admin</SelectItem>
+                    <SelectItem value="SUPER_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Super Admin</SelectItem>
+                    <SelectItem value="FOUNDER" className="text-slate-200 focus:bg-white/10 focus:text-white">Founder</SelectItem>
+                    <SelectItem value="MASTER_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Master Admin</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -553,25 +552,25 @@ function UserManagement() {
           <SelectTrigger className="w-full sm:w-[160px] bg-[#1B2A4A] border-white/10 text-white">
             <SelectValue placeholder="Role" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1B2A4A] border-white/10">
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="STUDENT">Student</SelectItem>
-            <SelectItem value="TEACHER">Teacher</SelectItem>
-            <SelectItem value="SCHOOL_ADMIN">School Admin</SelectItem>
-            <SelectItem value="ADMIN">Admin</SelectItem>
-            <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-            <SelectItem value="FOUNDER">Founder</SelectItem>
-            <SelectItem value="MASTER_ADMIN">Master Admin</SelectItem>
+          <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+            <SelectItem value="all" className="text-slate-200 focus:bg-white/10 focus:text-white">All Roles</SelectItem>
+            <SelectItem value="STUDENT" className="text-slate-200 focus:bg-white/10 focus:text-white">Student</SelectItem>
+            <SelectItem value="TEACHER" className="text-slate-200 focus:bg-white/10 focus:text-white">Teacher</SelectItem>
+            <SelectItem value="SCHOOL_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">School Admin</SelectItem>
+            <SelectItem value="ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Admin</SelectItem>
+            <SelectItem value="SUPER_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Super Admin</SelectItem>
+            <SelectItem value="FOUNDER" className="text-slate-200 focus:bg-white/10 focus:text-white">Founder</SelectItem>
+            <SelectItem value="MASTER_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Master Admin</SelectItem>
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={(v) => { setStatusFilter(v); setPage(1) }}>
           <SelectTrigger className="w-full sm:w-[160px] bg-[#1B2A4A] border-white/10 text-white">
             <SelectValue placeholder="Status" />
           </SelectTrigger>
-          <SelectContent className="bg-[#1B2A4A] border-white/10">
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="inactive">Inactive</SelectItem>
+          <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+            <SelectItem value="all" className="text-slate-200 focus:bg-white/10 focus:text-white">All</SelectItem>
+            <SelectItem value="active" className="text-slate-200 focus:bg-white/10 focus:text-white">Active</SelectItem>
+            <SelectItem value="inactive" className="text-slate-200 focus:bg-white/10 focus:text-white">Inactive</SelectItem>
           </SelectContent>
         </Select>
         <Button variant="outline" onClick={fetchUsers} className="bg-[#1B2A4A] border-white/10 text-slate-300 hover:bg-[#264B5E]">
@@ -582,7 +581,7 @@ function UserManagement() {
       {/* Table */}
       <DarkCard>
         <CardContent className="p-0">
-          <ScrollArea className="max-h-[500px]">
+          <div className="max-h-[500px] overflow-y-auto">
             <div className="min-w-[800px]">
             <Table>
               <TableHeader>
@@ -655,7 +654,7 @@ function UserManagement() {
               </TableBody>
             </Table>
             </div>
-          </ScrollArea>
+          </div>
         </CardContent>
       </DarkCard>
       <div className="flex items-center justify-between text-xs text-slate-500">
@@ -668,7 +667,7 @@ function UserManagement() {
 
       {/* Reset Password Dialog */}
       <Dialog open={resetPwdOpen} onOpenChange={setResetPwdOpen}>
-        <DialogContent className="bg-[#1B2A4A] border-white/10 text-white">
+        <DialogContent className="bg-[#1B2A4A] border-white/10 text-white [&>button]:text-white/50 [&>button]:hover:text-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><KeyRound className="w-5 h-5 text-[#D4A843]" /> Reset Password</DialogTitle>
             <DialogDescription className="text-slate-400">
@@ -692,7 +691,7 @@ function UserManagement() {
 
       {/* Edit Role Dialog */}
       <Dialog open={editRoleOpen} onOpenChange={setEditRoleOpen}>
-        <DialogContent className="bg-[#1B2A4A] border-white/10 text-white">
+        <DialogContent className="bg-[#1B2A4A] border-white/10 text-white [&>button]:text-white/50 [&>button]:hover:text-white">
           <DialogHeader>
             <DialogTitle>Change Role</DialogTitle>
             <DialogDescription className="text-slate-400">
@@ -704,14 +703,14 @@ function UserManagement() {
               <Label className="text-slate-300">New Role</Label>
               <Select value={editRole} onValueChange={setEditRole}>
                 <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                <SelectContent className="bg-[#1B2A4A] border-white/10">
-                  <SelectItem value="STUDENT">Student</SelectItem>
-                  <SelectItem value="TEACHER">Teacher</SelectItem>
-                  <SelectItem value="SCHOOL_ADMIN">School Admin</SelectItem>
-                  <SelectItem value="ADMIN">Admin</SelectItem>
-                  <SelectItem value="SUPER_ADMIN">Super Admin</SelectItem>
-                  <SelectItem value="FOUNDER">Founder</SelectItem>
-                  <SelectItem value="MASTER_ADMIN">Master Admin</SelectItem>
+                <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                  <SelectItem value="STUDENT" className="text-slate-200 focus:bg-white/10 focus:text-white">Student</SelectItem>
+                  <SelectItem value="TEACHER" className="text-slate-200 focus:bg-white/10 focus:text-white">Teacher</SelectItem>
+                  <SelectItem value="SCHOOL_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">School Admin</SelectItem>
+                  <SelectItem value="ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Admin</SelectItem>
+                  <SelectItem value="SUPER_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Super Admin</SelectItem>
+                  <SelectItem value="FOUNDER" className="text-slate-200 focus:bg-white/10 focus:text-white">Founder</SelectItem>
+                  <SelectItem value="MASTER_ADMIN" className="text-slate-200 focus:bg-white/10 focus:text-white">Master Admin</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -829,10 +828,10 @@ function PasswordResetRequests() {
             <SelectTrigger className="w-[140px] bg-[#1B2A4A] border-white/10 text-white text-xs">
               <SelectValue />
             </SelectTrigger>
-            <SelectContent className="bg-[#1B2A4A] border-white/10">
-              <SelectItem value="">All</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="completed">Completed</SelectItem>
+            <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+              <SelectItem value="" className="text-slate-200 focus:bg-white/10 focus:text-white">All</SelectItem>
+              <SelectItem value="pending" className="text-slate-200 focus:bg-white/10 focus:text-white">Pending</SelectItem>
+              <SelectItem value="completed" className="text-slate-200 focus:bg-white/10 focus:text-white">Completed</SelectItem>
             </SelectContent>
           </Select>
           <Button variant="outline" onClick={fetchRequests} className="bg-[#1B2A4A] border-white/10 text-slate-300 hover:bg-[#264B5E]">
@@ -891,7 +890,7 @@ function PasswordResetRequests() {
 
       {/* Reset Password Dialog */}
       <Dialog open={resetPwdOpen} onOpenChange={setResetPwdOpen}>
-        <DialogContent className="bg-[#1B2A4A] border-white/10 text-white">
+        <DialogContent className="bg-[#1B2A4A] border-white/10 text-white [&>button]:text-white/50 [&>button]:hover:text-white">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2"><KeyRound className="w-5 h-5 text-[#D4A843]" /> Reset Password</DialogTitle>
             <DialogDescription className="text-slate-400">
@@ -1009,7 +1008,7 @@ function SchoolManagement() {
               <Plus className="w-4 h-4 mr-2" /> Add School
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-[#1B2A4A] border-white/10 text-white max-w-lg">
+          <DialogContent className="bg-[#1B2A4A] border-white/10 text-white max-w-lg [&>button]:text-white/50 [&>button]:hover:text-white">
             <DialogHeader>
               <DialogTitle>Add School</DialogTitle>
               <DialogDescription className="text-slate-400">Register a new school in the platform directory.</DialogDescription>
@@ -1034,14 +1033,14 @@ function SchoolManagement() {
                   <Label className="text-slate-300">Emirate</Label>
                   <Select value={newSchool.emirate} onValueChange={(v) => setNewSchool({ ...newSchool, emirate: v })}>
                     <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1B2A4A] border-white/10">
-                      <SelectItem value="Abu Dhabi">Abu Dhabi</SelectItem>
-                      <SelectItem value="Dubai">Dubai</SelectItem>
-                      <SelectItem value="Sharjah">Sharjah</SelectItem>
-                      <SelectItem value="Ajman">Ajman</SelectItem>
-                      <SelectItem value="Umm Al Quwain">Umm Al Quwain</SelectItem>
-                      <SelectItem value="Ras Al Khaimah">Ras Al Khaimah</SelectItem>
-                      <SelectItem value="Fujairah">Fujairah</SelectItem>
+                    <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                      <SelectItem value="Abu Dhabi" className="text-slate-200 focus:bg-white/10 focus:text-white">Abu Dhabi</SelectItem>
+                      <SelectItem value="Dubai" className="text-slate-200 focus:bg-white/10 focus:text-white">Dubai</SelectItem>
+                      <SelectItem value="Sharjah" className="text-slate-200 focus:bg-white/10 focus:text-white">Sharjah</SelectItem>
+                      <SelectItem value="Ajman" className="text-slate-200 focus:bg-white/10 focus:text-white">Ajman</SelectItem>
+                      <SelectItem value="Umm Al Quwain" className="text-slate-200 focus:bg-white/10 focus:text-white">Umm Al Quwain</SelectItem>
+                      <SelectItem value="Ras Al Khaimah" className="text-slate-200 focus:bg-white/10 focus:text-white">Ras Al Khaimah</SelectItem>
+                      <SelectItem value="Fujairah" className="text-slate-200 focus:bg-white/10 focus:text-white">Fujairah</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1051,10 +1050,10 @@ function SchoolManagement() {
                   <Label className="text-slate-300">School Type</Label>
                   <Select value={newSchool.schoolType} onValueChange={(v) => setNewSchool({ ...newSchool, schoolType: v })}>
                     <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1B2A4A] border-white/10">
-                      <SelectItem value="PUBLIC">Public</SelectItem>
-                      <SelectItem value="PRIVATE">Private</SelectItem>
-                      <SelectItem value="INTERNATIONAL">International</SelectItem>
+                    <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                      <SelectItem value="PUBLIC" className="text-slate-200 focus:bg-white/10 focus:text-white">Public</SelectItem>
+                      <SelectItem value="PRIVATE" className="text-slate-200 focus:bg-white/10 focus:text-white">Private</SelectItem>
+                      <SelectItem value="INTERNATIONAL" className="text-slate-200 focus:bg-white/10 focus:text-white">International</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1062,12 +1061,12 @@ function SchoolManagement() {
                   <Label className="text-slate-300">Curriculum</Label>
                   <Select value={newSchool.curriculum} onValueChange={(v) => setNewSchool({ ...newSchool, curriculum: v })}>
                     <SelectTrigger className="bg-[#0D1B2A] border-white/10 text-white"><SelectValue /></SelectTrigger>
-                    <SelectContent className="bg-[#1B2A4A] border-white/10">
-                      <SelectItem value="AMERICAN">American</SelectItem>
-                      <SelectItem value="BRITISH">British</SelectItem>
-                      <SelectItem value="IB">IB</SelectItem>
-                      <SelectItem value="CBSE">CBSE</SelectItem>
-                      <SelectItem value="NATIONAL">National</SelectItem>
+                    <SelectContent className="bg-[#1B2A4A] border-white/10 text-white">
+                      <SelectItem value="AMERICAN" className="text-slate-200 focus:bg-white/10 focus:text-white">American</SelectItem>
+                      <SelectItem value="BRITISH" className="text-slate-200 focus:bg-white/10 focus:text-white">British</SelectItem>
+                      <SelectItem value="IB" className="text-slate-200 focus:bg-white/10 focus:text-white">IB</SelectItem>
+                      <SelectItem value="CBSE" className="text-slate-200 focus:bg-white/10 focus:text-white">CBSE</SelectItem>
+                      <SelectItem value="NATIONAL" className="text-slate-200 focus:bg-white/10 focus:text-white">National</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
@@ -1130,7 +1129,7 @@ function SchoolManagement() {
       {/* Table */}
       <DarkCard>
         <CardContent className="p-0">
-          <ScrollArea className="max-h-[500px]">
+          <div className="max-h-[500px] overflow-y-auto">
             <div className="min-w-[700px]">
             <Table>
               <TableHeader>
@@ -1174,7 +1173,7 @@ function SchoolManagement() {
               </TableBody>
             </Table>
             </div>
-          </ScrollArea>
+          </div>
         </CardContent>
       </DarkCard>
     </motion.div>
@@ -1211,7 +1210,7 @@ function AuditLogs() {
       <h3 className="text-lg font-semibold text-white">Audit Logs</h3>
       <DarkCard>
         <CardContent className="p-0">
-          <ScrollArea className="max-h-[500px]">
+          <div className="max-h-[500px] overflow-y-auto">
             <div className="min-w-[700px]">
             <Table>
               <TableHeader>
@@ -1248,7 +1247,7 @@ function AuditLogs() {
               </TableBody>
             </Table>
             </div>
-          </ScrollArea>
+          </div>
         </CardContent>
       </DarkCard>
     </motion.div>

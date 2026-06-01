@@ -376,7 +376,7 @@ export default function AppShell() {
         </header>
 
         {/* Main content area */}
-        <main className={`flex-1 overflow-y-auto custom-scrollbar ${currentView === 'chat' ? 'flex flex-col' : ''}`}>
+        <main className={`flex-1 custom-scrollbar ${currentView === 'chat' ? 'flex flex-col overflow-hidden' : 'overflow-y-auto'}`}>
           {/* Trial Banner */}
           {isOnTrial && trialTimeLeft && (
             <div className="bg-[#D4A843]/10 border-b border-[#D4A843]/20 px-4 md:px-6 py-2 flex items-center justify-between">
