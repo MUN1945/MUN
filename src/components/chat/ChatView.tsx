@@ -173,9 +173,9 @@ function ChannelSidebar({
   const totalUnread = channels.reduce((acc, ch) => acc + ch.unread, 0)
 
   return (
-    <div className="flex flex-col h-full bg-[#1B3A4B]">
+    <div className="flex flex-col h-full bg-[#1B3A4B] overflow-hidden">
       {/* Server Header */}
-      <div className="px-4 py-3.5 border-b border-white/10 flex items-center justify-between">
+      <div className="px-4 py-3.5 border-b border-white/10 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-2">
           <div className="w-7 h-7 rounded-md bg-[#D4A843] flex items-center justify-center">
             <Globe className="w-4 h-4 text-[#1B3A4B]" />
@@ -273,7 +273,7 @@ function ChannelSidebar({
 
       {/* Create Channel (teachers only) */}
       {isTeacher && (
-        <div className="px-3 py-2 border-t border-white/10">
+        <div className="px-3 py-2 border-t border-white/10 shrink-0">
           <Button
             variant="ghost"
             size="sm"
@@ -286,7 +286,7 @@ function ChannelSidebar({
       )}
 
       {/* User area */}
-      <div className="px-3 py-2.5 border-t border-white/10 flex items-center gap-2">
+      <div className="px-3 py-2.5 border-t border-white/10 flex items-center gap-2 shrink-0">
         <div className="relative">
           <Avatar className="w-8 h-8">
             <AvatarFallback className="bg-[#0D7377]/30 text-[#0D7377] text-xs font-semibold">
@@ -337,7 +337,7 @@ function MessageBubble({ message, showHeader }: { message: ChatMessage; showHead
     <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`group flex items-start gap-3 px-4 py-1 hover:bg-[#F5F0EB]/50 transition-colors ${showHeader ? 'mt-3' : ''} ${isBot ? 'bg-[#0D7377]/[0.03]' : ''}`}
+      className={`group flex items-start gap-2 md:gap-3 px-3 md:px-4 py-1 hover:bg-[#F5F0EB]/50 transition-colors ${showHeader ? 'mt-3' : ''} ${isBot ? 'bg-[#0D7377]/[0.03]' : ''}`}
     >
       {showHeader ? (
         <Avatar className="w-9 h-9 mt-0.5 shrink-0">
@@ -357,8 +357,8 @@ function MessageBubble({ message, showHeader }: { message: ChatMessage; showHead
       )}
       <div className="flex-1 min-w-0">
         {showHeader && (
-          <div className="flex items-baseline gap-2 mb-0.5 flex-wrap">
-            <span className="font-semibold text-sm" style={{ color: roleColor }}>
+          <div className="flex items-baseline gap-1.5 md:gap-2 mb-0.5 flex-wrap min-w-0">
+            <span className="font-semibold text-sm shrink-0" style={{ color: roleColor }}>
               {message.userName}
             </span>
             {isBot && (
@@ -382,7 +382,7 @@ function MessageBubble({ message, showHeader }: { message: ChatMessage; showHead
         </div>
       </div>
       {/* Hover actions */}
-      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5 self-center">
+      <div className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-0.5 self-center shrink-0 ml-1">
         <button className="p-1 rounded hover:bg-[#E8DED0] text-muted-foreground"><MoreHorizontal className="w-3.5 h-3.5" /></button>
       </div>
     </motion.div>
@@ -461,15 +461,16 @@ function OnlineUsersSidebar({ users, onClose }: { users: ChatUser[]; onClose?: (
   )
 
   return (
-    <div className="flex flex-col h-full bg-[#FFF8F0] border-l border-[#E8DED0]">
-      <div className="px-4 py-3 border-b border-[#E8DED0] flex items-center justify-between">
-        <h3 className="text-sm font-semibold text-[#1B3A4B]">Members</h3>
-        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+    <div className="flex flex-col h-full bg-[#FFF8F0] overflow-hidden">
+      <div className="px-4 py-3 border-b border-[#E8DED0] flex items-center gap-2 shrink-0">
+        <h3 className="text-sm font-semibold text-[#1B3A4B] shrink-0">Members</h3>
+        <div className="flex items-center gap-1 text-xs text-muted-foreground shrink-0">
           <Users className="w-3.5 h-3.5" />
           {users.filter((u) => u.status !== 'offline' || u.isBot).length} online
         </div>
+        <div className="flex-1" />
         {onClose && (
-          <Button variant="ghost" size="icon" className="h-7 w-7 md:hidden" onClick={onClose}>
+          <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0" onClick={onClose}>
             <X className="w-4 h-4" />
           </Button>
         )}
@@ -533,7 +534,7 @@ function TypingIndicator({ users }: { users: string[] }) {
     <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-center gap-2 px-4 py-1"
+      className="flex items-center gap-2 px-3 md:px-4 py-1 shrink-0"
     >
       <div className="flex items-center gap-1">
         <motion.span
@@ -613,7 +614,7 @@ function MessageInput({
   const hasAIMention = message.toLowerCase().includes('@diplomatiq guru') || message.toLowerCase().includes('@diplomatiq')
 
   return (
-    <div className="border-t border-[#E8DED0] bg-white p-3">
+    <div className="border-t border-[#E8DED0] bg-white p-2 md:p-3 shrink-0">
       {/* AI Assistant Ask Button (committee channels only) */}
       {isCommitteeChannel && (
         <div className="mb-2">
@@ -691,7 +692,7 @@ function MessageInput({
           onKeyDown={handleKeyDown}
           placeholder={`Message #${channelName}${isCommitteeChannel ? ' (type @DiplomatiQ Guru to ask AI)' : ''}...`}
           rows={1}
-          className="w-full resize-none rounded-lg border border-[#E8DED0] bg-[#FFF8F0] px-4 py-2.5 text-sm focus:outline-none focus:border-[#0D7377]/40 focus:ring-2 focus:ring-[#0D7377]/10 placeholder:text-muted-foreground/50 min-h-[42px] max-h-[120px]"
+          className="w-full resize-none rounded-lg border border-[#E8DED0] bg-[#FFF8F0] px-3 md:px-4 py-2 md:py-2.5 text-sm focus:outline-none focus:border-[#0D7377]/40 focus:ring-2 focus:ring-[#0D7377]/10 placeholder:text-muted-foreground/50 min-h-[42px] max-h-[120px]"
           style={{ overflow: 'auto' }}
         />
         <div className="flex items-center justify-between mt-1.5">
@@ -727,16 +728,16 @@ function AIThinkingIndicator() {
     <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      className="flex items-start gap-3 px-4 py-2 bg-[#0D7377]/[0.03]"
+      className="flex items-start gap-2 md:gap-3 px-3 md:px-4 py-2 bg-[#0D7377]/[0.03]"
     >
       <Avatar className="w-9 h-9 mt-0.5 shrink-0">
         <AvatarFallback className="text-xs font-semibold border bg-[#0D7377]/20 text-[#0D7377] border-[#0D7377]/30">
           <Sparkles className="w-4 h-4" />
         </AvatarFallback>
       </Avatar>
-      <div className="flex-1">
-        <div className="flex items-baseline gap-2 mb-1">
-          <span className="font-semibold text-sm text-[#0D7377]">DiplomatiQ Guru</span>
+      <div className="flex-1 min-w-0 overflow-hidden">
+        <div className="flex items-baseline gap-1.5 md:gap-2 mb-1 flex-wrap">
+          <span className="font-semibold text-sm text-[#0D7377] shrink-0">DiplomatiQ Guru</span>
           <Badge className="text-[9px] h-4 px-1.5 border-0 bg-[#0D7377]/15 text-[#0D7377]">
             <Sparkles className="w-2.5 h-2.5 mr-0.5" />
             AI Assistant
@@ -1165,29 +1166,29 @@ export default function ChatView() {
   }
 
   return (
-    <div className="flex h-full overflow-hidden bg-white">
+    <div className="flex h-full overflow-hidden bg-white rounded-lg shadow-sm border border-[#E8DED0]/60">
       {/* Desktop Channel Sidebar */}
       {!isMobile && (
-        <div className="w-60 shrink-0 border-r border-[#E8DED0]">{channelSidebarContent}</div>
+        <div className="w-60 shrink-0 border-r border-[#E8DED0] h-full overflow-hidden">{channelSidebarContent}</div>
       )}
 
       {/* Mobile Channel Sidebar */}
       {isMobile && (
         <Sheet open={mobileSidebarOpen} onOpenChange={setMobileSidebarOpen}>
-          <SheetContent side="left" className="p-0 w-64 bg-[#1B3A4B] border-0">
+          <SheetContent side="left" className="p-0 w-64 bg-[#1B3A4B] border-0 h-full overflow-hidden">
             <SheetHeader className="sr-only">
               <SheetTitle>Channels</SheetTitle>
             </SheetHeader>
-            {channelSidebarContent}
+            <div className="h-full overflow-hidden">{channelSidebarContent}</div>
           </SheetContent>
         </Sheet>
       )}
 
       {/* Main Chat Area */}
-      <div className="flex-1 flex flex-col min-w-0 bg-white">
+      <div className="flex-1 flex flex-col min-w-0 bg-white overflow-hidden">
         {/* Channel Header */}
-        <div className="h-12 border-b border-[#E8DED0] flex items-center justify-between px-4 shrink-0 bg-white">
-          <div className="flex items-center gap-2 min-w-0">
+        <div className="h-12 border-b border-[#E8DED0] flex items-center justify-between px-3 md:px-4 shrink-0 bg-white gap-2">
+          <div className="flex items-center gap-2 min-w-0 flex-1 overflow-hidden">
             {isMobile && (
               <Button
                 variant="ghost"
@@ -1201,22 +1202,22 @@ export default function ChatView() {
             <ChannelIcon type={currentChannel.type} className="text-[#0D7377] shrink-0" />
             <span className="font-semibold text-sm text-[#1B3A4B] truncate">{currentChannel.name}</span>
             {currentChannel.isCommittee && (
-              <Badge className="bg-[#0D7377]/10 text-[#0D7377] text-[9px] h-4 px-1.5 border-0 gap-0.5">
+              <Badge className="bg-[#0D7377]/10 text-[#0D7377] text-[9px] h-4 px-1.5 border-0 gap-0.5 shrink-0">
                 <Sparkles className="w-2.5 h-2.5" />
                 AI
               </Badge>
             )}
             {currentChannel.unread > 0 && (
-              <Badge className="bg-[#0D7377] text-white text-[10px] h-5 border-0">
+              <Badge className="bg-[#0D7377] text-white text-[10px] h-5 border-0 shrink-0">
                 {currentChannel.unread} new
               </Badge>
             )}
-            <Separator orientation="vertical" className="h-5 mx-1 hidden sm:block" />
-            <span className="text-xs text-muted-foreground truncate hidden sm:block">
+            <Separator orientation="vertical" className="h-5 mx-1 hidden md:block shrink-0" />
+            <span className="text-xs text-muted-foreground truncate hidden md:block">
               {currentChannel.description}
             </span>
           </div>
-          <div className="flex items-center gap-1 shrink-0">
+          <div className="flex items-center gap-0.5 shrink-0">
             {currentChannel.isCommittee && (
               <TooltipProvider>
                 <Tooltip>
@@ -1274,10 +1275,10 @@ export default function ChatView() {
         </div>
 
         {/* Messages Area */}
-        <div className="flex-1 overflow-y-auto min-h-0">
-          <div className="py-4">
+        <div className="flex-1 overflow-y-auto min-h-0 overflow-x-hidden">
+          <div className="py-2 md:py-4">
             {/* Channel Welcome */}
-            <div className="px-4 py-6 text-center border-b border-[#E8DED0]/50 mb-4">
+            <div className="px-3 md:px-4 py-4 md:py-6 text-center border-b border-[#E8DED0]/50 mb-2 md:mb-4">
               <div className="w-14 h-14 rounded-full bg-[#0D7377]/10 flex items-center justify-center mx-auto mb-3">
                 <ChannelIcon type={currentChannel.type} className="w-7 h-7 text-[#0D7377]" />
               </div>
@@ -1295,7 +1296,7 @@ export default function ChatView() {
             {messageGroups.map(({ showHeader, message }) => (
               <React.Fragment key={message.id}>
                 {shouldShowDateSeparator(channelMessages, channelMessages.indexOf(message)) && (
-                  <div className="flex items-center gap-4 px-4 my-4">
+                  <div className="flex items-center gap-4 px-3 md:px-4 my-3 md:my-4">
                     <div className="flex-1 h-px bg-[#E8DED0]" />
                     <span className="text-xs font-medium text-muted-foreground whitespace-nowrap">
                       {formatDateSeparator(message.timestamp)}
@@ -1329,7 +1330,7 @@ export default function ChatView() {
 
       {/* Online Users Sidebar (Desktop) */}
       {!isMobile && showMembers && (
-        <div className="w-56 shrink-0">
+        <div className="w-56 shrink-0 h-full overflow-hidden border-l border-[#E8DED0]">
           <OnlineUsersSidebar users={users} />
         </div>
       )}
@@ -1337,11 +1338,13 @@ export default function ChatView() {
       {/* Online Users Sidebar (Mobile - Sheet) */}
       {isMobile && (
         <Sheet open={mobileMembersOpen} onOpenChange={setMobileMembersOpen}>
-          <SheetContent side="right" className="p-0 w-72 border-0">
+          <SheetContent side="right" className="p-0 w-72 border-0 h-full overflow-hidden">
             <SheetHeader className="sr-only">
               <SheetTitle>Members</SheetTitle>
             </SheetHeader>
-            <OnlineUsersSidebar users={users} onClose={() => setMobileMembersOpen(false)} />
+            <div className="h-full overflow-hidden">
+              <OnlineUsersSidebar users={users} onClose={() => setMobileMembersOpen(false)} />
+            </div>
           </SheetContent>
         </Sheet>
       )}
